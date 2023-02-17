@@ -1,7 +1,7 @@
 var board;
 var score = 0;
-var rows = 5;
-var columns = 5;
+var rows = 9;
+var columns = 16;
 
 window.onload = function() {
     setGame();
@@ -15,14 +15,28 @@ function setGame() {
     //     [4, 4, 8, 8]
     // ];
 
-    board = [
-        [0, 0, 0, 0, 0],
-        [0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 3, 0],
-        [0, 0, 0, 0, 0]
-    ]
+    // board = [
+    //     [0, 0, 0, 0, 0],
+    //     [0, 1, 0, 9, 0],
+    //     [0, 0, 0, 0, 0],
+    //     [0, 7, 0, 3, 0],
+    //     [0, 0, 0, 0, 0]
+    // ]
     
+    board = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ];
+
+
+
 
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < columns; c++) {
@@ -96,6 +110,25 @@ function slide(row) {
     return row;
 }
 
+function slide2(row) {
+    //[0, 2, 2, 2] 
+    row = filterZero(row); //[2, 2, 2]
+    for (let i = 0; i < row.length-1; i++){
+        if (row[i] == row[i+1]) {
+            row[i] *= 2;
+            row[i+1] = 0;
+            score += row[i];
+        }
+    } //[4, 0, 2]
+    row = filterZero(row); //[4, 2]
+    //add zeroes
+    while (row.length < rows) {
+        row.push(0);
+    } //[4, 2, 0, 0]
+    return row;
+}
+        
+
 function slideLeft() {
     for (let r = 0; r < rows; r++) {
         let row = board[r];
@@ -125,7 +158,7 @@ function slideRight() {
 
 function slideUp() {
     for (let c = 0; c < columns; c++) {
-        let row = [board[0][c], board[1][c], board[2][c], board[3][c], board[4][c]];
+        let row = [board[0][c], board[1][c], board[2][c], board[3][c], board[4][c], board[5][c], board[6][c], board[7][c], board[8][c]];
         row = slide(row);
         // board[0][c] = row[0];
         // board[1][c] = row[1];
@@ -142,9 +175,9 @@ function slideUp() {
 
 function slideDown() {
     for (let c = 0; c < columns; c++) {
-        let row = [board[0][c], board[1][c], board[2][c], board[3][c], board[4][c]];
+        let row = [board[0][c], board[1][c], board[2][c], board[3][c], board[4][c], board[5][c], board[6][c], board[7][c], board[8][c]];
         row.reverse();
-        row = slide(row);
+        row = slide2(row);
         row.reverse();
         // board[0][c] = row[0];
         // board[1][c] = row[1];

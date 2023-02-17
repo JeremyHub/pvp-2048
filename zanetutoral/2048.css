@@ -3,13 +3,13 @@ body {
     text-align: center;
 }
 
-hr {
-    width: 400px;
-}
+/* hr {
+    width: 800px;
+} */
 
 #board {
-    width: 400px;
-    height: 400px;
+    width: 576px;
+    height: 477px;
 
     background-color: #cdc1b5;
     border: 6px solid #bbada0;
@@ -20,11 +20,11 @@ hr {
 }
 
 .tile {
-    width: 70px;
-    height: 70px;
+    width: 26px;
+    height: 43px;
     border: 5px solid #bbada0;
 
-    font-size: 40px;
+    font-size: 20px;
     font-weight: bold;
     display: flex;
     justify-content: center;
