@@ -1,7 +1,7 @@
 var board;
 var score = 0;
-var rows = 4;
-var columns = 4;
+var rows = 5;
+var columns = 5;
 
 window.onload = function() {
     setGame();
@@ -16,11 +16,13 @@ function setGame() {
     // ];
 
     board = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
+        [0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 3, 0],
+        [0, 0, 0, 0, 0]
     ]
+    
 
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < columns; c++) {
@@ -123,7 +125,7 @@ function slideRight() {
 
 function slideUp() {
     for (let c = 0; c < columns; c++) {
-        let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+        let row = [board[0][c], board[1][c], board[2][c], board[3][c], board[4][c]];
         row = slide(row);
         // board[0][c] = row[0];
         // board[1][c] = row[1];
@@ -140,7 +142,7 @@ function slideUp() {
 
 function slideDown() {
     for (let c = 0; c < columns; c++) {
-        let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
+        let row = [board[0][c], board[1][c], board[2][c], board[3][c], board[4][c]];
         row.reverse();
         row = slide(row);
         row.reverse();
