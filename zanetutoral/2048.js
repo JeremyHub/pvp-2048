@@ -67,7 +67,7 @@ function updateTile(tile, num) {
     }
 }
 
-document.addEventListener('keyup', (e) => {
+document.addEventListener('keydown', (e) => {
     if (e.code == "ArrowLeft") {
         slideLeft();
         setTwo();
@@ -109,6 +109,7 @@ function slide(row) {
     } //[4, 2, 0, 0]
     return row;
 }
+
 
 function slide2(row) {
     //[0, 2, 2, 2] 
