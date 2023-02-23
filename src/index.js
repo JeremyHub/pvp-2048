@@ -47,9 +47,9 @@ function create() {
     this.s_key = this.input.keyboard.addKey('S');
     this.d_key = this.input.keyboard.addKey('D');
 
-    const map = this.make.tilemap({ key: 'tilemap' });
-	const tileset = map.addTilesetImage('tiles', 'tiles');
-	map.createStaticLayer('Tile Layer 1', tileset);
+    this.map = this.make.tilemap({ key: 'tilemap' });
+	this.tileset = this.map.addTilesetImage('tiles', 'tiles');
+	this.map.createStaticLayer('Tile Layer 1', this.tileset);
 
     for (let i = 1; i < 3; i++) {
         this.tiles.push(create_tile(this, i, 1, 0x000000));
@@ -66,7 +66,6 @@ function update() {
     for (let i = 0; i < this.tiles.length; i++) {
         if (this.tiles[i].is_moving) {
             any_tile_is_moving = true;
-            console.log('moving');
             break;
         }
     }
