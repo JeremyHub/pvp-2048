@@ -1,30 +1,35 @@
-import Phaser from 'phaser';
 
-class MyGame extends Phaser.Scene
-{
-    constructor ()
-    {
-        super();
+
+var game = new Phaser.Game(640, 480, Phaser.CANVAS, 'game');
+
+
+class PhaserGame {
+    constructor(game) {
+
+    }
+
+    init() {
+
     }
 
     preload() {
+
+        this.load.tilemap('map_simple_2048', 'src/assets/basic.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.image('tiles', 'src/assets/tiles.png');
-	    this.load.tilemapTiledJSON('tilemap', 'src/assets/basic.json');
+
+    }
+    create() {
+
+        this.map = this.add.tilemap('map_simple_2048');
+        this.map.addTilesetImage('tiles', 'tiles');
+
+        this.layer = this.map.createLayer('Tile Layer 1');
+
     }
 
-    create() {
-        this.map = this.add.tilemap('tilemap');
-        this.map.addTilesetImage('tiles', 'tiles');
-        this.layer = this.map.createLayer('Tile Layer 1');
+    update() {
+        
     }
 }
 
-const config = {
-    type: Phaser.AUTO,
-    parent: 'game',
-    width: 800,
-    height: 600,
-    scene: MyGame,
-};
-
-const game = new Phaser.Game(config);
+game.state.add('Game', PhaserGame, true);
