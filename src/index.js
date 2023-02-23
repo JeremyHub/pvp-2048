@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import logoImg from './assets/logo.png';
 
 class MyGame extends Phaser.Scene
 {
@@ -8,32 +7,24 @@ class MyGame extends Phaser.Scene
         super();
     }
 
-    preload ()
-    {
-        this.load.image('logo', logoImg);
+    preload() {
+        this.load.image('tiles', 'src/assets/tiles.png');
+	    this.load.tilemapTiledJSON('tilemap', 'src/assets/basic.json');
     }
-      
-    create ()
-    {
-        const logo = this.add.image(400, 150, 'logo');
-      
-        this.tweens.add({
-            targets: logo,
-            y: 450,
-            duration: 2000,
-            ease: "Power2",
-            yoyo: true,
-            loop: -1
-        });
+
+    create() {
+        this.map = this.add.tilemap('tilemap');
+        this.map.addTilesetImage('tiles', 'tiles');
+        this.layer = this.map.createLayer('Tile Layer 1');
     }
 }
 
 const config = {
     type: Phaser.AUTO,
-    parent: 'phaser-example',
+    parent: 'game',
     width: 800,
     height: 600,
-    scene: MyGame
+    scene: MyGame,
 };
 
 const game = new Phaser.Game(config);
