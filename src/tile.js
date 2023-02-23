@@ -52,7 +52,7 @@ export class Tile extends Phaser.GameObjects.Container{
 
             if (this.total_moved === 32) {
                 this.total_moved = 0;
-                if (!this.should_move_another_tile(this.moving_direction)) {
+                if (!this.should_move_another_space(this.moving_direction)) {
                     this.moving_direction = null;
                     this.is_moving = false;
                 }
@@ -62,16 +62,45 @@ export class Tile extends Phaser.GameObjects.Container{
     }
 
     go_direction(direction) {
-        if (this.is_moving || !this.should_move_another_tile(direction)) {
+        if (this.is_moving || !this.should_move_another_space(direction)) {
             return;
         } else {
             this.moving_direction = direction;
         }
     }
 
-    should_move_another_tile(direction) {
+    should_move_another_space(direction) {
+        const wall_in_direction = this.check_if_wall_in_direction(direction);
+        const tile_in_direction = this.check_if_tile_in_direction(direction);
+        return !wall_in_direction && !tile_in_direction;
+    }
+
+    check_if_tile_in_direction(direction) {
+        const tile_to_check = this.get_tile_in_direction(direction);
+        for (let i = 0; i < this.scene.tiles.length; i++) {
+            const tile = this.scene.tiles[i];
+            const tiles_space = this.scene.map.getTileAtWorldXY(tile.x, tile.y);
+            if (tiles_space === tile_to_check) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    check_if_wall_in_direction(direction) {        
+        let tile_to_check = this.get_tile_in_direction(direction);
+
+        if (tile_to_check !== null) {
+            if (tile_to_check.layer.data[tile_to_check.y][tile_to_check.x].index === tile_config.wall_id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    get_tile_in_direction(direction) {
         let tile = this.scene.map.getTileAtWorldXY(this.x, this.y);
-        
+
         let tile_to_check = null;
         if (direction === 'up') {
             tile_to_check = this.scene.map.getTileAt(tile.x, tile.y - 1);
@@ -86,12 +115,6 @@ export class Tile extends Phaser.GameObjects.Container{
             tile_to_check = this.scene.map.getTileAt(tile.x + 1, tile.y);
         }
 
-        if (tile_to_check !== null) {
-            if (tile_to_check.layer.data[tile_to_check.y][tile_to_check.x].index !== tile_config.wall_id) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        return tile_to_check;
     }
 }
