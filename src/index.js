@@ -85,6 +85,11 @@ function update() {
 
     // TODO combine these
     if (!any_block_is_moving) {
+        if(this.block_spawn_counter === 0 && this.green_move === null && this.orange_move === null){
+            spawnblocks(this, block_config.green_id, 'green', this.green_blocks);
+            spawnblocks(this, block_config.orange_id, 'orange', this.orange_blocks);
+            this.block_spawn_counter ++;
+        }
         if (this.green_move === null) {
             if (this.w_key.isDown) {
                 this.green_move = 'up';
@@ -126,11 +131,6 @@ function update() {
             move_blocks(this.orange_blocks, this.orange_move);
             this.green_move = null;
             this.orange_move = null;
-        }
-        if(this.block_spawn_counter === 0 && this.green_move === null && this.orange_move === null){
-            spawnblocks(this, block_config.green_id, 'green', this.green_blocks);
-            spawnblocks(this, block_config.orange_id, 'orange', this.orange_blocks);
-            this.block_spawn_counter ++;
         }
     }
 }
