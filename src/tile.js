@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
-const tile_config = {
-    animation_speed: 5,
+export const tile_config = {
+    animation_speed: 50,
     wall_id: 6,
 }
 

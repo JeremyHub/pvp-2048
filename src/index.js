@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import {Tile} from './tile.js';
+import {Tile, tile_config} from './tile.js';
+
 
 const game_config = {
     num_rows: 20,
@@ -21,6 +22,7 @@ const config = {
         preload: preload,
         create: create,
         update: update
+
     }
 };
 
@@ -41,6 +43,7 @@ function preload() {
 function create() {
 
     this.tiles = [];
+    this.TileSpawnCounter = 0;
 
     this.w_key = this.input.keyboard.addKey('W');
     this.a_key = this.input.keyboard.addKey('A');
@@ -72,18 +75,27 @@ function update() {
         }
     }
 
+    
     if (!any_tile_is_moving) {
+        if(this.TileSpawnCounter === 0){
+            spawn_tile(this);
+            this.TileSpawnCounter ++;
+        }
         if (this.w_key.isDown) {
             move_tiles(this.tiles, 'up');
+            this.TileSpawnCounter = 0;
         }
         else if (this.a_key.isDown) {
             move_tiles(this.tiles, 'left');
+            this.TileSpawnCounter = 0;
         }
         else if (this.s_key.isDown) {
             move_tiles(this.tiles, 'down');
+            this.TileSpawnCounter = 0;
         }
         else if (this.d_key.isDown) {
             move_tiles(this.tiles, 'right');
+            this.TileSpawnCounter = 0;
         }
     }
 }
@@ -110,4 +122,21 @@ function convert_tile_to_world(tile_x, tile_y) {
         x: (tile_x * game_config.tile_size) + (game_config.tile_size / 2),
         y: (tile_y * game_config.tile_size) + (game_config.tile_size / 2)
     }
+}
+
+function spawn_tile(game) {
+
+    let x = Math.floor(Math.random() * game_config.num_cols);
+    let y = Math.floor(Math.random() * game_config.num_rows);
+
+    let tile = game.map.getTileAt(x, y, true, 'Tile Layer 1');
+    const color = Math.floor(Math.random() * 0xFFFFFF);
+
+    while(game.map.layer.data[tile.y][tile.x].index === tile_config.wall_id){
+        x = Math.floor(Math.random() * game_config.num_cols);
+        y = Math.floor(Math.random() * game_config.num_rows);
+        tile = game.map.getTileAt(x, y, true, 'Tile Layer 1');
+    }
+    game.tiles.push(create_tile(game, x, y, color));
+    
 }
