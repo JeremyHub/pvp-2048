@@ -30,17 +30,6 @@ function constructor(game) {
 
 function init() {
 
-}
-
-function preload() {
-
-    this.load.tilemapTiledJSON('tilemap', 'src/assets/basic.json');
-    this.load.image('tiles', 'src/assets/tiles.png');
-
-}
-
-function create() {
-
     this.blocks = [];               // all blocks
     this.orange_blocks = [];        // orange blocks            
     this.green_blocks = [];         // green blocks
@@ -60,6 +49,16 @@ function create() {
     this.down_key = this.input.keyboard.addKey('DOWN');
     this.right_key = this.input.keyboard.addKey('RIGHT');
 
+}
+
+function preload() {
+
+    this.load.tilemapTiledJSON('tilemap', 'src/assets/basic.json');
+    this.load.image('tiles', 'src/assets/tiles.png');
+
+}
+
+function create() {
 
     this.map = this.make.tilemap({ key: 'tilemap' });
 	this.tileset = this.map.addTilesetImage('tiles', 'tiles');
@@ -84,7 +83,7 @@ function update() {
         }
     }
 
-    // TODO combine these two
+    // TODO combine these
     if (!any_block_is_moving) {
         if (this.green_move === null) {
             if (this.w_key.isDown) {
