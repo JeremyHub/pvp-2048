@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 export const block_config = {
-    animation_speed: 50,
+    animation_speed: 16,
     wall_id: 6,
 }
 
