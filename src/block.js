@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 export const block_config = {
-    animation_speed: 32,
+    animation_speed: 8,
     wall_id: 6,
     green_id: 57,   // spawning area
     orange_id: 127, // spawning area
