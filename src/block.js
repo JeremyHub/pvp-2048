@@ -3,12 +3,12 @@ import Phaser from 'phaser';
 export const block_config = {
     animation_speed: 32,
     wall_id: 6,
-    green_id: 57,
-    orange_id: 127,
+    green_id: 57,   // spawning area
+    orange_id: 127, // spawning area
 }
 
 export class Block extends Phaser.GameObjects.Container{
-    constructor(scene, x, y, children, color, size, padding) {
+    constructor(scene, x, y, children, color, size, padding, team) {
         super(scene, x, y, children);
         this.color = color;
         this.size = size;
@@ -18,6 +18,7 @@ export class Block extends Phaser.GameObjects.Container{
         this.is_moving = false;
         this.total_moved = 0;
         this.padding = padding;
+        this.team = team;
         this.create();
     }
 
@@ -82,14 +83,15 @@ export class Block extends Phaser.GameObjects.Container{
             return false;
         }
         const wall_in_direction = this.check_if_wall_in_direction(direction);
-        const block_in_direction = this.check_if_block_in_direction(direction);
-        return !wall_in_direction && !block_in_direction;
+        const block_in_direction = this.check_if_block_in_direction(direction, this.scene.orange_blocks);
+        const block_in_direction2 = this.check_if_block_in_direction(direction, this.scene.green_blocks);
+        return !wall_in_direction && !block_in_direction && !block_in_direction2;
     }
 
-    check_if_block_in_direction(direction) {
+    check_if_block_in_direction(direction, list_of_blocks) {
         const tile_in_direction = this.get_tile_in_direction(direction);
-        for (let i = 0; i < this.scene.blocks.length; i++) {
-            const block = this.scene.blocks[i];
+        for (let i = 0; i < list_of_blocks.length; i++) {
+            const block = list_of_blocks[i];
             const tile = this.scene.map.getTileAtWorldXY(block.x, block.y);
             if (tile === tile_in_direction) {
                 // if the tile is moving the same direction and it can move another space then we dont care about interacting with it
@@ -131,5 +133,9 @@ export class Block extends Phaser.GameObjects.Container{
         }
 
         return tile_to_check;
+    }
+
+    get_block_team() {
+        return this.team;
     }
 }

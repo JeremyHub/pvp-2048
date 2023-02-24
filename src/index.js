@@ -41,13 +41,22 @@ function preload() {
 
 function create() {
 
-    this.blocks = [];
-    this.block_spawn_counter = 0;
+    this.blocks = [];               // all blocks
+    this.orange_blocks = [];        // orange blocks            
+    this.green_blocks = [];         // green blocks
+
+    this.block_spawn_counter = 0;   // used to spawn blocks
 
     this.w_key = this.input.keyboard.addKey('W');
     this.a_key = this.input.keyboard.addKey('A');
     this.s_key = this.input.keyboard.addKey('S');
     this.d_key = this.input.keyboard.addKey('D');
+
+    this.up_key = this.input.keyboard.addKey('UP');
+    this.left_key = this.input.keyboard.addKey('LEFT');
+    this.down_key = this.input.keyboard.addKey('DOWN');
+    this.right_key = this.input.keyboard.addKey('RIGHT');
+
 
     this.map = this.make.tilemap({ key: 'tilemap' });
 	this.tileset = this.map.addTilesetImage('tiles', 'tiles');
@@ -58,13 +67,24 @@ function create() {
 
 function update() {
 
-    for (let i = 0; i < this.blocks.length; i++) {
-        this.blocks[i].update();
+    for (let i = 0; i < this.orange_blocks.length; i++) {
+        this.orange_blocks[i].update();
+    }
+
+    for (let i = 0; i < this.green_blocks.length; i++) {
+        this.green_blocks[i].update();
     }
 
     let any_block_is_moving = false;
-    for (let i = 0; i < this.blocks.length; i++) {
-        if (this.blocks[i].is_moving) {
+    for (let i = 0; i < this.orange_blocks.length; i++) {
+        if (this.orange_blocks[i].is_moving) {
+            any_block_is_moving = true;
+            break;
+        }
+    }
+
+    for (let i = 0; i < this.green_blocks.length; i++) {
+        if (this.green_blocks[i].is_moving) {
             any_block_is_moving = true;
             break;
         }
@@ -73,24 +93,29 @@ function update() {
     
     if (!any_block_is_moving) {
         if(this.block_spawn_counter === 0){
-            spawn_block_orange(this);
-            spawn_block_green(this);
+            spawnblocks(this, block_config.green_id, 'green', this.green_blocks);
+            spawnblocks(this, block_config.orange_id, 'orange', this.orange_blocks);
+
             this.block_spawn_counter ++;
         }
         if (this.w_key.isDown) {
-            move_blocks(this.blocks, 'up');
+            move_blocks(this.green_blocks, 'up');
+            move_blocks(this.orange_blocks, 'up');
             this.block_spawn_counter = 0;
         }
         else if (this.a_key.isDown) {
-            move_blocks(this.blocks, 'left');
+            move_blocks(this.green_blocks, 'left');
+            move_blocks(this.orange_blocks, 'left');
             this.block_spawn_counter = 0;
         }
         else if (this.s_key.isDown) {
-            move_blocks(this.blocks, 'down');
+            move_blocks(this.green_blocks, 'down');
+            move_blocks(this.orange_blocks, 'down');
             this.block_spawn_counter = 0;
         }
         else if (this.d_key.isDown) {
-            move_blocks(this.blocks, 'right');
+            move_blocks(this.green_blocks, 'right');
+            move_blocks(this.orange_blocks, 'right');
             this.block_spawn_counter = 0;
         }
     }
@@ -106,9 +131,9 @@ function move_blocks(blocks, direction) {
     }
 }
 
-function create_tile(game, x, y, color) {
+function create_tile(game, x, y, color, team) {
     const coords = convert_tile_to_world(x, y);
-    const tile = new Block(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding);
+    const tile = new Block(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding, team);
     return tile;
 }
 
@@ -143,10 +168,10 @@ function spawn_block(game) {
     
 }
 
-function block_in_tile(x, y, game) {
+function block_in_tile(x, y, game, list_of_blocks) {
     const origin_tile = game.map.getTileAt(x, y);
-    for (let i = 0; i < game.blocks.length; i++) {
-        const tile = game.map.getTileAtWorldXY(game.blocks[i].x, game.blocks[i].y)
+    for (let i = 0; i < list_of_blocks.length; i++) {
+        const tile = game.map.getTileAtWorldXY(list_of_blocks[i].x, list_of_blocks[i].y)
         if (tile.x === origin_tile.x && tile.y === origin_tile.y) {
             return true;
         }
@@ -155,7 +180,7 @@ function block_in_tile(x, y, game) {
 }
 
 
-function spawn_block_orange(game) {
+function spawnblocks(game, spawnarea, team, list_of_blocks) {
 
     const color = Math.floor(Math.random() * 0xFFFFFF);
 
@@ -163,7 +188,7 @@ function spawn_block_orange(game) {
     for (let x = 0; x < game_config.num_cols; x++) {
         for (let y = 0; y < game_config.num_rows; y++) {
             const tile = game.map.getTileAt(x, y);
-            if (game.map.layer.data[tile.y][tile.x].index !== block_config.orange_id || block_in_tile(x, y, game)) {
+            if (game.map.layer.data[tile.y][tile.x].index !== spawnarea || (block_in_tile(x, y, game, game.orange_blocks) || block_in_tile(x, y, game, game.green_blocks))) {
                 continue;
             }
             spawnable_tiles.push({x: x, y: y});
@@ -175,30 +200,7 @@ function spawn_block_orange(game) {
     }
 
     const spawn_tile = spawnable_tiles[Math.floor(Math.random() * spawnable_tiles.length)];
-    game.blocks.push(create_tile(game, spawn_tile.x, spawn_tile.y, color));
-    
-}
+    list_of_blocks.push(create_tile(game, spawn_tile.x, spawn_tile.y, color, team));
 
-function spawn_block_green(game) {
-
-    const color = Math.floor(Math.random() * 0xFFFFFF);
-
-    let spawnable_tiles = [];
-    for (let x = 0; x < game_config.num_cols; x++) {
-        for (let y = 0; y < game_config.num_rows; y++) {
-            const tile = game.map.getTileAt(x, y);
-            if (game.map.layer.data[tile.y][tile.x].index !== block_config.green_id || block_in_tile(x, y, game)) {
-                continue;
-            }
-            spawnable_tiles.push({x: x, y: y});
-        }
-    }
-
-    if (spawnable_tiles.length === 0) {
-        return;
-    }
-
-    const spawn_tile = spawnable_tiles[Math.floor(Math.random() * spawnable_tiles.length)];
-    game.blocks.push(create_tile(game, spawn_tile.x, spawn_tile.y, color));
     
 }
