@@ -70,32 +70,21 @@ function create() {
 
 function update() {
 
-    // TODO combine these
-    for (let i = 0; i < this.orange_blocks.length; i++) {
-        this.orange_blocks[i].update();
+    let all_block_lists = this.orange_blocks.concat(this.green_blocks);
+
+    for (let i = 0; i < all_block_lists.length; i++) {
+        all_block_lists[i].update();
     }
 
-    for (let i = 0; i < this.green_blocks.length; i++) {
-        this.green_blocks[i].update();
-    }
-
-    // TODO combine these
     let any_block_is_moving = false;
-    for (let i = 0; i < this.orange_blocks.length; i++) {
-        if (this.orange_blocks[i].is_moving) {
+    for (let i = 0; i < all_block_lists.length; i++) {
+        if (all_block_lists[i].is_moving) {
             any_block_is_moving = true;
             break;
         }
     }
 
-    for (let i = 0; i < this.green_blocks.length; i++) {
-        if (this.green_blocks[i].is_moving) {
-            any_block_is_moving = true;
-            break;
-        }
-    }
-
-    // TODO combine these
+    // TODO combine these two
     if (!any_block_is_moving) {
         if (this.green_move === null) {
             if (this.w_key.isDown) {
