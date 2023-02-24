@@ -49,6 +49,19 @@ function init() {
     this.down_key = this.input.keyboard.addKey('DOWN');
     this.right_key = this.input.keyboard.addKey('RIGHT');
 
+    const orange_key_dict = {
+        'up': this.up_key,
+        'left': this.left_key,
+        'down': this.down_key,
+        'right': this.right_key,
+    };
+
+    const green_key_dict = {
+        'up': this.w_key,
+        'left': this.a_key,
+        'down': this.s_key,
+        'right': this.d_key,
+    };
 }
 
 function preload() {
@@ -86,39 +99,21 @@ function update() {
     // TODO combine these
     if (!any_block_is_moving) {
         if (this.green_move === null) {
-            if (this.w_key.isDown) {
-                this.green_move = 'up';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.a_key.isDown) {
-                this.green_move = 'left';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.s_key.isDown) {
-                this.green_move = 'down';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.d_key.isDown) {
-                this.green_move = 'right';
-                this.block_spawn_counter = 0;
+            for (let key in green_key_dict) {
+                if (green_key_dict[key].isDown) {
+                    this.green_move = key;
+                    this.block_spawn_counter = 0;
+                    break;
+                }
             }
         }
         if (this.orange_move === null) {
-            if (this.up_key.isDown) {
-                this.orange_move = 'up';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.left_key.isDown) {
-                this.orange_move = 'left';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.down_key.isDown) {
-                this.orange_move = 'down';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.right_key.isDown) {
-                this.orange_move = 'right';
-                this.block_spawn_counter = 0;
+            for (let key in orange_key_dict) {
+                if (orange_key_dict[key].isDown) {
+                    this.orange_move = key;
+                    this.block_spawn_counter = 0;
+                    break;
+                }
             }
         }
         if (this.green_move !== null && this.orange_move !== null) {
