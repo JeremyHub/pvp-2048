@@ -1,11 +1,11 @@
 import Phaser from 'phaser';
 
-export const tile_config = {
+export const block_config = {
     animation_speed: 50,
     wall_id: 6,
 }
 
-export class Tile extends Phaser.GameObjects.Container{
+export class Block extends Phaser.GameObjects.Container{
     constructor(scene, x, y, children, color, size, padding) {
         super(scene, x, y, children);
         this.color = color;
@@ -37,10 +37,10 @@ export class Tile extends Phaser.GameObjects.Container{
             }
 
             let to_move = 0;
-            if (this.total_moved + tile_config.animation_speed > this.size+(this.padding*2)) {
+            if (this.total_moved + block_config.animation_speed > this.size+(this.padding*2)) {
                 to_move = this.size+(this.padding*2) - this.total_moved;
             } else {
-                to_move = tile_config.animation_speed;
+                to_move = block_config.animation_speed;
             }
             
             if (this.moving_direction === 'up') {
@@ -80,18 +80,18 @@ export class Tile extends Phaser.GameObjects.Container{
             return false;
         }
         const wall_in_direction = this.check_if_wall_in_direction(direction);
-        const tile_in_direction = this.check_if_tile_in_direction(direction);
-        return !wall_in_direction && !tile_in_direction;
+        const block_in_direction = this.check_if_block_in_direction(direction);
+        return !wall_in_direction && !block_in_direction;
     }
 
-    check_if_tile_in_direction(direction) {
+    check_if_block_in_direction(direction) {
         const tile_in_direction = this.get_tile_in_direction(direction);
-        for (let i = 0; i < this.scene.tiles.length; i++) {
-            const tile = this.scene.tiles[i];
-            const tiles_space = this.scene.map.getTileAtWorldXY(tile.x, tile.y);
-            if (tiles_space === tile_in_direction) {
+        for (let i = 0; i < this.scene.blocks.length; i++) {
+            const block = this.scene.blocks[i];
+            const tile = this.scene.map.getTileAtWorldXY(block.x, block.y);
+            if (tile === tile_in_direction) {
                 // if the tile is moving the same direction and it can move another space then we dont care about interacting with it
-                if (tile.moving_direction === direction && tile.should_move_another_space(tile.moving_direction)) {
+                if (block.moving_direction === direction && block.should_move_another_space(block.moving_direction)) {
                     continue;
                 }
                 return true;
@@ -104,7 +104,7 @@ export class Tile extends Phaser.GameObjects.Container{
         const tile_in_direction = this.get_tile_in_direction(direction);
 
         if (tile_in_direction !== null) {
-            if (tile_in_direction.layer.data[tile_in_direction.y][tile_in_direction.x].index === tile_config.wall_id) {
+            if (tile_in_direction.layer.data[tile_in_direction.y][tile_in_direction.x].index === block_config.wall_id) {
                 return true;
             }
         }

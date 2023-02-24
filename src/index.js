@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import {Tile, tile_config} from './tile.js';
+import {Block, block_config} from './block.js';
 
 
 const game_config = {
@@ -21,8 +21,7 @@ const config = {
         init: init,
         preload: preload,
         create: create,
-        update: update
-
+        update: update,
     }
 };
 
@@ -42,8 +41,8 @@ function preload() {
 
 function create() {
 
-    this.tiles = [];
-    this.TileSpawnCounter = 0;
+    this.blocks = [];
+    this.block_spawn_counter = 0;
 
     this.w_key = this.input.keyboard.addKey('W');
     this.a_key = this.input.keyboard.addKey('A');
@@ -55,47 +54,43 @@ function create() {
     // this.tileset.setTileSize(game_config.tile_size, game_config.tile_size);
 	this.map.createStaticLayer('Tile Layer 1', this.tileset);
     // this.map.setBaseTileSize(game_config.tile_size, game_config.tile_size);
-
-    for (let i = 1; i < 3; i++) {
-        this.tiles.push(create_tile(this, i, 1, 0x000000));
-    }
 }
 
 function update() {
 
-    for (let i = 0; i < this.tiles.length; i++) {
-        this.tiles[i].update();
+    for (let i = 0; i < this.blocks.length; i++) {
+        this.blocks[i].update();
     }
 
-    let any_tile_is_moving = false;
-    for (let i = 0; i < this.tiles.length; i++) {
-        if (this.tiles[i].is_moving) {
-            any_tile_is_moving = true;
+    let any_block_is_moving = false;
+    for (let i = 0; i < this.blocks.length; i++) {
+        if (this.blocks[i].is_moving) {
+            any_block_is_moving = true;
             break;
         }
     }
 
     
-    if (!any_tile_is_moving) {
-        if(this.TileSpawnCounter === 0){
-            spawn_tile(this);
-            this.TileSpawnCounter ++;
+    if (!any_block_is_moving) {
+        if(this.block_spawn_counter === 0){
+            spawn_block(this);
+            this.block_spawn_counter ++;
         }
         if (this.w_key.isDown) {
-            move_tiles(this.tiles, 'up');
-            this.TileSpawnCounter = 0;
+            move_blocks(this.blocks, 'up');
+            this.block_spawn_counter = 0;
         }
         else if (this.a_key.isDown) {
-            move_tiles(this.tiles, 'left');
-            this.TileSpawnCounter = 0;
+            move_blocks(this.blocks, 'left');
+            this.block_spawn_counter = 0;
         }
         else if (this.s_key.isDown) {
-            move_tiles(this.tiles, 'down');
-            this.TileSpawnCounter = 0;
+            move_blocks(this.blocks, 'down');
+            this.block_spawn_counter = 0;
         }
         else if (this.d_key.isDown) {
-            move_tiles(this.tiles, 'right');
-            this.TileSpawnCounter = 0;
+            move_blocks(this.blocks, 'right');
+            this.block_spawn_counter = 0;
         }
     }
 }
@@ -104,16 +99,15 @@ function update() {
 var game = new Phaser.Game(config);
 ///////////////////////////////////
 
-function move_tiles(tiles, direction) {
-    for (let i = 0; i < tiles.length; i++) {
-        tiles[i].go_direction(direction);
-        console.log(tiles)
+function move_blocks(blocks, direction) {
+    for (let i = 0; i < blocks.length; i++) {
+        blocks[i].go_direction(direction);
     }
 }
 
 function create_tile(game, x, y, color) {
     const coords = convert_tile_to_world(x, y);
-    const tile = new Tile(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding);
+    const tile = new Block(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding);
     return tile;
 }
 
@@ -124,19 +118,37 @@ function convert_tile_to_world(tile_x, tile_y) {
     }
 }
 
-function spawn_tile(game) {
+function spawn_block(game) {
 
-    let x = Math.floor(Math.random() * game_config.num_cols);
-    let y = Math.floor(Math.random() * game_config.num_rows);
-
-    let tile = game.map.getTileAt(x, y, true, 'Tile Layer 1');
     const color = Math.floor(Math.random() * 0xFFFFFF);
 
-    while(game.map.layer.data[tile.y][tile.x].index === tile_config.wall_id){
-        x = Math.floor(Math.random() * game_config.num_cols);
-        y = Math.floor(Math.random() * game_config.num_rows);
-        tile = game.map.getTileAt(x, y, true, 'Tile Layer 1');
+    let spawnable_tiles = [];
+    for (let x = 0; x < game_config.num_cols; x++) {
+        for (let y = 0; y < game_config.num_rows; y++) {
+            const tile = game.map.getTileAt(x, y);
+            if (game.map.layer.data[tile.y][tile.x].index === block_config.wall_id || block_in_tile(x, y, game)) {
+                continue;
+            }
+            spawnable_tiles.push({x: x, y: y});
+        }
     }
-    game.tiles.push(create_tile(game, x, y, color));
+
+    if (spawnable_tiles.length === 0) {
+        return;
+    }
+
+    const spawn_tile = spawnable_tiles[Math.floor(Math.random() * spawnable_tiles.length)];
+    game.blocks.push(create_tile(game, spawn_tile.x, spawn_tile.y, color));
     
+}
+
+function block_in_tile(x, y, game) {
+    const origin_tile = game.map.getTileAt(x, y);
+    for (let i = 0; i < game.blocks.length; i++) {
+        const tile = game.map.getTileAtWorldXY(game.blocks[i].x, game.blocks[i].y)
+        if (tile.x === origin_tile.x && tile.y === origin_tile.y) {
+            return true;
+        }
+    }
+    return false;
 }
