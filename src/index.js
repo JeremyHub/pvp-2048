@@ -73,7 +73,8 @@ function update() {
     
     if (!any_block_is_moving) {
         if(this.block_spawn_counter === 0){
-            spawn_block(this);
+            spawn_block_orange(this);
+            spawn_block_green(this);
             this.block_spawn_counter ++;
         }
         if (this.w_key.isDown) {
@@ -151,4 +152,53 @@ function block_in_tile(x, y, game) {
         }
     }
     return false;
+}
+
+
+function spawn_block_orange(game) {
+
+    const color = Math.floor(Math.random() * 0xFFFFFF);
+
+    let spawnable_tiles = [];
+    for (let x = 0; x < game_config.num_cols; x++) {
+        for (let y = 0; y < game_config.num_rows; y++) {
+            const tile = game.map.getTileAt(x, y);
+            if (game.map.layer.data[tile.y][tile.x].index !== block_config.orange_id || block_in_tile(x, y, game)) {
+                continue;
+            }
+            spawnable_tiles.push({x: x, y: y});
+        }
+    }
+
+    if (spawnable_tiles.length === 0) {
+        return;
+    }
+
+    const spawn_tile = spawnable_tiles[Math.floor(Math.random() * spawnable_tiles.length)];
+    game.blocks.push(create_tile(game, spawn_tile.x, spawn_tile.y, color));
+    
+}
+
+function spawn_block_green(game) {
+
+    const color = Math.floor(Math.random() * 0xFFFFFF);
+
+    let spawnable_tiles = [];
+    for (let x = 0; x < game_config.num_cols; x++) {
+        for (let y = 0; y < game_config.num_rows; y++) {
+            const tile = game.map.getTileAt(x, y);
+            if (game.map.layer.data[tile.y][tile.x].index !== block_config.green_id || block_in_tile(x, y, game)) {
+                continue;
+            }
+            spawnable_tiles.push({x: x, y: y});
+        }
+    }
+
+    if (spawnable_tiles.length === 0) {
+        return;
+    }
+
+    const spawn_tile = spawnable_tiles[Math.floor(Math.random() * spawnable_tiles.length)];
+    game.blocks.push(create_tile(game, spawn_tile.x, spawn_tile.y, color));
+    
 }

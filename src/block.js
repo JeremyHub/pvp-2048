@@ -1,8 +1,10 @@
 import Phaser from 'phaser';
 
 export const block_config = {
-    animation_speed: 8,
+    animation_speed: 32,
     wall_id: 6,
+    green_id: 57,
+    orange_id: 127,
 }
 
 export class Block extends Phaser.GameObjects.Container{
