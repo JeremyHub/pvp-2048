@@ -4,7 +4,7 @@ import {Tile} from './tile.js';
 const game_config = {
     num_rows: 20,
     num_cols: 20,
-    tile_size: 32,
+    tile_size: 32, // currently this must match the size of the tiles in the tileset
     padding: 3,
 };
 
@@ -49,7 +49,9 @@ function create() {
 
     this.map = this.make.tilemap({ key: 'tilemap' });
 	this.tileset = this.map.addTilesetImage('tiles', 'tiles');
+    // this.tileset.setTileSize(game_config.tile_size, game_config.tile_size);
 	this.map.createStaticLayer('Tile Layer 1', this.tileset);
+    // this.map.setBaseTileSize(game_config.tile_size, game_config.tile_size);
 
     for (let i = 1; i < 3; i++) {
         this.tiles.push(create_tile(this, i, 1, 0x000000));
