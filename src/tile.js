@@ -6,16 +6,17 @@ const tile_config = {
 }
 
 export class Tile extends Phaser.GameObjects.Container{
-    constructor(scene, x, y, children, color, size) {
+    constructor(scene, x, y, children, color, size, padding) {
         super(scene, x, y, children);
         this.color = color;
         this.size = size;
         this.scene = scene;
         this.scene.add.existing(this);
-        this.create();
         this.moving_direction = null;
         this.is_moving = false;
         this.total_moved = 0;
+        this.padding = padding;
+        this.create();
     }
 
     create() {
@@ -25,16 +26,23 @@ export class Tile extends Phaser.GameObjects.Container{
 
     update() {
         
-        if (this.total_moved < 32 && this.moving_direction !== null) {
+        if (this.total_moved < this.size+(this.padding*2) && this.moving_direction !== null) {
+
             this.is_moving = true;
+            
+            if (!this.should_move_another_space(this.moving_direction) && this.total_moved === 0) {
+                this.moving_direction = null;
+                this.is_moving = false;
+                return;
+            }
 
             let to_move = 0;
-            if (this.total_moved + tile_config.animation_speed > 32) {
-                to_move = 32 - this.total_moved;
+            if (this.total_moved + tile_config.animation_speed > this.size+(this.padding*2)) {
+                to_move = this.size+(this.padding*2) - this.total_moved;
             } else {
                 to_move = tile_config.animation_speed;
             }
-
+            
             if (this.moving_direction === 'up') {
                 this.y -= to_move;
             }
@@ -47,40 +55,45 @@ export class Tile extends Phaser.GameObjects.Container{
             else if (this.moving_direction === 'right') {
                 this.x += to_move;
             }
-
+            
             this.total_moved += to_move;
 
-            if (this.total_moved === 32) {
-                this.total_moved = 0;
+            // we want to stop moving if we are at the center of a block and we cant keep moving
+            
+            if (this.total_moved === this.size+(this.padding*2)) {
                 if (!this.should_move_another_space(this.moving_direction)) {
                     this.moving_direction = null;
                     this.is_moving = false;
                 }
+                this.total_moved = 0;
             }
-
+            
         }
     }
 
     go_direction(direction) {
-        if (this.is_moving || !this.should_move_another_space(direction)) {
-            return;
-        } else {
-            this.moving_direction = direction;
-        }
+        this.moving_direction = direction;
     }
 
     should_move_another_space(direction) {
+        if (direction === null) {
+            return false;
+        }
         const wall_in_direction = this.check_if_wall_in_direction(direction);
         const tile_in_direction = this.check_if_tile_in_direction(direction);
         return !wall_in_direction && !tile_in_direction;
     }
 
     check_if_tile_in_direction(direction) {
-        const tile_to_check = this.get_tile_in_direction(direction);
+        const tile_in_direction = this.get_tile_in_direction(direction);
         for (let i = 0; i < this.scene.tiles.length; i++) {
             const tile = this.scene.tiles[i];
             const tiles_space = this.scene.map.getTileAtWorldXY(tile.x, tile.y);
-            if (tiles_space === tile_to_check) {
+            if (tiles_space === tile_in_direction) {
+                // if the tile is moving the same direction and it can move another space then we dont care about interacting with it
+                if (tile.moving_direction === direction && tile.should_move_another_space(tile.moving_direction)) {
+                    continue;
+                }
                 return true;
             }
         }
@@ -88,10 +101,10 @@ export class Tile extends Phaser.GameObjects.Container{
     }
 
     check_if_wall_in_direction(direction) {        
-        let tile_to_check = this.get_tile_in_direction(direction);
+        const tile_in_direction = this.get_tile_in_direction(direction);
 
-        if (tile_to_check !== null) {
-            if (tile_to_check.layer.data[tile_to_check.y][tile_to_check.x].index === tile_config.wall_id) {
+        if (tile_in_direction !== null) {
+            if (tile_in_direction.layer.data[tile_in_direction.y][tile_in_direction.x].index === tile_config.wall_id) {
                 return true;
             }
         }

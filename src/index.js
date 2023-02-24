@@ -93,12 +93,13 @@ var game = new Phaser.Game(config);
 function move_tiles(tiles, direction) {
     for (let i = 0; i < tiles.length; i++) {
         tiles[i].go_direction(direction);
+        console.log(tiles)
     }
 }
 
 function create_tile(game, x, y, color) {
     const coords = convert_tile_to_world(x, y);
-    const tile = new Tile(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2));
+    const tile = new Tile(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding);
     return tile;
 }
 
