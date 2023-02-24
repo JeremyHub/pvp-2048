@@ -21,8 +21,7 @@ const config = {
         init: init,
         preload: preload,
         create: create,
-        update: update
-
+        update: update,
     }
 };
 
@@ -107,7 +106,6 @@ var game = new Phaser.Game(config);
 function move_tiles(tiles, direction) {
     for (let i = 0; i < tiles.length; i++) {
         tiles[i].go_direction(direction);
-        console.log(tiles)
     }
 }
 
@@ -126,17 +124,35 @@ function convert_tile_to_world(tile_x, tile_y) {
 
 function spawn_tile(game) {
 
-    let x = Math.floor(Math.random() * game_config.num_cols);
-    let y = Math.floor(Math.random() * game_config.num_rows);
-
-    let tile = game.map.getTileAt(x, y, true, 'Tile Layer 1');
     const color = Math.floor(Math.random() * 0xFFFFFF);
 
-    while(game.map.layer.data[tile.y][tile.x].index === tile_config.wall_id){
-        x = Math.floor(Math.random() * game_config.num_cols);
-        y = Math.floor(Math.random() * game_config.num_rows);
-        tile = game.map.getTileAt(x, y, true, 'Tile Layer 1');
+    let spawnable_tiles = [];
+    for (let x = 0; x < game_config.num_cols; x++) {
+        for (let y = 0; y < game_config.num_rows; y++) {
+            const tile = game.map.getTileAt(x, y);
+            if (game.map.layer.data[tile.y][tile.x].index === tile_config.wall_id || block_in_tile(x, y, game)) {
+                continue;
+            }
+            spawnable_tiles.push({x: x, y: y});
+        }
     }
-    game.tiles.push(create_tile(game, x, y, color));
+
+    if (spawnable_tiles.length === 0) {
+        return;
+    }
+
+    const spawn_tile = spawnable_tiles[Math.floor(Math.random() * spawnable_tiles.length)];
+    game.tiles.push(create_tile(game, spawn_tile.x, spawn_tile.y, color));
     
+}
+
+function block_in_tile(x, y, game) {
+    const origin_tile = game.map.getTileAt(x, y);
+    for (let i = 0; i < game.tiles.length; i++) {
+        const tile = game.map.getTileAtWorldXY(game.tiles[i].x, game.tiles[i].y)
+        if (tile.x === origin_tile.x && tile.y === origin_tile.y) {
+            return true;
+        }
+    }
+    return false;
 }
