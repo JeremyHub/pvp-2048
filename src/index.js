@@ -39,6 +39,8 @@ function init() {
 
     this.block_spawn_counter = 0;   // used to spawn blocks
 
+    this.movement_started = false; // used to set up movement at the start of each turn
+
     this.w_key = this.input.keyboard.addKey('W');
     this.a_key = this.input.keyboard.addKey('A');
     this.s_key = this.input.keyboard.addKey('S');
@@ -49,6 +51,8 @@ function init() {
     this.down_key = this.input.keyboard.addKey('DOWN');
     this.right_key = this.input.keyboard.addKey('RIGHT');
 
+    this.timer = 0;
+    this.blocks_moved = false;
 }
 
 function preload() {
@@ -77,11 +81,13 @@ function update() {
 
     let any_block_is_moving = false;
     for (let i = 0; i < all_block_lists.length; i++) {
-        if (all_block_lists[i].is_moving) {
-            any_block_is_moving = true;
+        if (all_block_lists[i].movement_status === 2) {
+            this.any_block_is_moving = true;
             break;
         }
     }
+
+    let date = new Date();
 
     // TODO combine these
     if (!any_block_is_moving) {
@@ -127,10 +133,38 @@ function update() {
             }
         }
         if (this.green_move !== null && this.orange_move !== null) {
-            move_blocks(this.green_blocks, this.green_move);
-            move_blocks(this.orange_blocks, this.orange_move);
-            this.green_move = null;
-            this.orange_move = null;
+            if (this.movement_started === false) {
+                this.movement_started = true;
+                for (let i = 0; i < all_block_lists.length; i++) {
+                    all_block_lists[i].movement_status = 1;
+                }
+            }
+            if (!any_block_is_moving) {
+                if (this.timer === 0) {
+                    this.timer = date.getTime();
+                    // right now, the timer system makes it so that blocks move slowly and one step at a time
+                    // this is temporary, it's just so I could see how collision works better
+                }
+                if (date.getTime() > this.timer + 200) {
+                    if (!this.blocks_moved) {
+                        move_blocks(this.green_blocks, this.green_move);
+                        move_blocks(this.orange_blocks, this.orange_move);
+                        this.blocks_moved = true;
+                    }
+                    if (date.getTime() > this.timer + 400) {
+                        // currently collision is evaluated after blocks move a tile
+                        check_collisions(all_block_lists, this.green_blocks, this.orange_blocks);
+                        this.timer = 0;
+                        this.blocks_moved = false;
+                    }
+                }
+            }
+            if (all_blocks_done_moving(all_block_lists)) {
+                this.green_move = null;
+                this.orange_move = null;
+                this.movement_started = false;
+            }
+            
         }
     }
 }
@@ -139,15 +173,129 @@ function update() {
 var game = new Phaser.Game(config);
 ///////////////////////////////////
 
+/**
+ * Checks if all of the given blocks have finished moving for the turn.
+ * @param {*} blocks 
+ * @returns 
+ */
+function all_blocks_done_moving(blocks) {
+    for (let i = 0; i < blocks.length; i++) {
+        if (blocks[i].movement_status !== 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * Moves the given list of blocks one space in the given direction.
+ * @param {*} blocks The list of blocks that will move.
+ * @param {*} direction The direction the blocks will move in.
+ */
 function move_blocks(blocks, direction) {
     for (let i = 0; i < blocks.length; i++) {
-        blocks[i].go_direction(direction);
+        if (blocks[i].movement_status !== 0) {
+            blocks[i].move_space(direction);
+        }
     }
+}
+
+/**
+ * Checks if any blocks within the given list of blocks are on the same space, and if so resolves the collision.
+ * @param {*} blocks 
+ */
+function check_collisions(blocks, green_blocks, orange_blocks) {
+    // this function makes the assumption that only two blocks will ever occupy the same space at the same time
+    // i think that the current rules of the game are set up in such a way that this will work fine, but it's something to keep in mind
+    let should_recheck_collision = false;
+    let other_block = null;
+    for (let i = 0; i < green_blocks.length; i++) {
+        // this checks if two adjacent blocks are moving towards eachother
+        other_block = green_blocks[i].passed_block(green_blocks[i].moving_direction, orange_blocks)
+        // currently it only checks for enemy blocks, since all blocks on the same team move the same direction
+        if (other_block !== null) {
+            if (!evaluate_collision(green_blocks[i], other_block, blocks, green_blocks, orange_blocks)) {
+                should_recheck_collision = true;
+            }
+        }
+    }
+    for (let i = 0; i < blocks.length; i++) {
+        for (let j = i + 1; j < blocks.length; j++) {
+            // checks if two blocks are on the same tile, and evaluates collision if so
+            if ((blocks[i].tile_x === blocks[j].tile_x) && (blocks[i].tile_y === blocks[j].tile_y) && 
+            blocks[i].value !== 0 && blocks[j].value !== 0) {
+                if (!evaluate_collision(blocks[i], blocks[j], blocks, green_blocks, orange_blocks)) {
+                    should_recheck_collision = true;
+                }
+            }
+        }
+    }
+    if (should_recheck_collision) {
+        // it's possible that a block bounces into another block, so if a block bounces collision needs to be checked again
+        check_collisions(blocks, green_blocks, orange_blocks);
+    }
+}
+
+/**
+ * Handles collision movment/destruction between two blocks. 
+ * Returns true if the collision is valid, meaning that one of the blocks stays on the space while the other is removed.
+ * @param {*} first_block 
+ * @param {*} second_block 
+ */
+function evaluate_collision(first_block, second_block, blocks, green_blocks, orange_blocks) {
+    if ((first_block.team === second_block.team) && (first_block.value === second_block.value)) {
+        // valid friendly collision, merge blocks
+        first_block.value = first_block.value * 2;
+        remove_block(second_block, blocks, green_blocks, orange_blocks);
+        first_block.movement_status = 0;
+        // after a valid collision, the block should stop moving
+        second_block.value = 0;
+        return true;
+    }
+    else if (first_block.team !== second_block.team && first_block.value !== second_block.value) {
+        // valid enemy collision, one block should be destroyed
+        if (first_block.value > second_block.value) {
+            remove_block(second_block, blocks, green_blocks, orange_blocks);
+            first_block.movement_status = 0;
+            second_block.value = 0;
+        }
+        else {
+            remove_block(first_block, blocks, green_blocks, orange_blocks);
+            second_block.movement_status = 0;
+            first_block.value = 0;
+        }
+        return true;
+    }
+    else {
+        // invalid collision, bounce blocks
+        first_block.bounce();
+        second_block.bounce();
+        return false;
+    }
+}
+
+/**
+ * Removes the specified block from the lists of blocks and canvas.
+ * @param {*} block The block that will be removed from the lists/canvas.
+ * @param {*} blocks The list of all blocks currently being used in the game. 
+ * @param {*} orange_blocks The list of all orange blocks currently being used.
+ * @param {*} green_blocks The list of all green blocks currently being used.
+ */
+function remove_block(block, blocks, green_blocks, orange_blocks) {
+    blocks.splice(blocks.indexOf(block), 1)
+    if (block.team === 'green') {
+        green_blocks.splice(green_blocks.indexOf(block), 1);
+    }
+    else if (block.team === 'orange') {
+        orange_blocks.splice(orange_blocks.indexOf(block), 1);
+    }
+    block.remove(block.rect);
+    // removes the block from the canvas
 }
 
 function create_tile(game, x, y, color, team) {
     const coords = convert_tile_to_world(x, y);
-    const tile = new Block(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding, team);
+    const tile = new Block(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding, team, 2, x, y, Math.random());
     return tile;
 }
 
