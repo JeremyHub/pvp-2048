@@ -2,15 +2,13 @@
 
 The way this system works is that after each 'step' of movement where the blocks move a tile, the game checks every space to see if a block is either on the same space as another block, or has passed a block going in the opposite direction (meaning that those two blocks swapped places). If either is true, the game consideres that a collision, and evaluates it based on the teams/values of the blocks as such:
 
-
-    Same team, same value: One of the blocks has its value doubled while the other is removed.
+Same team, same value: One of the blocks has its value doubled while the other is removed.
     
-    Different team, different value: The block with the lower value is removed.
+Different team, different value: The block with the lower value is removed.
 
-    Same team, different value/different team, same value: Any block that was moving immediately before this collision bounces back a space. No blocks are removed.
+Same team, different value/different team, same value: Any block that was moving immediately before this collision bounces back a space. No blocks are removed.
 
-    After any collision, the remaining blocks no longer move for the rest of the turn.
-
+After any collision, the remaining blocks no longer move for the rest of the turn.
 
 After this, if there are blocks that can still move spaces, each block moves another tile and the game checks collision again.
 
