@@ -59,7 +59,7 @@ function preload() {
 
     this.load.tilemapTiledJSON('tilemap', 'src/assets/basic.json');
     this.load.image('tiles', 'src/assets/tiles.png');
-    this.load.audio('bounce_sound', 'assets/bounceSound.mp3');      // doesn't work currently
+    this.load.audio("bounce_sound", "src/assets/bounceSound.mp3");     
 
 
 }
@@ -72,8 +72,8 @@ function create() {
 	this.map.createStaticLayer('Tile Layer 1', this.tileset);
     // this.map.setBaseTileSize(game_config.tile_size, game_config.tile_size);
 
-    //this.bounce_sound = this.sound.add('bounce_sound');           // can't get this to work
-    //this.bounce_sound.play();
+    this.bounceSOUND = this.sound.add("bounce_sound");           
+    this.bounceSOUND.play();
 
 }
 
