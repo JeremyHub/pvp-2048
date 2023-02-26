@@ -59,6 +59,8 @@ function preload() {
 
     this.load.tilemapTiledJSON('tilemap', 'src/assets/basic.json');
     this.load.image('tiles', 'src/assets/tiles.png');
+    this.load.audio('bounce_sound', 'assets/bounceSound.mp3');      // doesn't work currently
+
 
 }
 
@@ -69,6 +71,10 @@ function create() {
     // this.tileset.setTileSize(game_config.tile_size, game_config.tile_size);
 	this.map.createStaticLayer('Tile Layer 1', this.tileset);
     // this.map.setBaseTileSize(game_config.tile_size, game_config.tile_size);
+
+    //this.bounce_sound = this.sound.add('bounce_sound');           // can't get this to work
+    //this.bounce_sound.play();
+
 }
 
 function update() {
@@ -145,13 +151,13 @@ function update() {
                     // right now, the timer system makes it so that blocks move slowly and one step at a time
                     // this is temporary, it's just so I could see how collision works better
                 }
-                if (date.getTime() > this.timer + 200) {
+                if (date.getTime() > this.timer + 100) {
                     if (!this.blocks_moved) {
                         move_blocks(this.green_blocks, this.green_move);
                         move_blocks(this.orange_blocks, this.orange_move);
                         this.blocks_moved = true;
                     }
-                    if (date.getTime() > this.timer + 400) {
+                    if (date.getTime() > this.timer + 200) {
                         // currently collision is evaluated after blocks move a tile
                         check_collisions(all_block_lists, this.green_blocks, this.orange_blocks);
                         this.timer = 0;
