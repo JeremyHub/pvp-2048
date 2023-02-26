@@ -72,13 +72,13 @@ function create() {
 	this.map.createStaticLayer('Tile Layer 1', this.tileset);
     // this.map.setBaseTileSize(game_config.tile_size, game_config.tile_size);
 
-    this.bounceSOUND = this.sound.add("bounce_sound");           
-    this.bounceSOUND.play();
+    this.bounceSOUND = this.sound.add("bounce_sound");     
+    this.bounceSOUND.play();      
+    
 
 }
 
 function update() {
-
     let all_block_lists = this.orange_blocks.concat(this.green_blocks);
 
     for (let i = 0; i < all_block_lists.length; i++) {
@@ -354,3 +354,5 @@ function spawnblocks(game, spawnarea, team, list_of_blocks) {
 
     
 }
+
+
