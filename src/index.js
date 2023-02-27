@@ -296,7 +296,7 @@ function remove_block(block, blocks, green_blocks, orange_blocks) {
     else if (block.team === 'orange') {
         orange_blocks.splice(orange_blocks.indexOf(block), 1);
     }
-    block.remove(block.rect);
+    block.remove();
     // removes the block from the canvas
 }
 

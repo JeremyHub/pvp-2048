@@ -34,9 +34,17 @@ export class Block extends Phaser.GameObjects.Container{
     create() {
         this.rect = this.scene.add.rectangle(0, 0, this.size, this.size, this.color);
         this.add(this.rect);
+        // TODO this is hard coded
+        let style = { font: "bold 25px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+        // TODO this is hard coded too kinda
+        this.text = new Phaser.GameObjects.Text(this.scene, -this.size/2.5, -this.size/1.5, this.value, style)
+        this.add(this.text);
     }
 
     update() {
+
+        // update value text
+        this.text.setText(this.value);
         
         if (this.total_moved < this.size+(this.padding*2) && this.is_moving) {
             
@@ -83,6 +91,10 @@ export class Block extends Phaser.GameObjects.Container{
             }
             
         }
+    }
+
+    remove() {
+        this.destroy();
     }
 
     go_direction(direction) {
