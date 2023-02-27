@@ -87,13 +87,12 @@ function update() {
 
     let any_block_is_moving = false;
     for (let i = 0; i < all_block_lists.length; i++) {
-        if (all_block_lists[i].movement_status === 2) {
+        if (all_block_lists[i].is_moving) {
             this.any_block_is_moving = true;
             break;
         }
     }
 
-    let date = new Date();
 
     // TODO combine these
     if (!any_block_is_moving) {
@@ -145,27 +144,12 @@ function update() {
                     all_block_lists[i].movement_status = 1;
                 }
             }
-            if (!any_block_is_moving) {
-                if (this.timer === 0) {
-                    this.timer = date.getTime();
-                    // right now, the timer system makes it so that blocks move slowly and one step at a time
-                    // this is temporary, it's just so I could see how collision works better
-                }
-                if (date.getTime() > this.timer + 100) {
-                    if (!this.blocks_moved) {
-                        move_blocks(this.green_blocks, this.green_move);
-                        move_blocks(this.orange_blocks, this.orange_move);
-                        this.blocks_moved = true;
-                    }
-                    if (date.getTime() > this.timer + 200) {
-                        // currently collision is evaluated after blocks move a tile
-                        check_collisions(all_block_lists, this.green_blocks, this.orange_blocks);
-                        this.timer = 0;
-                        this.blocks_moved = false;
-                    }
-                }
-            }
-            if (all_blocks_done_moving(all_block_lists)) {
+            if (!is_any_block_moving(all_block_lists)) {
+                check_collisions(all_block_lists, this.green_blocks, this.orange_blocks);
+                move_blocks(this.green_blocks, this.green_move);
+                move_blocks(this.orange_blocks, this.orange_move);
+            }    
+            if (turn_finished(all_block_lists)) {
                 this.green_move = null;
                 this.orange_move = null;
                 this.movement_started = false;
@@ -184,7 +168,7 @@ var game = new Phaser.Game(config);
  * @param {*} blocks 
  * @returns 
  */
-function all_blocks_done_moving(blocks) {
+function turn_finished(blocks) {
     for (let i = 0; i < blocks.length; i++) {
         if (blocks[i].movement_status !== 0) {
             return false;
@@ -200,10 +184,27 @@ function all_blocks_done_moving(blocks) {
  */
 function move_blocks(blocks, direction) {
     for (let i = 0; i < blocks.length; i++) {
-        if (blocks[i].movement_status !== 0) {
+        if (blocks[i].movement_status === 1) {
             blocks[i].move_space(direction);
         }
     }
+}
+
+/**
+ * Checks if any block from the given list is currently moving.
+ * @param {*} blocks 
+ * @returns true if any block is moving, false if not.
+ */
+function is_any_block_moving(blocks) {
+    if (blocks.length === 0) {
+        return false;
+    }
+    for (let i = 0; i < blocks.length; i++) {
+        if (blocks[i].movement_status === 2 || blocks[i].is_moving) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /**

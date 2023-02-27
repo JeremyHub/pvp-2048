@@ -51,36 +51,36 @@ export class Block extends Phaser.GameObjects.Container{
             //     return;
             // }
 
-            // let to_move = 0;
-            // if (this.total_moved + block_config.animation_speed > this.size+(this.padding*2)) {
-            //     to_move = this.size+(this.padding*2) - this.total_moved;
-            // } else {
-            //     to_move = block_config.animation_speed;
-            // }
+            let to_move = 0;
+            if (this.total_moved + block_config.animation_speed > this.size+(this.padding*2)) {
+                to_move = this.size+(this.padding*2) - this.total_moved;
+            } else {
+                to_move = block_config.animation_speed;
+            }
             
-            // if (this.moving_direction === 'up') {
-            //     this.y -= to_move;
-            // }
-            // else if (this.moving_direction === 'down') {
-            //     this.y += to_move;
-            // }
-            // else if (this.moving_direction === 'left') {
-            //     this.x -= to_move;
-            // }
-            // else if (this.moving_direction === 'right') {
-            //     this.x += to_move;
-            // }
+            if (this.moving_direction === 'up') {
+                this.y -= to_move;
+            }
+            else if (this.moving_direction === 'down') {
+                this.y += to_move;
+            }
+            else if (this.moving_direction === 'left') {
+                this.x -= to_move;
+            }
+            else if (this.moving_direction === 'right') {
+                this.x += to_move;
+            }
             
-            // this.total_moved += to_move;
+            this.total_moved += to_move;
 
             // we want to stop moving if we are at the center of a block and we cant keep moving
             
-            // if (this.total_moved === this.size+(this.padding*2)) {
-            //     this.moving_direction = null;
-            //     this.is_moving = false;
-            //     this.total_moved = 0;
-            //     this.movement_status = 1;
-            // }
+            if (this.total_moved === this.size+(this.padding*2)) {
+                this.update_visuals();
+                this.is_moving = false;
+                this.total_moved = 0;
+                this.movement_status = 1;
+            }
             
         }
     }
@@ -99,8 +99,8 @@ export class Block extends Phaser.GameObjects.Container{
      * @param {*} direction The direction the block will move in.
      */
     move_space(direction) {
-        if (this.movement_status === 0) {
-            // if this is true, the block is done moving for the turn, and shouldn't move any further.
+        if (this.movement_status !== 1) {
+            // in this case, the block is either done moving for the turn or is currently moving, and shouldn't move another space.
             return;
         }
         else if (this.check_if_wall_in_direction(direction)) {
@@ -121,9 +121,8 @@ export class Block extends Phaser.GameObjects.Container{
         else if (this.moving_direction === 'right') {
             this.tile_x += 1;
         }
-        this.movement_status = 1;
+        this.movement_status = 2;
         this.is_moving = true;
-        this.update_visuals()
     }
 
     /**
@@ -211,20 +210,19 @@ export class Block extends Phaser.GameObjects.Container{
     }
 
     get_tile_in_direction(direction) {
-        let tile = this.scene.map.getTileAtWorldXY(this.x, this.y);
-
         let tile_to_check = null;
+        
         if (direction === 'up') {
-            tile_to_check = this.scene.map.getTileAt(tile.x, tile.y - 1);
+            tile_to_check = this.scene.map.getTileAt(this.tile_x, this.tile_y - 1);
         }
         else if (direction === 'down') {
-            tile_to_check = this.scene.map.getTileAt(tile.x, tile.y + 1);
+            tile_to_check = this.scene.map.getTileAt(this.tile_x, this.tile_y + 1);
         }
         else if (direction === 'left') {
-            tile_to_check = this.scene.map.getTileAt(tile.x - 1, tile.y);
+            tile_to_check = this.scene.map.getTileAt(this.tile_x - 1, this.tile_y);
         }
         else if (direction === 'right') {
-            tile_to_check = this.scene.map.getTileAt(tile.x + 1, tile.y);
+            tile_to_check = this.scene.map.getTileAt(this.tile_x + 1, this.tile_y);
         }
 
         return tile_to_check;
