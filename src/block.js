@@ -32,7 +32,7 @@ export class Block extends Phaser.GameObjects.Container{
     }
 
     create() {
-        this.rect = this.scene.add.rectangle(0, 0, this.size, this.size, this.color);
+        this.rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.size, this.size, this.color);
         this.add(this.rect);
         // TODO this is hard coded
         let style = { font: "bold 25px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
