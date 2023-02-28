@@ -231,7 +231,21 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
             // checks if two blocks are on the same tile, and evaluates collision if so
             if ((blocks[i].tile_x === blocks[j].tile_x) && (blocks[i].tile_y === blocks[j].tile_y) && 
             blocks[i].value !== 0 && blocks[j].value !== 0) {
-                if (!evaluate_collision(blocks[i], blocks[j], blocks, green_blocks, orange_blocks)) {
+                if (blocks[i].movement_status !== 0 && blocks[j].movement_status !== 0) {
+                    for (let third_block = j + 1; third_block < blocks.length; third_block++) {
+                        if ((blocks[i].tile_x === blocks[third_block].tile_x) && (blocks[i].tile_y === blocks[third_block].tile_y) && 
+                        blocks[i].value !== 0 && blocks[third_block].value !== 0) {
+                            if (!evaluate_collision(blocks[i], blocks[third_block], blocks, green_blocks, orange_blocks)) {
+                                evaluate_collision(blocks[third_block], blocks[j], blocks, green_blocks, orange_blocks);
+                                should_recheck_collision = true;
+                            }
+                            else if (!evaluate_collision(blocks[i], blocks[j], blocks, green_blocks, orange_blocks)) {
+                                should_recheck_collision = true;
+                            }
+                        }
+                    }
+                }
+                else if (!evaluate_collision(blocks[i], blocks[j], blocks, green_blocks, orange_blocks)) {
                     should_recheck_collision = true;
                 }
             }
