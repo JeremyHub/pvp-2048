@@ -194,8 +194,7 @@ export class Block extends Phaser.GameObjects.Container{
      */
     passed_block(direction, list_of_blocks) {
         const tile_in_direction = this.get_tile_in_direction(this.get_reverse_direction(direction));
-        for (let i = 0; i < list_of_blocks.length; i++) {
-            const block = list_of_blocks[i];
+        for (let block of list_of_blocks) {
             const tile = this.scene.map.getTileAtWorldXY(block.x, block.y);
             if (tile === tile_in_direction) {
                 // if the tile is moving the same direction and it can move another space then we dont care about interacting with it

@@ -214,12 +214,12 @@ function is_any_block_moving(blocks) {
 function check_collisions(blocks, green_blocks, orange_blocks) {
     let should_recheck_collision = false;
     let other_block = null;
-    for (let i = 0; i < green_blocks.length; i++) {
+    for (let green_block of green_blocks) {
         // this checks if two adjacent blocks are moving towards eachother
-        other_block = green_blocks[i].passed_block(green_blocks[i].moving_direction, orange_blocks)
+        other_block = green_block.passed_block(green_block.moving_direction, orange_blocks)
         // currently it only checks for enemy blocks, since all blocks on the same team move the same direction
         if (other_block !== null) {
-            if (!evaluate_collision(green_blocks[i], other_block, blocks, green_blocks, orange_blocks)) {
+            if (!evaluate_collision(green_block, other_block, blocks, green_blocks, orange_blocks)) {
                 should_recheck_collision = true;
             }
         }
@@ -227,23 +227,21 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
     for (let i = 0; i < blocks.length; i++) {
         for (let j = i + 1; j < blocks.length; j++) {
             // checks if two blocks are on the same tile, and evaluates collision if so
-            if ((blocks[i].tile_x === blocks[j].tile_x) && (blocks[i].tile_y === blocks[j].tile_y) && 
-            blocks[i].value !== 0 && blocks[j].value !== 0) {
-                if (blocks[i].movement_status !== 0 && blocks[j].movement_status !== 0) {
-                    for (let third_block = j + 1; third_block < blocks.length; third_block++) {
-                        if ((blocks[i].tile_x === blocks[third_block].tile_x) && (blocks[i].tile_y === blocks[third_block].tile_y) && 
-                        blocks[i].value !== 0 && blocks[third_block].value !== 0) {
-                            if (!evaluate_collision(blocks[i], blocks[third_block], blocks, green_blocks, orange_blocks)) {
-                                evaluate_collision(blocks[third_block], blocks[j], blocks, green_blocks, orange_blocks);
+            if ((blocks[i].tile_x === blocks[j].tile_x) && (blocks[i].tile_y === blocks[j].tile_y)) {
+                    for (let k = j + 1; k < blocks.length; k++) {
+                        if ((blocks[i].tile_x === blocks[k].tile_x) && (blocks[i].tile_y === blocks[k].tile_y)) {
+                            if (!evaluate_collision(blocks[i], blocks[k], blocks, green_blocks, orange_blocks)) {
                                 should_recheck_collision = true;
                             }
-                            else if (!evaluate_collision(blocks[i], blocks[j], blocks, green_blocks, orange_blocks)) {
+                            if (!evaluate_collision(blocks[j], blocks[k], blocks, green_blocks, orange_blocks)) {
+                                should_recheck_collision = true;
+                            }
+                            if (!evaluate_collision(blocks[i], blocks[j], blocks, green_blocks, orange_blocks)) {
                                 should_recheck_collision = true;
                             }
                         }
                     }
-                }
-                else if (!evaluate_collision(blocks[i], blocks[j], blocks, green_blocks, orange_blocks)) {
+                if (!evaluate_collision(blocks[i], blocks[j], blocks, green_blocks, orange_blocks)) {
                     should_recheck_collision = true;
                 }
             }
