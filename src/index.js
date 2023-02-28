@@ -212,8 +212,6 @@ function is_any_block_moving(blocks) {
  * @param {*} blocks 
  */
 function check_collisions(blocks, green_blocks, orange_blocks) {
-    // this function makes the assumption that only two blocks will ever occupy the same space at the same time
-    // i think that the current rules of the game are set up in such a way that this will work fine, but it's something to keep in mind
     let should_recheck_collision = false;
     let other_block = null;
     for (let i = 0; i < green_blocks.length; i++) {
