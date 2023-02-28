@@ -217,30 +217,27 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
     for (let green_block of green_blocks) {
         // this checks if two adjacent blocks are moving towards eachother
         other_block = green_block.passed_block(green_block.moving_direction, orange_blocks)
-        // currently it only checks for enemy blocks, since all blocks on the same team move the same direction
+        // TODO currently it only checks for enemy blocks, since all blocks on the same team move the same direction
         if (other_block !== null) {
-            console.log('collision detected');
-            console.log(green_block);
-            console.log(other_block);
             if (!evaluate_collision([green_block, other_block], blocks, green_blocks, orange_blocks)) {
                 should_recheck_collision = true;
             }
         }
     }
+    let blocks_on_each_tile = {};
     for (let i = 0; i < blocks.length; i++) {
-        for (let j = i + 1; j < blocks.length; j++) {
-            // checks if two blocks are on the same tile, and evaluates collision if so
-            if ((blocks[i].tile_x === blocks[j].tile_x) && (blocks[i].tile_y === blocks[j].tile_y)) {
-                    for (let k = j + 1; k < blocks.length; k++) {
-                        if ((blocks[i].tile_x === blocks[k].tile_x) && (blocks[i].tile_y === blocks[k].tile_y)) {
-                            if (!evaluate_collision([blocks[i], blocks[j], blocks[k]], blocks, green_blocks, orange_blocks)) {
-                                should_recheck_collision = true;
-                            }
-                        }
-                    }
-                if (!evaluate_collision([blocks[i], blocks[j]], blocks, green_blocks, orange_blocks)) {
-                    should_recheck_collision = true;
-                }
+        if (blocks_on_each_tile[blocks[i].tile_x + "" + blocks[i].tile_y] === undefined) {
+            blocks_on_each_tile[blocks[i].tile_x + "" + blocks[i].tile_y] = [blocks[i]];
+        }
+        else {
+            blocks_on_each_tile[blocks[i].tile_x + "" + blocks[i].tile_y].push(blocks[i]);
+        }
+    }
+    
+    for (let tile in blocks_on_each_tile) {
+        if (blocks_on_each_tile[tile].length > 1) {
+            if (!evaluate_collision(blocks_on_each_tile[tile], blocks, green_blocks, orange_blocks)) {
+                should_recheck_collision = true;
             }
         }
     }
