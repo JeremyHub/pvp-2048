@@ -1,4 +1,3 @@
-import assert from 'assert';
 import Phaser from 'phaser';
 import {Block, block_config} from './block.js';
 
