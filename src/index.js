@@ -1,5 +1,5 @@
 var Phaser = require('phaser');
-var {constructor, init, preload, create, update, game_config, block_config} = require('./game.js');
+var {constructor, init, preload, create, update, game_config, block_config} = require('./game');
 
 
 const config = {

@@ -1,4 +1,4 @@
-var {Block, block_config} = require('./block.js');
+var {Block, block_config} = require('./block');
 
 const game_config = {
     num_rows: 20,
