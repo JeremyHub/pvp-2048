@@ -297,6 +297,7 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
             }
         }
     }
+
     let blocks_on_each_tile = {};
     for (let i = 0; i < blocks.length; i++) {
         if (blocks_on_each_tile[blocks[i].tile_x + "," + blocks[i].tile_y] === undefined) {
@@ -331,7 +332,7 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
     // assert at least one block is moving
     let moving_block = null;
     for (let i = 0; i < colliding_blocks.length; i++) {
-        if (colliding_blocks[i].movement_status === 2) {
+        if (colliding_blocks[i].movement_status !== 0) {
             moving_block = colliding_blocks[i];
             break;
         }
@@ -340,9 +341,9 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
         console.error("no blocks are moving");
     }
 
-    // TODO dont hardcode the names of the teams
     console.log("colliding blocks: ", colliding_blocks);
-
+    
+    // TODO dont hardcode the names of the teams
     // sort the blocks into two lists by team
     let green_colliding_blocks = [];
     let orange_colliding_blocks = [];
@@ -403,7 +404,7 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
         }
     }
 
-    // any block that has not been effected by a collision should bounce
+    // if nothing happened, the blocks should bounce off of each other
     for (let block of colliding_blocks) {
         block.bounce();
     }
