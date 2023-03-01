@@ -299,11 +299,11 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
     }
     let blocks_on_each_tile = {};
     for (let i = 0; i < blocks.length; i++) {
-        if (blocks_on_each_tile[blocks[i].tile_x + "" + blocks[i].tile_y] === undefined) {
-            blocks_on_each_tile[blocks[i].tile_x + "" + blocks[i].tile_y] = [blocks[i]];
+        if (blocks_on_each_tile[blocks[i].tile_x + "," + blocks[i].tile_y] === undefined) {
+            blocks_on_each_tile[blocks[i].tile_x + "," + blocks[i].tile_y] = [blocks[i]];
         }
         else {
-            blocks_on_each_tile[blocks[i].tile_x + "" + blocks[i].tile_y].push(blocks[i]);
+            blocks_on_each_tile[blocks[i].tile_x + "," + blocks[i].tile_y].push(blocks[i]);
         }
     }
     
