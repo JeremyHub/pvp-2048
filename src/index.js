@@ -55,6 +55,7 @@ function init() {
     this.o_key = this.input.keyboard.addKey('O');
     this.g_key = this.input.keyboard.addKey('G');
     this.b_key = this.input.keyboard.addKey('B');
+    this.t_key = this.input.keyboard.addKey('T')
 
     this.timer = 0;
     this.blocks_moved = false;
@@ -62,6 +63,7 @@ function init() {
     this.orange_bool = false;
     this.green_bool = false;
     this.barrier_bool = true;
+    this.background_bool = false;
 }
 
 function preload() {
@@ -106,18 +108,32 @@ function update() {
         this.orange_bool = true;
         this.green_bool = false;
         this.barrier_bool = false;
+        this.background_bool = false;
+
     }
 
     if(this.g_key.isDown){
         this.orange_bool = false;
         this.green_bool = true;
         this.barrier_bool = false;
+        this.background_bool = false;
+
     }
 
     if(this.b_key.isDown){
         this.orange_bool = false;
         this.green_bool = false;
         this.barrier_bool = true;
+        this.background_bool = false;
+    }
+
+    if(this.t_key.isDown){
+        this.orange_bool = false;
+        this.green_bool = false;
+        this.barrier_bool = false;
+        this.background_bool = true;
+
+
     }
 
     if(this.pointer.isDown){            // we can now place walls with the mouse, 
@@ -133,6 +149,9 @@ function update() {
         }
         else if(this.barrier_bool === true){
             value = 6;
+        }
+        else if(this.background_bool === true){
+            value = 15;
         }
 
         this.map.putTileAtWorldXY(value, x, y);
