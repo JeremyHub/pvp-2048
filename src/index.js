@@ -257,7 +257,6 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
     // TODO dont hardcode the names of the teams
 
     // sort the blocks into two lists by team
-    console.log(colliding_blocks);
     let green_colliding_blocks = [];
     let orange_colliding_blocks = [];
     for (let block of colliding_blocks) {
