@@ -51,6 +51,8 @@ function init() {
     this.down_key = this.input.keyboard.addKey('DOWN');
     this.right_key = this.input.keyboard.addKey('RIGHT');
 
+    this.pointer = this.input.activePointer;
+
     this.timer = 0;
     this.blocks_moved = false;
 }
@@ -93,6 +95,13 @@ function update() {
         }
     }
 
+    if(this.pointer.isDown){            // we can now place walls with the mouse
+        let x = this.pointer.x;
+        let y = this.pointer.y;
+
+        this.map.putTileAtWorldXY(6, x, y);
+          
+    }
 
     // TODO combine these
     if (!any_block_is_moving) {
@@ -355,5 +364,11 @@ function spawnblocks(game, spawnarea, team, list_of_blocks) {
 
     
 }
+
+
+
+
+
+
 
 
