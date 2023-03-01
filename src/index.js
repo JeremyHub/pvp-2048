@@ -51,8 +51,22 @@ function init() {
     this.down_key = this.input.keyboard.addKey('DOWN');
     this.right_key = this.input.keyboard.addKey('RIGHT');
 
+    this.pointer = this.input.activePointer;
+    this.o_key = this.input.keyboard.addKey('O');
+    this.g_key = this.input.keyboard.addKey('G');
+    this.b_key = this.input.keyboard.addKey('B');
+    this.t_key = this.input.keyboard.addKey('T')
+    this.r_key = this.input.keyboard.addKey('R');       // currently just resets the game without refeshing the page
+
     this.timer = 0;
     this.blocks_moved = false;
+
+    this.orange_bool = false;
+    this.green_bool = false;
+    this.barrier_bool = true;
+    this.background_bool = false;
+
+
 }
 
 function preload() {
@@ -74,7 +88,7 @@ function create() {
 
     this.bounceSOUND = this.sound.add("bounce_sound");     
     this.bounceSOUND.play();      
-    
+
 
 }
 
@@ -93,6 +107,63 @@ function update() {
         }
     }
 
+    if(this.o_key.isDown){
+        this.orange_bool = true;
+        this.green_bool = false;
+        this.barrier_bool = false;
+        this.background_bool = false;
+
+    }
+
+    if(this.g_key.isDown){
+        this.orange_bool = false;
+        this.green_bool = true;
+        this.barrier_bool = false;
+        this.background_bool = false;
+
+    }
+
+    if(this.b_key.isDown){
+        this.orange_bool = false;
+        this.green_bool = false;
+        this.barrier_bool = true;
+        this.background_bool = false;
+    }
+
+    if(this.t_key.isDown){
+        this.orange_bool = false;
+        this.green_bool = false;
+        this.barrier_bool = false;
+        this.background_bool = true;
+
+
+    }
+
+    if(this.r_key.isDown){
+        this.scene.restart();
+    }
+
+    if(this.pointer.isDown){            // we can now place walls with the mouse, 
+        let x = this.pointer.x;         // pressing o will change it to place orange spawn blocks
+        let y = this.pointer.y;         // pressing g will change it to place green spawn blocks
+                                        // pressing b will change it to place barriers
+        let value = 6;
+        if(this.orange_bool === true){
+            value = 127;
+        }
+        else if(this.green_bool === true){
+            value = 57;
+        }
+        else if(this.barrier_bool === true){
+            value = 6;
+        }
+        else if(this.background_bool === true){
+            value = 15;
+        }
+
+        this.map.putTileAtWorldXY(value, x, y);
+          
+    }
 
     // TODO combine these
     if (!any_block_is_moving) {
@@ -403,5 +474,9 @@ function spawnblocks(game, spawnarea, team, list_of_blocks) {
 
     
 }
+
+
+
+
 
 
