@@ -56,6 +56,7 @@ function init() {
     this.g_key = this.input.keyboard.addKey('G');
     this.b_key = this.input.keyboard.addKey('B');
     this.t_key = this.input.keyboard.addKey('T')
+    this.r_key = this.input.keyboard.addKey('R');       // currently just resets the game without refeshing the page
 
     this.timer = 0;
     this.blocks_moved = false;
@@ -136,6 +137,10 @@ function update() {
         this.background_bool = true;
 
 
+    }
+
+    if(this.r_key.isDown){
+        this.scene.restart();
     }
 
     if(this.pointer.isDown){            // we can now place walls with the mouse, 
@@ -421,8 +426,6 @@ function spawnblocks(game, spawnarea, team, list_of_blocks) {
 
     
 }
-
-
 
 
 
