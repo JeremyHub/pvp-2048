@@ -283,6 +283,8 @@ function is_any_block_moving(blocks) {
  * @param {*} blocks 
  */
 function check_collisions(blocks, green_blocks, orange_blocks) {
+    console.log("blocks: ", blocks);
+
     let should_recheck_collision = false;
     let other_block = null;
     for (let green_block of green_blocks) {
@@ -325,7 +327,9 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
  * @param {*} second_block 
  */
 function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_blocks) {
+
     // TODO dont hardcode the names of the teams
+    console.log("colliding blocks: ", colliding_blocks);
 
     // sort the blocks into two lists by team
     let green_colliding_blocks = [];
@@ -350,7 +354,6 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
     let first_team_blocks = first_team === "green" ? green_colliding_blocks : orange_colliding_blocks;
     let second_team_blocks = first_team === "orange" ? green_colliding_blocks : orange_colliding_blocks;
 
-    let should_return_true = false;
     // check for combinations for teams in order
     for (let team_colliding_blocks of [first_team_blocks, second_team_blocks]){
         for (let i = 0; i < team_colliding_blocks.length; i++) {
@@ -361,7 +364,7 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
                     remove_block(team_colliding_blocks[j], blocks, green_blocks, orange_blocks);
                     team_colliding_blocks[i].movement_status = 0;
                     // after a valid collision, the block should stop moving
-                    should_return_true = true;
+                    return true;
                 }
             }
         }
@@ -375,22 +378,15 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
                 if (first_team_blocks[i].value > second_team_blocks[j].value) {
                     remove_block(second_team_blocks[j], blocks, green_blocks, orange_blocks);
                     // after a valid collision, the block should stop moving
-                    should_return_true = true;
+                    return true;
                 }
                 else {
                     remove_block(first_team_blocks[i], blocks, green_blocks, orange_blocks);
                     // after a valid collision, the block should stop moving
-                    should_return_true = true;
+                    return true;
                 }
             }
         }
-    }
-
-    if (should_return_true) {
-        for (let block of colliding_blocks) {
-            block.movement_status = 0;
-        }
-        return true;
     }
 
     // any block that has not been effected by a collision should bounce
