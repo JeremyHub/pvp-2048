@@ -52,9 +52,16 @@ function init() {
     this.right_key = this.input.keyboard.addKey('RIGHT');
 
     this.pointer = this.input.activePointer;
+    this.o_key = this.input.keyboard.addKey('O');
+    this.g_key = this.input.keyboard.addKey('G');
+    this.b_key = this.input.keyboard.addKey('B');
 
     this.timer = 0;
     this.blocks_moved = false;
+
+    this.orange_bool = false;
+    this.green_bool = false;
+    this.barrier_bool = true;
 }
 
 function preload() {
@@ -95,11 +102,40 @@ function update() {
         }
     }
 
-    if(this.pointer.isDown){            // we can now place walls with the mouse
-        let x = this.pointer.x;
-        let y = this.pointer.y;
+    if(this.o_key.isDown){
+        this.orange_bool = true;
+        this.green_bool = false;
+        this.barrier_bool = false;
+    }
 
-        this.map.putTileAtWorldXY(6, x, y);
+    if(this.g_key.isDown){
+        this.orange_bool = false;
+        this.green_bool = true;
+        this.barrier_bool = false;
+    }
+
+    if(this.b_key.isDown){
+        this.orange_bool = false;
+        this.green_bool = false;
+        this.barrier_bool = true;
+    }
+
+    if(this.pointer.isDown){            // we can now place walls with the mouse, 
+        let x = this.pointer.x;         // pressing o will change it to place orange spawn blocks
+        let y = this.pointer.y;         // pressing g will change it to place green spawn blocks
+                                        // pressing b will change it to place barriers
+        let value = 6;
+        if(this.orange_bool === true){
+            value = 127;
+        }
+        else if(this.green_bool === true){
+            value = 57;
+        }
+        else if(this.barrier_bool === true){
+            value = 6;
+        }
+
+        this.map.putTileAtWorldXY(value, x, y);
           
     }
 
