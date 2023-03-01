@@ -41,23 +41,6 @@ function init() {
 
     this.movement_started = false; // used to set up movement at the start of each turn
 
-    this.w_key = this.input.keyboard.addKey('W');
-    this.a_key = this.input.keyboard.addKey('A');
-    this.s_key = this.input.keyboard.addKey('S');
-    this.d_key = this.input.keyboard.addKey('D');
-
-    this.up_key = this.input.keyboard.addKey('UP');
-    this.left_key = this.input.keyboard.addKey('LEFT');
-    this.down_key = this.input.keyboard.addKey('DOWN');
-    this.right_key = this.input.keyboard.addKey('RIGHT');
-
-    this.pointer = this.input.activePointer;
-    this.o_key = this.input.keyboard.addKey('O');
-    this.g_key = this.input.keyboard.addKey('G');
-    this.b_key = this.input.keyboard.addKey('B');
-    this.t_key = this.input.keyboard.addKey('T')
-    this.r_key = this.input.keyboard.addKey('R');       // currently just resets the game without refeshing the page
-
     this.timer = 0;
     this.blocks_moved = false;
 
@@ -89,6 +72,22 @@ function create() {
     this.bounceSOUND = this.sound.add("bounce_sound");     
     this.bounceSOUND.play();      
 
+    this.w_key = this.input.keyboard.addKey('W');
+    this.a_key = this.input.keyboard.addKey('A');
+    this.s_key = this.input.keyboard.addKey('S');
+    this.d_key = this.input.keyboard.addKey('D');
+
+    this.up_key = this.input.keyboard.addKey('UP');
+    this.left_key = this.input.keyboard.addKey('LEFT');
+    this.down_key = this.input.keyboard.addKey('DOWN');
+    this.right_key = this.input.keyboard.addKey('RIGHT');
+
+    this.pointer = this.input.activePointer;
+    this.o_key = this.input.keyboard.addKey('O');
+    this.g_key = this.input.keyboard.addKey('G');
+    this.b_key = this.input.keyboard.addKey('B');
+    this.t_key = this.input.keyboard.addKey('T')
+    this.r_key = this.input.keyboard.addKey('R');       // currently just resets the game without refeshing the page
 
 }
 
