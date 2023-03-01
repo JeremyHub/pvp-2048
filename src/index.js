@@ -64,6 +64,8 @@ function init() {
     this.green_bool = false;
     this.barrier_bool = true;
     this.background_bool = false;
+
+
 }
 
 function preload() {
@@ -85,7 +87,7 @@ function create() {
 
     this.bounceSOUND = this.sound.add("bounce_sound");     
     this.bounceSOUND.play();      
-    
+
 
 }
 
