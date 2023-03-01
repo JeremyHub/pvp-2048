@@ -1,3 +1,4 @@
+import assert from 'assert';
 import Phaser from 'phaser';
 import {Block, block_config} from './block.js';
 
@@ -328,6 +329,18 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
  */
 function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_blocks) {
 
+    // assert at least one block is moving
+    let moving_block = null;
+    for (let i = 0; i < colliding_blocks.length; i++) {
+        if (colliding_blocks[i].movement_status === 2) {
+            moving_block = colliding_blocks[i];
+            break;
+        }
+    }
+    if (moving_block === null) {
+        console.error("no blocks are moving");
+    }
+
     // TODO dont hardcode the names of the teams
     console.log("colliding blocks: ", colliding_blocks);
 
@@ -378,11 +391,13 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
                 if (first_team_blocks[i].value > second_team_blocks[j].value) {
                     remove_block(second_team_blocks[j], blocks, green_blocks, orange_blocks);
                     // after a valid collision, the block should stop moving
+                    first_team_blocks[i].movement_status = 0;
                     return true;
                 }
                 else {
                     remove_block(first_team_blocks[i], blocks, green_blocks, orange_blocks);
                     // after a valid collision, the block should stop moving
+                    second_team_blocks[j].movement_status = 0;
                     return true;
                 }
             }
