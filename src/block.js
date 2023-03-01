@@ -1,19 +1,22 @@
-import Phaser from 'phaser';
 
-export const block_config = {
+const block_config = {
     animation_speed: 8,
     wall_id: 6,
     green_id: 57,   // spawning area
     orange_id: 127, // spawning area
 }
 
-export class Block extends Phaser.GameObjects.Container{
-    constructor(scene, x, y, children, color, size, padding, team, value, tile_x, tile_y, block_id) {
-        super(scene, x, y, children);
+class Block{
+    constructor(scene, x, y, children, color, size, padding, team, value, tile_x, tile_y, block_id, drawing) {
+        if (drawing) {
+            this.container = new Phaser.GameObjects.Container(scene, x, y, children);
+            scene.add.existing(this.container);
+        } else {
+            this.container = {x: x, y: y}
+        }
         this.color = color;
         this.size = size;
         this.scene = scene;
-        this.scene.add.existing(this);
         this.moving_direction = null;
         this.is_moving = false;
         this.movement_status = 0
@@ -28,23 +31,27 @@ export class Block extends Phaser.GameObjects.Container{
         this.rect = null
         this.block_id = block_id
         // block_id is just a random value assigned to every block, I use it to tell blocks apart in console logs
-        this.create();
+        if (drawing) {
+            this.create();
+        }
     }
 
     create() {
         this.rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.size, this.size, this.color);
-        this.add(this.rect);
+        this.container.add(this.rect);
         // TODO this is hard coded
         let style = { font: "bold 25px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
         // TODO this is hard coded too kinda
         this.text = new Phaser.GameObjects.Text(this.scene, -this.size/2.5, -this.size/1.5, this.value, style)
-        this.add(this.text);
+        this.container.add(this.text);
     }
 
     update() {
 
         // update value text
-        this.text.setText(this.value);
+        if (this.text !== undefined) {
+            this.text.setText(this.value);
+        }
         
         if (this.total_moved < this.size+(this.padding*2) && this.is_moving) {
             
@@ -67,16 +74,16 @@ export class Block extends Phaser.GameObjects.Container{
             }
             
             if (this.moving_direction === 'up') {
-                this.y -= to_move;
+                this.container.y -= to_move;
             }
             else if (this.moving_direction === 'down') {
-                this.y += to_move;
+                this.container.y += to_move;
             }
             else if (this.moving_direction === 'left') {
-                this.x -= to_move;
+                this.container.x -= to_move;
             }
             else if (this.moving_direction === 'right') {
-                this.x += to_move;
+                this.container.x += to_move;
             }
             
             this.total_moved += to_move;
@@ -94,7 +101,8 @@ export class Block extends Phaser.GameObjects.Container{
     }
 
     remove() {
-        this.destroy();
+        this.container.destroy();
+        delete this;
     }
 
     go_direction(direction) {
@@ -267,7 +275,13 @@ export class Block extends Phaser.GameObjects.Container{
 
     update_visuals() {
         let canvas_coordiantes = this.convert_tile_to_world(this.tile_x, this.tile_y);
-        this.x = canvas_coordiantes.x;
-        this.y = canvas_coordiantes.y;
+        this.container.x = canvas_coordiantes.x;
+        this.container.y = canvas_coordiantes.y;
     }
+}
+
+// exports
+module.exports = {
+    block_config: block_config,
+    Block: Block,
 }
