@@ -1,4 +1,4 @@
-var {constructor, init, preload, create, update, game_config, block_config} = require('../src/game.js');
+var {constructor, init, preload, create, update, game_config, block_config, spawnblocks} = require('../src/game.js');
 
 var scene = {
     init: init,
@@ -36,15 +36,17 @@ var scene = {
     r_key: {isDown: false},
 }
 
-// create a 5x5 map, surrounded by walls
-for (var i = 0; i < game_config.num_rows + 2; i++) {
-    scene.map.layer.data[i] = [];
-    for (var j = 0; j < game_config.num_cols + 2; j++) {
-        if (i === 0 || i === game_config.num_rows + 1 || j === 0 || j === game_config.num_cols + 1) {
-            scene.map.layer.data[i][j] = {index: block_config.wall_id, x: i, y: j};
-        }
-        else {
-            scene.map.layer.data[i][j] = {index: -1, x: i, y: j};
+function make_map(scene, x, y) {
+// create a X*Y map, surrounded by walls
+    for (var i = 0; i < x; i++) {
+        scene.map.layer.data[i] = [];
+        for (var j = 0; j < y; j++) {
+            if (i === 0 || i === x - 1 || j === 0 || j === y - 1) {
+                scene.map.layer.data[i][j] = {index: block_config.wall_id, x: i, y: j};
+            }
+            else {
+                scene.map.layer.data[i][j] = {index: -1, x: i, y: j};
+            }
         }
     }
 }
@@ -57,4 +59,5 @@ module.exports = {
     preload: preload,
     create: create,
     update: update,
+    make_map: make_map,
 }

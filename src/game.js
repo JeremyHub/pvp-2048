@@ -474,4 +474,5 @@ module.exports = {
     update: update,
     game_config: game_config,
     block_config: block_config,
+    create_block: create_block,
 }

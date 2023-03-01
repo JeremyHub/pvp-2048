@@ -34,7 +34,9 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "chai": "^4.3.7",
     "mocha": "^10.2.0",
+    "mocha-each": "^2.0.1",
     "phaser": "^3.50.0"
   }
 }
