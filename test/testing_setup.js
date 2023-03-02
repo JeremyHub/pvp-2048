@@ -1,4 +1,4 @@
-var {constructor, init, preload, create, update, game_config, block_config, spawnblocks} = require('../src/game.js');
+var {constructor, init, preload, create, update, game_config, block_config} = require('../src/game.js');
 
 function make_scene() {
     return {
@@ -6,15 +6,15 @@ function make_scene() {
         update: update,
         map: {
             putTileAtWorldXY: function(data, x, y) {
-                this.layer.data[x][y] = data;
+                this.layer.data[y][x] = data;
             },
             getTileAtWorldXY: function(x, y) {
                 let tile_x = Math.floor(x / game_config.tile_size);
                 let tile_y = Math.floor(y / game_config.tile_size);
-                return this.layer.data[tile_x][tile_y];
+                return this.layer.data[tile_y][tile_x];
             },
             getTileAt: function(x, y) {
-                return this.layer.data[x][y];
+                return this.layer.data[y][x];
             },
             layer: {
                 data: [],
@@ -37,6 +37,10 @@ function make_scene() {
         b_key: {isDown: false},
         t_key: {isDown: false},
         r_key: {isDown: false},
+        z_key: {isDown: false},
+        x_key: {isDown: false},
+        c_key: {isDown: false},
+        p_key: {isDown: false},
     };
 }
 

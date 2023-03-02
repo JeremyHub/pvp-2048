@@ -24,7 +24,8 @@ describe('Game', function () {
             expect(block.tile_x).to.equal(tile_x);
             expect(block.tile_y).to.equal(tile_y);
             expect(block.team).to.equal(team);
-        });
+        }
+    );
 
     // testing moving all directions for each color and hitting the wall
     forEach([
@@ -49,7 +50,8 @@ describe('Game', function () {
             
             expect(block.tile_x).to.equal(new_tile_x, "x position is wrong");
             expect(block.tile_y).to.equal(new_tile_y, "y position is wrong");
-        });
+        }
+    );
 
     // testing blocks of different colors not interacting when they shouldnt
     forEach([
@@ -91,7 +93,7 @@ describe('Game', function () {
         ["orange", 2, 2, 4, "orange", 2, 5, 4, "d", "up", 2, 1, 100, 8],
         ["orange", 2, 2, 2, "orange", 5, 2, 2, "d", "right", 18, 2, 100, 4],
     ])
-        .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, ends at (%d,%d) using %d updates, ended at value of &d`, function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, green_key, orange_key, new_tile_x, new_tile_y, num_updates, expected_value) {
+        .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, ends at (%d,%d) using %d updates, ended at value of %d`, function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, green_key, orange_key, new_tile_x, new_tile_y, num_updates, expected_value) {
             let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
             let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
             let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team);
@@ -115,6 +117,40 @@ describe('Game', function () {
             expect(other_block.tile_y).to.equal(null, "y position of " + other_team + " block is not null");
             expect(other_block.value).to.equal(null, "value of " + other_team + " block is not null");
         }
+    );
+
+    // testing blocks bouncing off of each other
+    forEach([
+        // same color diff value tests
+        ["green", 2, 2, 2, "green", 2, 5, 4, "s", "right", 2, 17, 2, 18, 100, 2, 4],
+        ["green", 2, 2, 4, "green", 2, 5, 2, "s", "right", 2, 17, 2, 18, 100, 4, 2],
+        // ["green", 2, 2, 2, "green", 5, 2, 4, "a", "right", 1, 2, 2, 2, 100, 2, 4], // this test is broken, the x and y are correct but the tile x and y are not
+    ])
+        .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d`,
+            function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, num_updates, expected_value, expected_other_value) {
+                let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
+                let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
+                let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team);
+                block.value = first_value;
+                let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team);
+                other_block.value = second_value;
+                
+                game[green_key + "_key"].isDown = true;
+                game[orange_key + "_key"].isDown = true;
+                for (var i = 0; i < num_updates; i++) {
+                    game.update();
+                }
+                
+                // first block should be in the position and value described by input
+                expect(block.tile_x).to.equal(new_tile_x, "x position of first " + team + " block is wrong");
+                expect(block.tile_y).to.equal(new_tile_y, "y position of first " + team + " block is wrong");
+                expect(block.value).to.equal(expected_value, "value of first " + team + " block is wrong");
+
+                // second block should be in the position and value described by input
+                expect(other_block.tile_x).to.equal(new_other_tile_x, "x position of second " + other_team + " block is wrong");
+                expect(other_block.tile_y).to.equal(new_other_tile_y, "y position of second " + other_team + " block is wrong");
+                expect(other_block.value).to.equal(expected_other_value, "value of second " + other_team + " block is wrong");
+            }
     );
 
 });
