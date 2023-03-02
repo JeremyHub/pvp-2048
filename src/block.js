@@ -12,7 +12,7 @@ class Block{
             this.container = new Phaser.GameObjects.Container(scene, x, y, children);
             scene.add.existing(this.container);
         } else {
-            this.container = {x: x, y: y}
+            this.container = {x: x, y: y, destroy : function() {return;}}; // stub for testing
         }
         this.color = color;
         this.size = size;
@@ -102,7 +102,10 @@ class Block{
 
     remove() {
         this.container.destroy();
-        delete this;
+        // set all properties to null so that the garbage collector can clean up the object and errors will be throw if we try access it
+        for (let prop in this) {
+            this[prop] = null;
+        }
     }
 
     go_direction(direction) {
