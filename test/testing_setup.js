@@ -42,10 +42,10 @@ function make_map(scene, x, y) {
         scene.map.layer.data[i] = [];
         for (var j = 0; j < y; j++) {
             if (i === 0 || i === x - 1 || j === 0 || j === y - 1) {
-                scene.map.layer.data[i][j] = {index: block_config.wall_id, x: i, y: j};
+                scene.map.layer.data[i][j] = {index: block_config.wall_id, x: i, y: j, layer: scene.map.layer};
             }
             else {
-                scene.map.layer.data[i][j] = {index: -1, x: i, y: j};
+                scene.map.layer.data[i][j] = {index: -1, x: i, y: j, layer: scene.map.layer};
             }
         }
     }

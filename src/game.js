@@ -410,9 +410,10 @@ function remove_block(block, blocks, green_blocks, orange_blocks) {
     // removes the block from the canvas
 }
 
-function create_block(game, x, y, color, team) {
+function create_block(game, list_of_blocks, x, y, color, team) {
     const coords = convert_tile_to_world(x, y);
     const block = new Block(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding, team, 2, x, y, Math.random(), game.is_drawing);
+    list_of_blocks.push(block);
     return block;
 }
 
@@ -461,9 +462,8 @@ function spawnblocks(game, spawnarea, team, list_of_blocks) {
     }
 
     const spawn_tile = spawnable_tiles[Math.floor(Math.random() * spawnable_tiles.length)];
-    list_of_blocks.push(create_block(game, spawn_tile.x, spawn_tile.y, color, team));
+    create_block(game, list_of_blocks, spawn_tile.x, spawn_tile.y, color, team);
 
-    
 }
 
 module.exports = {
