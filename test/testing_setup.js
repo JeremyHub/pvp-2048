@@ -6,7 +6,7 @@ function make_scene() {
         update: update,
         map: {
             putTileAtWorldXY: function(data, x, y) {
-                this.layer.data[y][x] = data;
+                this.layer.data[y][x].index = data;
             },
             getTileAtWorldXY: function(x, y) {
                 let tile_x = Math.floor(x / game_config.tile_size);
