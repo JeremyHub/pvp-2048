@@ -182,7 +182,7 @@ class Block{
         const tile_in_direction = this.get_tile_in_direction(direction);
         for (let i = 0; i < list_of_blocks.length; i++) {
             const block = list_of_blocks[i];
-            const tile = this.scene.map.getTileAtWorldXY(block.x, block.y);
+            const tile = this.scene.map.getTileAtWorldXY(block.container.x, block.container.y);
             if (tile === tile_in_direction) {
                 // if the tile is moving the same direction and it can move another space then we dont care about interacting with it
                 if (block.moving_direction === direction && block.should_move_another_space(block.moving_direction)) {
@@ -203,7 +203,7 @@ class Block{
     passed_block(direction, list_of_blocks) {
         const tile_in_direction = this.get_tile_in_direction(this.get_reverse_direction(direction));
         for (let block of list_of_blocks) {
-            const tile = this.scene.map.getTileAtWorldXY(block.x, block.y);
+            const tile = this.scene.map.getTileAtWorldXY(block.container.x, block.container.y);
             if (tile === tile_in_direction) {
                 // if the tile is moving the same direction and it can move another space then we dont care about interacting with it
                 if (block.moving_direction === this.get_reverse_direction(direction) && block.movement_status !== 0) {

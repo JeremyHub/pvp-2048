@@ -9,7 +9,9 @@ function make_scene() {
                 this.layer.data[x][y] = data;
             },
             getTileAtWorldXY: function(x, y) {
-                return this.layer.data[x][y];
+                let tile_x = Math.floor(x / game_config.tile_size);
+                let tile_y = Math.floor(y / game_config.tile_size);
+                return this.layer.data[tile_x][tile_y];
             },
             getTileAt: function(x, y) {
                 return this.layer.data[x][y];
