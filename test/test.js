@@ -121,7 +121,7 @@ describe('Game', function () {
 
     // testing blocks bouncing off of each other
     forEach([
-        // same color diff value tests
+        // same color diff value bouncing tests
         ["green", 2, 2, 2, "green", 2, 5, 4, "s", "right", 2, 17, 2, 18, 100, 2, 4],
         ["green", 2, 2, 4, "green", 2, 5, 2, "s", "right", 2, 17, 2, 18, 100, 4, 2],
         ["green", 2, 2, 2, "green", 5, 2, 4, "a", "right", 1, 2, 2, 2, 100, 2, 4],
@@ -139,7 +139,7 @@ describe('Game', function () {
         ["orange", 2, 2, 2, "orange", 5, 2, 4, "d", "right", 17, 2, 18, 2, 100, 2, 4],
         ["orange", 2, 2, 4, "orange", 5, 2, 2, "d", "right", 17, 2, 18, 2, 100, 4, 2],
 
-        // diff color same value tests (same direction)
+        // diff color same value bouncing tests (same direction)
         ["green", 2, 2, 2, "orange", 5, 2, 2, "d", "right", 17, 2, 18, 2, 100, 2, 2],
         ["green", 2, 2, 4, "orange", 2, 5, 4, "s", "down", 2, 17, 2, 18, 100, 4, 4],
         ["green", 2, 2, 2, "orange", 2, 5, 2, "w", "up", 2, 1, 2, 2, 100, 2, 2],
@@ -148,6 +148,17 @@ describe('Game', function () {
         ["orange", 2, 2, 4, "green", 2, 5, 4, "s", "down", 2, 17, 2, 18, 100, 4, 4],
         ["orange", 2, 2, 2, "green", 2, 5, 2, "w", "up", 2, 1, 2, 2, 100, 2, 2],
         ["orange", 2, 2, 2, "green", 5, 2, 2, "a", "left", 1, 2, 2, 2, 100, 2, 2],
+
+        // diff color same value bouncing tests (diff direction (ie. moving through each other))
+        ["green", 2, 2, 2, "orange", 5, 2, 2, "d", "left", 3, 2, 4, 2, 100, 2, 2], // right next to each other
+        ["green", 2, 2, 4, "orange", 6, 2, 4, "d", "left", 3, 2, 5, 2, 100, 4, 4], // one space in between
+        ["green", 2, 2, 2, "orange", 2, 5, 2, "s", "up", 2, 3, 2, 4, 100, 2, 2], // right next to each other
+        ["green", 2, 2, 4, "orange", 2, 6, 4, "s", "up", 2, 3, 2, 5, 100, 4, 4], // one space in between
+        ["green", 5, 2, 2, "orange", 2, 2, 2, "a", "right", 4, 2, 3, 2, 100, 2, 2], // right next to each other
+        ["green", 6, 2, 4, "orange", 2, 2, 4, "a", "right", 5, 2, 3, 2, 100, 4, 4], // one space in between
+        ["green", 2, 5, 2, "orange", 2, 2, 2, "w", "down", 2, 4, 2, 3, 100, 2, 2], // right next to each other
+        ["green", 2, 6, 4, "orange", 2, 2, 4, "w", "down", 2, 5, 2, 3, 100, 4, 4], // one space in between
+
     ])
         .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d`,
             function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, num_updates, expected_value, expected_other_value) {
