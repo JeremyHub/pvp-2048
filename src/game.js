@@ -28,11 +28,14 @@ function init() {
 
     this.orange_bool = false;
     this.green_bool = false;
-    this.barrier_bool = true;
+    this.barrier_bool = false;
     this.background_bool = false;
 
     this.is_drawing = false;
 
+    this.two_bool = false;
+    this.four_bool = false;
+    this.eight_bool = false;
 
 }
 
@@ -74,6 +77,16 @@ function create() {
     this.b_key = this.input.keyboard.addKey('B');
     this.t_key = this.input.keyboard.addKey('T');
     this.r_key = this.input.keyboard.addKey('R');       // currently just resets the game without refeshing the page
+
+
+    this.z_key = this.input.keyboard.addKey('Z');
+    this.x_key= this.input.keyboard.addKey('X');
+    this.c_key = this.input.keyboard.addKey('C');
+    this.p_key = this.input.keyboard.addKey('P');
+
+
+
+
 
 }
 
@@ -120,33 +133,77 @@ function update() {
         this.green_bool = false;
         this.barrier_bool = false;
         this.background_bool = true;
-
-
     }
+
+    if(this.z_key.isDown){
+        this.two_bool = true;
+        this.four_bool = false;
+        this.eight_bool = false;
+    }
+
+
+    if(this.x_key.isDown){
+        this.two_bool = false;
+        this.four_bool = true;
+        this.eight_bool = false;
+    }
+
+
+    if(this.c_key.isDown){
+        this.two_bool = false;
+        this.four_bool = false;
+        this.eight_bool = true;
+    }
+
 
     if(this.r_key.isDown){
         this.scene.restart();
     }
+
+    if(this.p_key.isDown){
+        this.two_bool = false;
+        this.four_bool = false;
+        this.eight_bool = false;
+    }
+
 
     if(this.pointer.isDown){            // we can now place walls with the mouse, 
         let x = this.pointer.x;         // pressing o will change it to place orange spawn blocks
         let y = this.pointer.y;         // pressing g will change it to place green spawn blocks
                                         // pressing b will change it to place barriers
         let value = 6;
-        if(this.orange_bool === true){
+        if(this.orange_bool === true && (this.two_bool === false && this.four_bool === false && this.eight_bool === false)){
             value = 127;
+            this.map.putTileAtWorldXY(value, x, y);
         }
-        else if(this.green_bool === true){
+        else if(this.green_bool === true && (this.two_bool === false && this.four_bool === false && this.eight_bool === false)){
             value = 57;
+            this.map.putTileAtWorldXY(value, x, y);
         }
-        else if(this.barrier_bool === true){
+        else if(this.barrier_bool === true && (this.two_bool === false && this.four_bool === false && this.eight_bool === false)){
             value = 6;
+            this.map.putTileAtWorldXY(value, x, y);
         }
-        else if(this.background_bool === true){
+        else if(this.background_bool === true && (this.two_bool === false && this.four_bool === false && this.eight_bool === false)){
             value = 15;
+            this.map.putTileAtWorldXY(value, x, y);
         }
 
-        this.map.putTileAtWorldXY(value, x, y);
+        else if (this.two_bool === true) {
+            
+            if(this.orange_bool === true){
+
+                // something about the color and list of the block
+            }
+
+            else if(this.green_bool === true){
+
+  
+            }
+        
+                // make the block using information from the booleans
+                // then we can use the same code for the other sizes
+        }
           
     }
 
