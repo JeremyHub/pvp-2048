@@ -124,7 +124,30 @@ describe('Game', function () {
         // same color diff value tests
         ["green", 2, 2, 2, "green", 2, 5, 4, "s", "right", 2, 17, 2, 18, 100, 2, 4],
         ["green", 2, 2, 4, "green", 2, 5, 2, "s", "right", 2, 17, 2, 18, 100, 4, 2],
-        // ["green", 2, 2, 2, "green", 5, 2, 4, "a", "right", 1, 2, 2, 2, 100, 2, 4], // this test is broken, the x and y are correct but the tile x and y are not
+        ["green", 2, 2, 2, "green", 5, 2, 4, "a", "right", 1, 2, 2, 2, 100, 2, 4],
+        ["green", 2, 2, 4, "green", 5, 2, 2, "a", "right", 1, 2, 2, 2, 100, 4, 2],
+        ["green", 2, 2, 2, "green", 2, 5, 4, "w", "right", 2, 1, 2, 2, 100, 2, 4],
+        ["green", 2, 2, 4, "green", 2, 5, 2, "w", "right", 2, 1, 2, 2, 100, 4, 2],
+        ["green", 2, 2, 2, "green", 5, 2, 4, "d", "right", 17, 2, 18, 2, 100, 2, 4],
+        ["green", 2, 2, 4, "green", 5, 2, 2, "d", "right", 17, 2, 18, 2, 100, 4, 2],
+        ["orange", 2, 2, 2, "orange", 2, 5, 4, "s", "down", 2, 17, 2, 18, 100, 2, 4],
+        ["orange", 2, 2, 4, "orange", 2, 5, 2, "s", "down", 2, 17, 2, 18, 100, 4, 2],
+        ["orange", 2, 2, 2, "orange", 5, 2, 4, "a", "left", 1, 2, 2, 2, 100, 2, 4],
+        ["orange", 2, 2, 4, "orange", 5, 2, 2, "a", "left", 1, 2, 2, 2, 100, 4, 2],
+        ["orange", 2, 2, 2, "orange", 2, 5, 4, "w", "up", 2, 1, 2, 2, 100, 2, 4],
+        ["orange", 2, 2, 4, "orange", 2, 5, 2, "w", "up", 2, 1, 2, 2, 100, 4, 2],
+        ["orange", 2, 2, 2, "orange", 5, 2, 4, "d", "right", 17, 2, 18, 2, 100, 2, 4],
+        ["orange", 2, 2, 4, "orange", 5, 2, 2, "d", "right", 17, 2, 18, 2, 100, 4, 2],
+
+        // diff color same value tests (same direction)
+        ["green", 2, 2, 2, "orange", 5, 2, 2, "d", "right", 17, 2, 18, 2, 100, 2, 2],
+        ["green", 2, 2, 4, "orange", 2, 5, 4, "s", "down", 2, 17, 2, 18, 100, 4, 4],
+        ["green", 2, 2, 2, "orange", 2, 5, 2, "w", "up", 2, 1, 2, 2, 100, 2, 2],
+        ["green", 2, 2, 2, "orange", 5, 2, 2, "a", "left", 1, 2, 2, 2, 100, 2, 2],
+        ["orange", 2, 2, 2, "green", 5, 2, 2, "d", "right", 17, 2, 18, 2, 100, 2, 2],
+        ["orange", 2, 2, 4, "green", 2, 5, 4, "s", "down", 2, 17, 2, 18, 100, 4, 4],
+        ["orange", 2, 2, 2, "green", 2, 5, 2, "w", "up", 2, 1, 2, 2, 100, 2, 2],
+        ["orange", 2, 2, 2, "green", 5, 2, 2, "a", "left", 1, 2, 2, 2, 100, 2, 2],
     ])
         .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d`,
             function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, num_updates, expected_value, expected_other_value) {
@@ -137,7 +160,10 @@ describe('Game', function () {
                 
                 game[green_key + "_key"].isDown = true;
                 game[orange_key + "_key"].isDown = true;
-                for (var i = 0; i < num_updates; i++) {
+                game.update();
+                game[green_key + "_key"].isDown = false;
+                game[orange_key + "_key"].isDown = false;
+                for (var i = 0; i < num_updates-1; i++) {
                     game.update();
                 }
                 
