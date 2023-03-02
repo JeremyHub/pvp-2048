@@ -5,6 +5,8 @@ const game_config = {
     num_cols: 20,
     tile_size: 32, // currently this must match the size of the tiles in the tileset
     padding: 3,
+    orange_color: 0xffa500,
+    green_color: 0x00ff00,
 };
 
 function constructor(game) {
@@ -33,9 +35,7 @@ function init() {
 
     this.is_drawing = false;
 
-    this.two_bool = false;
-    this.four_bool = false;
-    this.eight_bool = false;
+    this.manual_block_spawn_value = null;
 
 }
 
@@ -110,99 +110,91 @@ function update() {
         this.green_bool = false;
         this.barrier_bool = false;
         this.background_bool = false;
-
-    }
-
-    if(this.g_key.isDown){
+    } if(this.g_key.isDown){
         this.orange_bool = false;
         this.green_bool = true;
         this.barrier_bool = false;
         this.background_bool = false;
-
-    }
-
-    if(this.b_key.isDown){
+    } if(this.b_key.isDown){
         this.orange_bool = false;
         this.green_bool = false;
         this.barrier_bool = true;
         this.background_bool = false;
-    }
-
-    if(this.t_key.isDown){
+    } if(this.t_key.isDown){
         this.orange_bool = false;
         this.green_bool = false;
         this.barrier_bool = false;
         this.background_bool = true;
-    }
-
-    if(this.z_key.isDown){
-        this.two_bool = true;
-        this.four_bool = false;
-        this.eight_bool = false;
-    }
-
-
-    if(this.x_key.isDown){
-        this.two_bool = false;
-        this.four_bool = true;
-        this.eight_bool = false;
-    }
-
-
-    if(this.c_key.isDown){
-        this.two_bool = false;
-        this.four_bool = false;
-        this.eight_bool = true;
-    }
-
-
-    if(this.r_key.isDown){
+    } if(this.z_key.isDown){
+        this.manual_block_spawn_value = 2;
+    } if(this.x_key.isDown){
+        this.manual_block_spawn_value = 4;
+    } if(this.c_key.isDown){
+        this.manual_block_spawn_value = 8;
+    } if(this.r_key.isDown){
         this.scene.restart();
+    } if(this.p_key.isDown){
+        this.manual_block_spawn_value = null;
     }
-
-    if(this.p_key.isDown){
-        this.two_bool = false;
-        this.four_bool = false;
-        this.eight_bool = false;
-    }
-
 
     if(this.pointer.isDown){            // we can now place walls with the mouse, 
         let x = this.pointer.x;         // pressing o will change it to place orange spawn blocks
         let y = this.pointer.y;         // pressing g will change it to place green spawn blocks
                                         // pressing b will change it to place barriers
         let value = 6;
-        if(this.orange_bool === true && (this.two_bool === false && this.four_bool === false && this.eight_bool === false)){
+        if(this.orange_bool === true && (this.manual_block_spawn_value === null)){
             value = 127;
             this.map.putTileAtWorldXY(value, x, y);
         }
-        else if(this.green_bool === true && (this.two_bool === false && this.four_bool === false && this.eight_bool === false)){
+        else if(this.green_bool === true && (this.manual_block_spawn_value === null)){
             value = 57;
             this.map.putTileAtWorldXY(value, x, y);
         }
-        else if(this.barrier_bool === true && (this.two_bool === false && this.four_bool === false && this.eight_bool === false)){
+        else if(this.barrier_bool === true && (this.manual_block_spawn_value === null)){
             value = 6;
             this.map.putTileAtWorldXY(value, x, y);
         }
-        else if(this.background_bool === true && (this.two_bool === false && this.four_bool === false && this.eight_bool === false)){
+        else if(this.background_bool === true && (this.manual_block_spawn_value === null)){
             value = 15;
             this.map.putTileAtWorldXY(value, x, y);
         }
 
-        else if (this.two_bool === true) {
+        else if (this.manual_block_spawn_value !== null) {
             
+            let block_list;
+            let team;
+            let color;
             if(this.orange_bool === true){
-
-                // something about the color and list of the block
+                block_list = this.orange_blocks;
+                team = 'orange';
+                color = game_config.orange_color;
             }
-
             else if(this.green_bool === true){
-
-  
+                block_list = this.green_blocks;
+                team = 'green';
+                color = game_config.green_color;
             }
-        
-                // make the block using information from the booleans
-                // then we can use the same code for the other sizes
+
+            if (this.green_bool === true || this.orange_bool === true) {
+                let tile = this.map.getTileAtWorldXY(x, y);
+                // if there is no tile already at that block, then we can spawn a block
+                let should_spawn = true;
+                for (block of all_block_lists) {
+                    if (block.tile_x === tile.x && block.tile_y === tile.y) {
+                        should_spawn = false;
+                        break;
+                    }
+                }
+                if (should_spawn) {
+                    let block = create_block(this, block_list, tile.x, tile.y, color, team);
+                    block.value = this.manual_block_spawn_value;
+                }
+            }
+
+            
+            // make the block using information from the booleans
+            // then we can use the same code for the other sizes
+            
         }
           
     }
@@ -497,10 +489,10 @@ function spawnblocks(game, spawnarea, team, list_of_blocks) {
 
     let color;
     if (team === 'green') {
-        color = 0x00ff00;
+        color = game_config.green_color;
     }
     else if (team === 'orange') {
-        color = 0xffa500;
+        color = game_config.orange_color;
     }
 
     let spawnable_tiles = [];
