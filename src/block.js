@@ -200,7 +200,7 @@ class Block{
         const tile_in_direction = this.get_tile_in_direction(direction);
 
         if (tile_in_direction !== null) {
-            if (tile_in_direction.layer.data[tile_in_direction.y][tile_in_direction.x].index === this.wall_id) {
+            if (this.wall_id.includes(tile_in_direction.layer.data[tile_in_direction.y][tile_in_direction.x].index)) {
                 return true;
             }
         }

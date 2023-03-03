@@ -1,7 +1,7 @@
 var {constructor, init, preload, create, update, game_config, block_config} = require('../src/game.js');
 
 function make_scene() { // make a mock scene object
-    return {
+    let scene ={
         init: init,
         update: update,
         map: {
@@ -21,27 +21,13 @@ function make_scene() { // make a mock scene object
             },
         },
         add: {existing: function() {},},
-        w_key: {isDown: false},
-        a_key: {isDown: false},
-        s_key: {isDown: false},
-        d_key: {isDown: false},
-        
-        up_key: {isDown: false},
-        left_key: {isDown: false},
-        down_key: {isDown: false},
-        right_key: {isDown: false},
-        
         pointer: {x: 0, y: 0, isDown: false},
-        o_key: {isDown: false},
-        g_key: {isDown: false},
-        b_key: {isDown: false},
-        t_key: {isDown: false},
-        r_key: {isDown: false},
-        z_key: {isDown: false},
-        x_key: {isDown: false},
-        c_key: {isDown: false},
-        p_key: {isDown: false},
     };
+    scene.init();
+    for (let key of scene.keyList) {
+        scene[`${key.toLowerCase()}_key`] = {is_down: false}
+    }
+    return scene;
 }
 
 function make_map(scene, x, y) {
@@ -50,7 +36,7 @@ function make_map(scene, x, y) {
         scene.map.layer.data[i] = [];
         for (var j = 0; j < y; j++) {
             if (i === 0 || i === x - 1 || j === 0 || j === y - 1) {
-                scene.map.layer.data[i][j] = {index: game_config.wall_id, x: j, y: i, layer: scene.map.layer};
+                scene.map.layer.data[i][j] = {index: game_config.wall_id[0], x: j, y: i, layer: scene.map.layer};
             }
             else {
                 scene.map.layer.data[i][j] = {index: -1, x: j, y: i, layer: scene.map.layer};

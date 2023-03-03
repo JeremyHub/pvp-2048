@@ -7,10 +7,10 @@ const game_config = {
     padding: 3,
     orange_color: 0xffa500,
     green_color: 0x00ff00,
-    wall_id: 6,
-    green_id: 57,   // spawning area
-    orange_id: 127, // spawning area
-    empty_space_id: 15,
+    wall_id: [6],
+    green_id: [57],   // spawning area
+    orange_id: [127], // spawning area
+    empty_space_id: [15],
 };
 
 function constructor(game) {
@@ -43,7 +43,11 @@ function init() {
 
     this.box_in_counter = 0;
 
+    
+    // Define a list of the keys
+    this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M'];
 
+    return this;
 }
 
 function preload() {
@@ -69,11 +73,8 @@ function create() {
 
     this.pointer = this.input.activePointer;
 
-    // Define a list of the keys
-    let keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M'];
-
     // Loop through the keyList and add each key to the input.keyboard using a template literal
-    for (let key of keyList) {
+    for (let key of this.keyList) {
     this[`${key.toLowerCase()}_key`] = this.input.keyboard.addKey(key);
     }
 
@@ -125,18 +126,19 @@ function update() {
     } if(this.p_key.isDown){
         this.manual_block_spawn_value = null;
     } if(this.m_key.isDown){
-        box_in(this, game_config.wall_id);
+        box_in(this, game_config.wall_id[0]);
     }
     if(this.pointer.isDown){            // we can now place walls with the mouse, 
         let x = this.pointer.x;         // pressing o will change it to place orange spawn blocks
         let y = this.pointer.y;         // pressing g will change it to place green spawn blocks
                                         // pressing b will change it to place barriers
-        let value = game_config.wall_id;
+        let value = game_config.wall_id[0];
+
         let values = {
-            orange_bool: game_config.orange_id,
-            green_bool: game_config.green_id,
-            barrier_bool: game_config.wall_id,
-            background_bool: game_config.empty_space_id
+            orange_bool: game_config.orange_id[0],
+            green_bool: game_config.green_id[0],
+            barrier_bool: game_config.wall_id[0],
+            background_bool: game_config.empty_space_id[0]
         };
           
         if (this.manual_block_spawn_value === null) {
@@ -192,9 +194,12 @@ function update() {
     // TODO combine these
     if (!any_block_is_moving) {
         if(this.block_spawn_counter === 0 && this.green_move === null && this.orange_move === null){
-            spawnblocks(this, game_config.green_id, 'green', this.green_blocks);
-            spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks);
-            this.block_spawn_counter ++;
+            // dont spawn blocks when testing
+            if (this.is_drawing) {
+                spawnblocks(this, game_config.green_id, 'green', this.green_blocks);
+                spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks);
+                this.block_spawn_counter ++;
+            }
         }
         if (this.green_move === null) {
             if (this.w_key.isDown) {
@@ -500,7 +505,7 @@ function spawnblocks(game, spawnarea, team, list_of_blocks) {
     for (let x = 0; x < game_config.num_cols; x++) {
         for (let y = 0; y < game_config.num_rows; y++) {
             const tile = game.map.getTileAt(x, y);
-            if (game.map.layer.data[tile.y][tile.x].index !== spawnarea || (block_in_tile(x, y, game, game.orange_blocks) || block_in_tile(x, y, game, game.green_blocks))) {
+            if (!spawnarea.includes(game.map.layer.data[tile.y][tile.x].index) || (block_in_tile(x, y, game, game.orange_blocks) || block_in_tile(x, y, game, game.green_blocks))) {
                 continue;
             }
             spawnable_tiles.push({x: x, y: y});

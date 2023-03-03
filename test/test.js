@@ -9,7 +9,7 @@ describe('Game', function () {
         // common setup code for each test
         game = make_scene();
         game.init();
-        make_map(game, game_config.num_rows, game_config.num_cols);
+        make_map(game, 20, 20);
         game.update();
     });
 
