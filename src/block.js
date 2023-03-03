@@ -12,7 +12,6 @@ class Block{
             this.container = {x: x, y: y, destroy : function() {return;}}; // stub for testing
         }
         this.wall_id = wall_id;
-        console.log("wall id: " + this.wall_id)
         this.color = color;
         this.size = size;
         this.scene = scene;
