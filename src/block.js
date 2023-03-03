@@ -4,6 +4,7 @@ const block_config = {
     wall_id: 6,
     green_id: 57,   // spawning area
     orange_id: 127, // spawning area
+    empty_space_id: 15,
 }
 
 class Block{
@@ -107,10 +108,6 @@ class Block{
             this[prop] = null;
         }
     }
-
-    go_direction(direction) {
-        this.moving_direction = direction;
-    }
     
     begin_movement() {
         this.is_moving = true;
@@ -176,25 +173,7 @@ class Block{
             return false;
         }
         const wall_in_direction = this.check_if_wall_in_direction(direction);
-        // const block_in_direction = this.check_if_block_in_direction(direction, this.scene.orange_blocks);
-        // const block_in_direction2 = this.check_if_block_in_direction(direction, this.scene.green_blocks);
         return !wall_in_direction;
-    }
-
-    check_if_block_in_direction(direction, list_of_blocks) {
-        const tile_in_direction = this.get_tile_in_direction(direction);
-        for (let i = 0; i < list_of_blocks.length; i++) {
-            const block = list_of_blocks[i];
-            const tile = this.scene.map.getTileAtWorldXY(block.container.x, block.container.y);
-            if (tile === tile_in_direction) {
-                // if the tile is moving the same direction and it can move another space then we dont care about interacting with it
-                if (block.moving_direction === direction && block.should_move_another_space(block.moving_direction)) {
-                    continue;
-                }
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -263,10 +242,6 @@ class Block{
         else if (direction === 'right') {
             return 'left'
         }
-    }
-
-    get_block_team() {
-        return this.team;
     }
 
     convert_tile_to_world(tile_x, tile_y) {

@@ -45,7 +45,6 @@ function preload() {
     this.load.image('tiles', 'src/assets/tiles.png');
     this.load.audio("bounce_sound", "src/assets/bounceSound.mp3");     
 
-
 }
 
 function create() {
@@ -83,10 +82,6 @@ function create() {
     this.x_key= this.input.keyboard.addKey('X');
     this.c_key = this.input.keyboard.addKey('C');
     this.p_key = this.input.keyboard.addKey('P');
-
-
-
-
 
 }
 
@@ -141,22 +136,22 @@ function update() {
         let x = this.pointer.x;         // pressing o will change it to place orange spawn blocks
         let y = this.pointer.y;         // pressing g will change it to place green spawn blocks
                                         // pressing b will change it to place barriers
-        let value = 6;
-        if(this.orange_bool === true && (this.manual_block_spawn_value === null)){
-            value = 127;
-            this.map.putTileAtWorldXY(value, x, y);
-        }
-        else if(this.green_bool === true && (this.manual_block_spawn_value === null)){
-            value = 57;
-            this.map.putTileAtWorldXY(value, x, y);
-        }
-        else if(this.barrier_bool === true && (this.manual_block_spawn_value === null)){
-            value = 6;
-            this.map.putTileAtWorldXY(value, x, y);
-        }
-        else if(this.background_bool === true && (this.manual_block_spawn_value === null)){
-            value = 15;
-            this.map.putTileAtWorldXY(value, x, y);
+        let value = block_config.wall_id;
+        let values = {
+            orange_bool: block_config.orange_id,
+            green_bool: block_config.green_id,
+            barrier_bool: block_config.wall_id,
+            background_bool: block_config.empty_space_id
+        };
+          
+        if (this.manual_block_spawn_value === null) {
+            for (let key in values) {
+                if (this[key] === true) {
+                    value = values[key];
+                    this.map.putTileAtWorldXY(value, x, y);
+                    break;
+                }
+            }
         }
 
         else if (this.manual_block_spawn_value !== null) {
