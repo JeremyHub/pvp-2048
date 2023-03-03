@@ -103,9 +103,9 @@ class Block{
     block_remove() {
         this.container.destroy();
         // set all properties to null so that the garbage collector can clean up the object and errors will be throw if we try access it
-        // for (let prop in this) {
-        //     this[prop] = null;
-        // }
+        for (let prop in this) {
+            this[prop] = null;
+        }
     }
 
     go_direction(direction) {

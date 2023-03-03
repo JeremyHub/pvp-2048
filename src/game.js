@@ -424,7 +424,7 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
     let removed_blocks = [];
     for (let i = 0; i < first_team_blocks.length; i++) {
         for (let j = 0; j < second_team_blocks.length; j++) {
-            if (first_team_blocks[i].value !== second_team_blocks[j].value && removed_blocks.indexOf(j) === -1) {
+            if (removed_blocks.indexOf(j) === -1 && first_team_blocks[i].value !== second_team_blocks[j].value) {
                 // valid enemy collision, one block should be destroyed
                 if (first_team_blocks[i].value > second_team_blocks[j].value) {
                     remove_block(second_team_blocks[j], blocks, green_blocks, orange_blocks);
@@ -443,8 +443,10 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
 
     // if nothing happened, the blocks should bounce off of each other
     for (let block of colliding_blocks) {
-        block.bounce();
-        return_value = false;
+        if (block.movement_status !== null){
+            block.bounce();
+            return_value = false;
+        }
     }
     return return_value;
 }
