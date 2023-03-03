@@ -1,6 +1,6 @@
 var {constructor, init, preload, create, update, game_config, block_config} = require('../src/game.js');
 
-function make_scene() {
+function make_scene() { // make a mock scene object
     return {
         init: init,
         update: update,
