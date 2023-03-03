@@ -64,28 +64,15 @@ function create() {
     this.bounceSOUND = this.sound.add("bounce_sound");     
     this.bounceSOUND.play();      
 
-    this.w_key = this.input.keyboard.addKey('W');
-    this.a_key = this.input.keyboard.addKey('A');
-    this.s_key = this.input.keyboard.addKey('S');
-    this.d_key = this.input.keyboard.addKey('D');
-
-    this.up_key = this.input.keyboard.addKey('UP');
-    this.left_key = this.input.keyboard.addKey('LEFT');
-    this.down_key = this.input.keyboard.addKey('DOWN');
-    this.right_key = this.input.keyboard.addKey('RIGHT');
-
     this.pointer = this.input.activePointer;
-    this.o_key = this.input.keyboard.addKey('O');
-    this.g_key = this.input.keyboard.addKey('G');
-    this.b_key = this.input.keyboard.addKey('B');
-    this.t_key = this.input.keyboard.addKey('T');
-    this.r_key = this.input.keyboard.addKey('R');       // currently just resets the game without refeshing the page
 
+    // Define a list of the keys
+    let keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P'];
 
-    this.z_key = this.input.keyboard.addKey('Z');
-    this.x_key= this.input.keyboard.addKey('X');
-    this.c_key = this.input.keyboard.addKey('C');
-    this.p_key = this.input.keyboard.addKey('P');
+    // Loop through the keyList and add each key to the input.keyboard using a template literal
+    for (let key of keyList) {
+    this[`${key.toLowerCase()}_key`] = this.input.keyboard.addKey(key);
+    }
 
 }
 
