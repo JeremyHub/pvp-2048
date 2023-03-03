@@ -1,5 +1,5 @@
 var {make_scene,block_config,game_config,constructor,preload,create,update,make_map} = require('./testing_setup');
-var {create_block} = require('../src/game');
+var {create_block} = require('../src/scene');
 var expect = require('chai').expect;
 var forEach = require('mocha-each');
 
@@ -20,7 +20,7 @@ describe('Game', function () {
     ])
         .it(`%s block spawns at (%d,%d)`, function (team, tile_x, tile_y) {
             let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
-            let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team);
+            let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
             expect(block.tile_x).to.equal(tile_x);
             expect(block.tile_y).to.equal(tile_y);
             expect(block.team).to.equal(team);
@@ -40,7 +40,7 @@ describe('Game', function () {
     ])
         .it(`%s block moves from (%d,%d) going directions: %s (green), %s (orange), to (%d,%d), num_updates = %s`, function (team, tile_x, tile_y, green_key, orange_key, new_tile_x, new_tile_y, num_updates) {
             let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
-            let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team);
+            let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
             
             game[green_key + "_key"].isDown = true;
             game[orange_key + "_key"].isDown = true;
@@ -67,8 +67,8 @@ describe('Game', function () {
         .it(`%s block at (%d,%d) and %s block at (%d,%d), green moving: %s, orange moving: %s, ends at (%d,%d) using %d updates`, function (team, tile_x, tile_y, other_team, other_tile_x, other_tile_y, green_key, orange_key, new_tile_x, new_tile_y, num_updates) {
             let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
             let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
-            let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team);
-            let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team);
+            let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
+            let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team, game_config);
             
             game[green_key + "_key"].isDown = true;
             game[orange_key + "_key"].isDown = true;
@@ -96,9 +96,9 @@ describe('Game', function () {
         .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, ends at (%d,%d) using %d updates, ended at value of %d`, function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, green_key, orange_key, new_tile_x, new_tile_y, num_updates, expected_value) {
             let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
             let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
-            let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team);
+            let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
             block.value = first_value;
-            let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team);
+            let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team, game_config);
             other_block.value = second_value;
             
             game[green_key + "_key"].isDown = true;
@@ -202,9 +202,9 @@ describe('Game', function () {
             function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, num_updates, expected_value, expected_other_value) {
                 let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
                 let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
-                let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team);
+                let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
                 block.value = first_value;
-                let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team);
+                let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team, game_config);
                 other_block.value = second_value;
                 
                 game[green_key + "_key"].isDown = true;
@@ -241,11 +241,11 @@ describe('Game', function () {
                 let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
                 let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
                 let third_list_of_blocks = third_team === "orange" ? game.orange_blocks : game.green_blocks;
-                let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team);
+                let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
                 block.value = first_value;
-                let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team);
+                let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team, game_config);
                 other_block.value = second_value;
-                let third_block = create_block(game, third_list_of_blocks, third_tile_x, third_tile_y, "color", third_team);
+                let third_block = create_block(game, third_list_of_blocks, third_tile_x, third_tile_y, "color", third_team, game_config);
                 third_block.value = third_value;
                 
                 game[green_key + "_key"].isDown = true;

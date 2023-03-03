@@ -1,4 +1,4 @@
-var {constructor, init, preload, create, update, game_config, block_config} = require('../src/game.js');
+var {constructor, init, preload, create, update, game_config, block_config} = require('../src/scene.js');
 
 function make_scene() { // make a mock scene object
     let scene ={
@@ -46,12 +46,12 @@ function make_map(scene, x, y) {
 }
 
 module.exports = {
-    make_scene: make_scene,
+    make_scene,
     block_config: block_config,
     game_config: game_config,
-    constructor: constructor,
-    preload: preload,
-    create: create,
-    update: update,
-    make_map: make_map,
+    constructor,
+    preload,
+    create,
+    update,
+    make_map,
 }
