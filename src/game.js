@@ -396,6 +396,9 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
     let first_team_blocks = first_team === "green" ? green_colliding_blocks : orange_colliding_blocks;
     let second_team_blocks = first_team === "orange" ? green_colliding_blocks : orange_colliding_blocks;
 
+    let return_value = true;
+    // this will change to false if any blocks bounce
+
     // check for combinations for teams in order
     for (let team_colliding_blocks of [first_team_blocks, second_team_blocks]){
         for (let i = 0; i < team_colliding_blocks.length; i++) {
@@ -404,30 +407,35 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
                     // valid friendly collision, merge blocks
                     team_colliding_blocks[i].value = team_colliding_blocks[i].value * 2;
                     remove_block(team_colliding_blocks[j], blocks, green_blocks, orange_blocks);
+                    if (team_colliding_blocks[j].team === first_team) {
+                        first_team_blocks.splice(first_team_blocks.indexOf(team_colliding_blocks[j]), 1);
+                    }
+                    else {
+                        second_team_blocks.splice(second_team_blocks.indexOf(team_colliding_blocks[j]), 1);
+                    }
                     team_colliding_blocks[i].movement_status = 0;
                     // after a valid collision, the block should stop moving
-                    return true;
                 }
             }
         }
     }
 
     // check for collisions between teams
+    let removed_blocks = [];
     for (let i = 0; i < first_team_blocks.length; i++) {
         for (let j = 0; j < second_team_blocks.length; j++) {
-            if (first_team_blocks[i].value !== second_team_blocks[j].value) {
+            if (first_team_blocks[i].value !== second_team_blocks[j].value && removed_blocks.indexOf(j) === -1) {
                 // valid enemy collision, one block should be destroyed
                 if (first_team_blocks[i].value > second_team_blocks[j].value) {
                     remove_block(second_team_blocks[j], blocks, green_blocks, orange_blocks);
+                    removed_blocks.push(j)
                     // after a valid collision, the block should stop moving
                     first_team_blocks[i].movement_status = 0;
-                    return true;
                 }
                 else {
                     remove_block(first_team_blocks[i], blocks, green_blocks, orange_blocks);
                     // after a valid collision, the block should stop moving
                     second_team_blocks[j].movement_status = 0;
-                    return true;
                 }
             }
         }
@@ -436,8 +444,9 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
     // if nothing happened, the blocks should bounce off of each other
     for (let block of colliding_blocks) {
         block.bounce();
+        return_value = false;
     }
-    return false;
+    return return_value;
 }
 
 /**
@@ -455,7 +464,7 @@ function remove_block(block, blocks, green_blocks, orange_blocks) {
     else if (block.team === 'orange') {
         orange_blocks.splice(orange_blocks.indexOf(block), 1);
     }
-    block.remove();
+    block.block_remove();
     // removes the block from the canvas
 }
 
