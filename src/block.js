@@ -1,20 +1,18 @@
 
 const block_config = {
     animation_speed: 8,
-    wall_id: 6,
-    green_id: 57,   // spawning area
-    orange_id: 127, // spawning area
-    empty_space_id: 15,
 }
 
 class Block{
-    constructor(scene, x, y, children, color, size, padding, team, value, tile_x, tile_y, block_id, drawing) {
+    constructor(scene, x, y, children, color, size, padding, team, value, tile_x, tile_y, block_id, wall_id, drawing) {
         if (drawing) {
             this.container = new Phaser.GameObjects.Container(scene, x, y, children);
             scene.add.existing(this.container);
         } else {
             this.container = {x: x, y: y, destroy : function() {return;}}; // stub for testing
         }
+        this.wall_id = wall_id;
+        console.log("wall id: " + this.wall_id)
         this.color = color;
         this.size = size;
         this.scene = scene;
@@ -203,7 +201,7 @@ class Block{
         const tile_in_direction = this.get_tile_in_direction(direction);
 
         if (tile_in_direction !== null) {
-            if (tile_in_direction.layer.data[tile_in_direction.y][tile_in_direction.x].index === block_config.wall_id) {
+            if (tile_in_direction.layer.data[tile_in_direction.y][tile_in_direction.x].index === this.wall_id) {
                 return true;
             }
         }

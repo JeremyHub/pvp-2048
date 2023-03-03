@@ -7,6 +7,10 @@ const game_config = {
     padding: 3,
     orange_color: 0xffa500,
     green_color: 0x00ff00,
+    wall_id: 6,
+    green_id: 57,   // spawning area
+    orange_id: 127, // spawning area
+    empty_space_id: 15,
 };
 
 function constructor(game) {
@@ -136,12 +140,12 @@ function update() {
         let x = this.pointer.x;         // pressing o will change it to place orange spawn blocks
         let y = this.pointer.y;         // pressing g will change it to place green spawn blocks
                                         // pressing b will change it to place barriers
-        let value = block_config.wall_id;
+        let value = game_config.wall_id;
         let values = {
-            orange_bool: block_config.orange_id,
-            green_bool: block_config.green_id,
-            barrier_bool: block_config.wall_id,
-            background_bool: block_config.empty_space_id
+            orange_bool: game_config.orange_id,
+            green_bool: game_config.green_id,
+            barrier_bool: game_config.wall_id,
+            background_bool: game_config.empty_space_id
         };
           
         if (this.manual_block_spawn_value === null) {
@@ -197,8 +201,8 @@ function update() {
     // TODO combine these
     if (!any_block_is_moving) {
         if(this.block_spawn_counter === 0 && this.green_move === null && this.orange_move === null){
-            spawnblocks(this, block_config.green_id, 'green', this.green_blocks);
-            spawnblocks(this, block_config.orange_id, 'orange', this.orange_blocks);
+            spawnblocks(this, game_config.green_id, 'green', this.green_blocks);
+            spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks);
             this.block_spawn_counter ++;
         }
         if (this.green_move === null) {
@@ -467,7 +471,7 @@ function remove_block(block, blocks, green_blocks, orange_blocks) {
 
 function create_block(game, list_of_blocks, x, y, color, team) {
     const coords = convert_tile_to_world(x, y);
-    const block = new Block(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding, team, 2, x, y, Math.random(), game.is_drawing);
+    const block = new Block(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding, team, 2, x, y, Math.random(), game_config.wall_id, game.is_drawing);
     list_of_blocks.push(block);
     return block;
 }
