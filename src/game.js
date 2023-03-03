@@ -58,7 +58,7 @@ function create() {
     this.map = this.make.tilemap({ key: 'tilemap' });
 	this.tileset = this.map.addTilesetImage('tiles', 'tiles');
     // this.tileset.setTileSize(game_config.tile_size, game_config.tile_size);
-	this.map.createStaticLayer('Tile Layer 1', this.tileset);
+	this.map.createLayer('Tile Layer 1', this.tileset);
     // this.map.setBaseTileSize(game_config.tile_size, game_config.tile_size);
 
     this.bounceSOUND = this.sound.add("bounce_sound");     
