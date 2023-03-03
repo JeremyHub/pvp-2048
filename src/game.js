@@ -1,8 +1,8 @@
 var {Block, block_config} = require('./block');
 
 const game_config = {
-    num_rows: 20,
-    num_cols: 20,
+    num_rows: 18,
+    num_cols: 30,
     tile_size: 32, // currently this must match the size of the tiles in the tileset
     padding: 3,
     orange_color: 0xffa500,
@@ -41,11 +41,14 @@ function init() {
 
     this.manual_block_spawn_value = null;
 
+    this.box_in_counter = 0;
+
+
 }
 
 function preload() {
 
-    this.load.tilemapTiledJSON('tilemap', 'src/assets/basic.json');
+    this.load.tilemapTiledJSON('tilemap', 'src/assets/halls.json');
     this.load.image('tiles', 'src/assets/tiles.png');
     this.load.audio("bounce_sound", "src/assets/bounceSound.mp3");     
 
@@ -73,6 +76,11 @@ function create() {
     for (let key of keyList) {
     this[`${key.toLowerCase()}_key`] = this.input.keyboard.addKey(key);
     }
+    this.z_key = this.input.keyboard.addKey('Z');
+    this.x_key= this.input.keyboard.addKey('X');
+    this.c_key = this.input.keyboard.addKey('C');
+    this.p_key = this.input.keyboard.addKey('P');
+    this.m_key = this.input.keyboard.addKey('M');
 
 }
 
@@ -121,8 +129,9 @@ function update() {
         this.scene.restart();
     } if(this.p_key.isDown){
         this.manual_block_spawn_value = null;
+    } if(this.m_key.isDown){
+        box_in(this, game_config.wall_id);
     }
-
     if(this.pointer.isDown){            // we can now place walls with the mouse, 
         let x = this.pointer.x;         // pressing o will change it to place orange spawn blocks
         let y = this.pointer.y;         // pressing g will change it to place green spawn blocks
@@ -511,6 +520,26 @@ function spawnblocks(game, spawnarea, team, list_of_blocks) {
     create_block(game, list_of_blocks, spawn_tile.x, spawn_tile.y, color, team);
 
 }
+
+
+function box_in(game, value) {
+    const width = game_config.num_cols;
+    const height = game_config.num_rows
+    
+    // Set left and right boundaries
+    for (let i = 0; i < height; i++) {
+      game.map.putTileAt(value, game.box_in_counter, i );
+      game.map.putTileAt(value, (width - 1 - game.box_in_counter), i);
+    }
+  
+    // Set top and bottom boundaries
+    for (let i = 0; i < width; i++) {
+      game.map.putTileAt(value, i, game.box_in_counter);
+      game.map.putTileAt(value, i, (height - 1 - game.box_in_counter));
+    }
+    game.box_in_counter++;
+}
+
 
 module.exports = {
     constructor: constructor,
