@@ -70,17 +70,12 @@ function create() {
     this.pointer = this.input.activePointer;
 
     // Define a list of the keys
-    let keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P'];
+    let keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M'];
 
     // Loop through the keyList and add each key to the input.keyboard using a template literal
     for (let key of keyList) {
     this[`${key.toLowerCase()}_key`] = this.input.keyboard.addKey(key);
     }
-    this.z_key = this.input.keyboard.addKey('Z');
-    this.x_key= this.input.keyboard.addKey('X');
-    this.c_key = this.input.keyboard.addKey('C');
-    this.p_key = this.input.keyboard.addKey('P');
-    this.m_key = this.input.keyboard.addKey('M');
 
 }
 
