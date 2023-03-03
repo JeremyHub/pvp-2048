@@ -119,7 +119,7 @@ describe('Game', function () {
         }
     );
 
-    // testing blocks bouncing off of each other
+    // testing blocks bouncing off of each other and eating each other
     forEach([
         // same color diff value bouncing tests
         ["green", 2, 2, 2, "green", 2, 5, 4, "s", "right", 2, 17, 2, 18, 100, 2, 4],
@@ -158,6 +158,40 @@ describe('Game', function () {
         ["green", 6, 2, 4, "orange", 2, 2, 4, "a", "right", 5, 2, 3, 2, 100, 4, 4], // one space in between
         ["green", 2, 5, 2, "orange", 2, 2, 2, "w", "down", 2, 4, 2, 3, 100, 2, 2], // right next to each other
         ["green", 2, 6, 4, "orange", 2, 2, 4, "w", "down", 2, 5, 2, 3, 100, 4, 4], // one space in between
+
+        // diff color same value bouncing when traveling perpendicular to each other and meeting on the same tile
+        ["green", 1, 1, 2, "orange", 2, 2, 2, "s", "left", 1, 1, 2, 2, 100, 2, 2],
+        ["green", 1, 1, 2, "orange", 3, 3, 2, "s", "left", 1, 2, 2, 3, 100, 2, 2],
+
+        // diff color same value passes through each other when traveling prependicular to each other and one beats the other
+        ["green", 2, 1, 2, "orange", 3, 3, 2, "s", "left", 2, 18, 1, 3, 100, 2, 2],
+
+        // eating at walls tests
+        ["green", 2, 2, 4, "orange", 5, 2, 2, "d", "right", 18, 2, null, null, 100, 4, null],
+        ["green", 2, 2, 8, "orange", 2, 5, 2, "s", "down", 2, 18, null, null, 100, 8, null],
+        ["green", 5, 2, 4, "orange", 2, 2, 2, "a", "left", 1, 2, null, null, 100, 4, null],
+        ["green", 2, 5, 16, "orange", 2, 2, 2, "w", "up", 2, 1, null, null, 100, 16, null],
+        ["orange", 2, 2, 4, "green", 5, 2, 2, "d", "right", 18, 2, null, null, 100, 4, null],
+        ["orange", 2, 2, 4, "green", 2, 5, 2, "s", "down", 2, 18, null, null, 100, 4, null],
+        ["orange", 5, 2, 8, "green", 2, 2, 2, "a", "left", 1, 2, null, null, 100, 8, null],
+        ["orange", 2, 5, 4, "green", 2, 2, 2, "w", "up", 2, 1, null, null, 100, 4, null],
+
+        // eating mid movement tests
+            // twords each other with even number space in between (end on the smaller number's spot)
+        ["green", 2, 2, 4, "orange", 5, 2, 2, "d", "left", 4, 2, null, null, 100, 4, null],
+        ["orange", 2, 2, 4, "green", 5, 2, 2, "a", "right", 4, 2, null, null, 100, 4, null],
+        ["green", 2, 2, 2, "orange", 5, 2, 4, "d", "left", null, null, 3, 2, 100, null, 4],
+        ["orange", 2, 2, 2, "green", 5, 2, 4, "a", "right", null, null, 3, 2, 100, null, 4],
+            // twords each other with odd number space in between (end in the middle)
+        ["green", 2, 2, 4, "orange", 6, 2, 2, "d", "left", 4, 2, null, null, 100, 4, null],
+        ["orange", 2, 2, 4, "green", 6, 2, 2, "a", "right", 4, 2, null, null, 100, 4, null],
+        ["green", 2, 2, 2, "orange", 6, 2, 4, "d", "left", null, null, 4, 2, 100, null, 4],
+        ["orange", 2, 2, 2, "green", 6, 2, 4, "a", "right", null, null, 4, 2, 100, null, 4],
+            // twords each other right next to each other (end on the smaller number's spot)
+        ["green", 2, 2, 4, "orange", 3, 2, 2, "d", "left", 3, 2, null, null, 100, 4, null],
+        ["orange", 2, 2, 4, "green", 3, 2, 2, "a", "right", 3, 2, null, null, 100, 4, null],
+        ["green", 2, 2, 2, "orange", 3, 2, 4, "d", "left", null, null, 2, 2, 100, null, 4],
+        ["orange", 2, 2, 2, "green", 3, 2, 4, "a", "right", null, null, 2, 2, 100, null, 4],
 
     ])
         .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d`,
