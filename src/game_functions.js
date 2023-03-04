@@ -257,7 +257,7 @@ function spawnblocks(game, spawnarea, team, list_of_blocks, game_config) {
     }
 
     const spawn_tile = spawnable_tiles[Math.floor(Math.random() * spawnable_tiles.length)];
-    create_block(game, list_of_blocks, spawn_tile.x, spawn_tile.y, color, team);
+    create_block(game, list_of_blocks, spawn_tile.x, spawn_tile.y, color, team, game_config);
 
 }
 
