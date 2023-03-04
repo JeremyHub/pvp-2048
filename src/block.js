@@ -37,20 +37,28 @@ class Block{
     create() {
         this.rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.size, this.size, this.color);
         this.container.add(this.rect);
-        // TODO this is hard coded
-        let style = { font: "bold 25px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+        let style = { font: "bold "+this.size+"px Arial", fill: "#fffff", boundsAlignH: "center", boundsAlignV: "middle" };
         // TODO this is hard coded too kinda
-        this.text = new Phaser.GameObjects.Text(this.scene, -this.size/2.5, -this.size/1.5, this.value, style)
+        this.text = new Phaser.GameObjects.Text(this.scene, -this.size * 0.28, -this.size * .53, this.value, style)
         this.container.add(this.text);
     }
-
+    
     update() {
-
+        
         // update value text
         if (this.text !== undefined) {
             this.text.setText(this.value);
         }
         
+        text_size = this.size * 1.1 - (this.value.toString().length * this.size * 0.2)
+        this.text.setFontSize(text_size)
+
+        let x_pos_multiplier = 0.15 + (this.value.toString().length * 0.09)
+        let y_pos_multiplier = 0.53 - (this.value.toString().length * 0.08)
+
+        this.text.setX(-this.size * x_pos_multiplier);
+        this.text.setY(-this.size * y_pos_multiplier);
+
         if (this.total_moved < this.size+(this.padding*2) && this.is_moving) {
             
             if (this.movement_status === 0 && this.total_moved === 0) {
