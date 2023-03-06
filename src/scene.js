@@ -10,16 +10,16 @@ var {
 } = require('./game_functions');
 
 const game_config = {
-    num_rows: 18,
-    num_cols: 30,
+    num_rows: 14,
+    num_cols: 14,
     tile_size: 32, // currently this must match the size of the tiles in the tileset
     padding: 3,
     orange_color: 0xffa500,
     green_color: 0x00ff00,
-    wall_id: [6],
-    green_id: [57],   // spawning area
-    orange_id: [127], // spawning area
-    empty_space_id: [15],
+    wall_id: [6,262],
+    green_id: [57, 1, 2, 3, 17, 18, 19, 33, 34, 35],   // spawning area
+    orange_id: [127, 7,8,9,23,24,25,,39,40,41], // spawning area
+    empty_space_id: [15,178],
 };
 
 function constructor(game) {
@@ -61,7 +61,7 @@ function init() {
 
 function preload() {
 
-    this.load.tilemapTiledJSON('tilemap', 'src/assets/halls.json');
+    this.load.tilemapTiledJSON('tilemap', 'src/assets/libraryfire.json');
     this.load.image('tiles', 'src/assets/tiles.png');
     this.load.audio("bounce_sound", "src/assets/bounceSound.mp3");     
 
