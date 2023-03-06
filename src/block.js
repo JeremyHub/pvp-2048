@@ -61,17 +61,6 @@ class Block{
         }
 
         if (this.total_moved < this.size+(this.padding*2) && this.is_moving) {
-            
-            if (this.movement_status === 0 && this.total_moved === 0) {
-                this.is_moving = false;
-                return;
-            }
-
-            // if (!this.should_move_another_space(this.moving_direction) && this.total_moved === 0) {
-            //     this.moving_direction = null;
-            //     this.is_moving = false;
-            //     return;
-            // }
 
             let to_move = 0;
             if (this.total_moved + block_config.animation_speed > this.size+(this.padding*2)) {
@@ -113,11 +102,6 @@ class Block{
         for (let prop in this) {
             this[prop] = null;
         }
-    }
-    
-    begin_movement() {
-        this.is_moving = true;
-        this.movement_status = 2;
     }
 
     /**
@@ -172,14 +156,6 @@ class Block{
         }
         this.movement_status = 0;
         this.update_visuals()
-    }
-
-    should_move_another_space(direction) {
-        if (direction === null) {
-            return false;
-        }
-        const wall_in_direction = this.check_if_wall_in_direction(direction);
-        return !wall_in_direction;
     }
 
     /**
