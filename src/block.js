@@ -50,14 +50,15 @@ class Block{
             this.text.setText(this.value);
         }
         
-        text_size = this.size * 1.1 - (this.value.toString().length * this.size * 0.18)
-        this.text.setFontSize(text_size)
-
+        let text_size = this.size * 1.1 - (this.value.toString().length * this.size * 0.18)
         let x_pos_multiplier = 0.18 + (this.value.toString().length * 0.075)
         let y_pos_multiplier = 0.53 - (this.value.toString().length * 0.08)
 
-        this.text.setX(-this.size * x_pos_multiplier);
-        this.text.setY(-this.size * y_pos_multiplier);
+        if (this.text !== undefined) {
+            this.text.setFontSize(text_size)
+            this.text.setX(-this.size * x_pos_multiplier);
+            this.text.setY(-this.size * y_pos_multiplier);
+        }
 
         if (this.total_moved < this.size+(this.padding*2) && this.is_moving) {
             
