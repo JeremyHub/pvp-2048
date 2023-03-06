@@ -232,9 +232,11 @@ describe('Game', function () {
     forEach([
         // two twos combining, one 4 moving into them at the same time, should combine first then stop the movement of the 4
         ["green", 1, 1, 2, "green", 1, 2, 2, "orange", 2, 1, 4, "w", "left", 1, 1, null, null, 2, 1, 100, 4, null, 4],
+        ["orange", 1, 1, 2, "orange", 1, 2, 2, "green", 2, 1, 4, "a", "up", 1, 1, null, null, 2, 1, 100, 4, null, 4],
 
         // two twos combining, one 4 block moving perpedicular to the others, should combine first then stop the movement of the 4
         ["green", 5, 1, 2, "green", 5, 2, 2, "orange", 4, 1, 4, "w", "right", 5, 1, null, null, 4, 1, 100, 4, null, 4],
+        ["orange", 5, 1, 2, "orange", 5, 2, 2, "green", 4, 1, 4, "d", "up", 5, 1, null, null, 4, 1, 100, 4, null, 4],
     ])
         .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), third tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d, third tile ended at value of %d`,
             function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, third_team, third_tile_x, third_tile_y, third_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, new_third_tile_x, new_third_tile_y, num_updates, expected_value, expected_other_value, expected_third_value) {

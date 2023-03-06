@@ -141,8 +141,9 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
                 if (team_colliding_blocks[i].value === team_colliding_blocks[j].value) {
                     // valid friendly collision, merge blocks
                     team_colliding_blocks[i].value = team_colliding_blocks[i].value * 2;
+                    let removed_team = team_colliding_blocks[j].team;
                     remove_block(team_colliding_blocks[j], blocks, green_blocks, orange_blocks);
-                    if (team_colliding_blocks[j].team === first_team) {
+                    if (removed_team === first_team) {
                         first_team_blocks.splice(first_team_blocks.indexOf(team_colliding_blocks[j]), 1);
                     }
                     else {
