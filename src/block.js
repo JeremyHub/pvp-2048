@@ -37,9 +37,9 @@ class Block{
     create() {
         this.rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.size, this.size, this.color);
         this.container.add(this.rect);
-        let style = { font: "bold 0.01px Arial", fill: "#fffff", boundsAlignH: "center", boundsAlignV: "middle" };
+        let style = { font: "bold 0.01px Arial", fill: "#fffff"};
 
-        this.text = new Phaser.GameObjects.Text(this.scene, 0, 0, this.value, style)
+        this.text = new Phaser.GameObjects.Text(this.scene, 0, 0, this.value, style);
         this.container.add(this.text);
     }
     
@@ -50,14 +50,10 @@ class Block{
             this.text.setText(this.value);
         }
         
-        let text_size = this.size * 1.1 - (this.value.toString().length * this.size * 0.18)
-        let x_pos_multiplier = 0.18 + (this.value.toString().length * 0.075)
-        let y_pos_multiplier = 0.53 - (this.value.toString().length * 0.08)
-
         if (this.text !== undefined) {
+            let text_size = this.size * 1.1 - (this.value.toString().length * this.size * 0.18)
             this.text.setFontSize(text_size)
-            this.text.setX(-this.size * x_pos_multiplier);
-            this.text.setY(-this.size * y_pos_multiplier);
+            this.text.setOrigin(0.5)
         }
 
         if (this.total_moved < this.size+(this.padding*2) && this.is_moving) {
