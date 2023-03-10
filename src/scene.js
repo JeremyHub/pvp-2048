@@ -103,6 +103,7 @@ function update() {
     dom_element.innerHTML = getTotalValueOfBlocks(this.green_blocks);
 
 
+    // combine these into one function somehwere else? maybe in game_functions.js
     if(getTotalValueOfBlocks(this.orange_blocks) > this.win_value){
 
         let orange_color = game_config.orange_color;
@@ -111,9 +112,6 @@ function update() {
         graphics.fillRect(0, 0, this.game.config.width, this.game.config.height);
         
         return;
-
-
-
     } else if(getTotalValueOfBlocks(this.green_blocks) > this.win_value){
     
         let green_color = game_config.green_color;

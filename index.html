@@ -17,6 +17,18 @@
             left: 50%; 
             transform: translate(-50%, -50%); 
         }
+        #orange-health-bar {
+			position: absolute;
+			bottom: 20%;
+			right: 20%;
+		}
+		#green-health-bar {
+			position: absolute;
+			top: 20%;
+			left: 20%;
+		}
+        
+
     </style>
 
 </head>
@@ -35,14 +47,16 @@
 </body>
 
 
-<div>
-    <div id="orange-health-bar">
-        orange total value: <span id="orange-total-value"></span>
-    </div>
-    <div id="green-health-bar">
-        green total value: <span id="green-total-value"></span>
-    </div>
-
-</div>
+<body>
+	<div class="health">
+		<div id="orange-health-bar">    
+			orange total value: <span id="orange-total-value"></span>
+		</div>
+        
+		<div id="green-health-bar">
+			green total value: <span id="green-total-value"></span>
+		</div>
+	</div>
+</body>
 
 </html>
