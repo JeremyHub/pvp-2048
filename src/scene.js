@@ -55,6 +55,7 @@ function init() {
 
     this.orange_total_value = 0;
     this.green_total_value = 0;
+    this.win_value = 100;
     
     // Define a list of the keys
     this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M'];
@@ -102,7 +103,7 @@ function update() {
     dom_element.innerHTML = getTotalValueOfBlocks(this.green_blocks);
 
 
-    if(getTotalValueOfBlocks(this.orange_blocks) > 100){
+    if(getTotalValueOfBlocks(this.orange_blocks) > this.win_value){
 
         let orange_color = game_config.orange_color;
         var graphics = this.add.graphics();
@@ -113,13 +114,13 @@ function update() {
 
 
 
-    } else if(getTotalValueOfBlocks(this.green_blocks) > 100){
+    } else if(getTotalValueOfBlocks(this.green_blocks) > this.win_value){
     
         let green_color = game_config.green_color;
         var graphics = this.add.graphics();
         graphics.fillStyle(green_color, 1);
         graphics.fillRect(0, 0, this.game.config.width, this.game.config.height);
-
+ 
         return;
     
     }
