@@ -1,5 +1,6 @@
 var {block_config} = require('./block');
 var {
+    getTotalValueOfBlocks,
     box_in,
     spawnblocks,
     create_block,
@@ -52,6 +53,8 @@ function init() {
 
     this.box_in_counter = 0;
 
+    this.orange_total_value = 0;
+    this.green_total_value = 0;
     
     // Define a list of the keys
     this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M'];
@@ -91,6 +94,36 @@ function create() {
 
 function update() {
     let all_block_lists = this.orange_blocks.concat(this.green_blocks);
+
+    let dom_element = document.getElementById("orange-total-value");
+    dom_element.innerHTML = getTotalValueOfBlocks(this.orange_blocks);
+
+    dom_element = document.getElementById("green-total-value");
+    dom_element.innerHTML = getTotalValueOfBlocks(this.green_blocks);
+
+
+    if(getTotalValueOfBlocks(this.orange_blocks) > 100){
+
+        let orange_color = game_config.orange_color;
+        var graphics = this.add.graphics();
+        graphics.fillStyle(orange_color, 1);
+        graphics.fillRect(0, 0, this.game.config.width, this.game.config.height);
+        
+        return;
+
+
+
+    } else if(getTotalValueOfBlocks(this.green_blocks) > 100){
+    
+        let green_color = game_config.green_color;
+        var graphics = this.add.graphics();
+        graphics.fillStyle(green_color, 1);
+        graphics.fillRect(0, 0, this.game.config.width, this.game.config.height);
+
+        return;
+    
+    }
+
 
     for (let i = 0; i < all_block_lists.length; i++) {
         all_block_lists[i].update();
