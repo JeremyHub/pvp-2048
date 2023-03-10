@@ -289,6 +289,10 @@ function getTotalValueOfBlocks(blockList) {             // Not sure which file t
     return totalValue;
 }
 
+function removePlayerWalls(blocklist){
+
+}
+
 
 module.exports = {
     getTotalValueOfBlocks,

@@ -19,7 +19,7 @@ const game_config = {
     green_color: 0x00ff00,
     wall_id: [6,262],
     green_id: [57, 1, 2, 3, 17, 18, 19, 33, 34, 35],   // spawning area
-    orange_id: [127, 7,8,9,23,24,25,,39,40,41], // spawning area
+    orange_id: [127, 7, 8, 9, 23, 24,25, 39, 40, 41], // spawning area
     empty_space_id: [15,178],
 };
 
@@ -59,6 +59,14 @@ function init() {
     
     // Define a list of the keys
     this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M'];
+
+
+    this.green_walls = 0;
+    this.orange_walls = 0;
+
+    this.green_lock = "false";
+    this.orange_lock = "false";
+
 
     return this;
 }
@@ -102,6 +110,36 @@ function update() {
     dom_element = document.getElementById("green-total-value");
     dom_element.innerHTML = getTotalValueOfBlocks(this.green_blocks);
 
+    dom_element = document.getElementById("orange-walls");
+    dom_element.innerHTML = this.orange_walls;
+
+    dom_element = document.getElementById("green-walls");
+    dom_element.innerHTML = this.green_walls;
+
+
+    if(this.orange_move !== null){
+        this.orange_lock = "true";
+        dom_element = document.getElementById("orange-lock");
+        dom_element.innerHTML = this.orange_lock;
+    }
+    else{
+        this.orange_lock = "false";
+        dom_element = document.getElementById("orange-lock");
+        dom_element.innerHTML = this.orange_lock;
+    }
+
+    if(this.green_move !== null){ 
+        this.green_lock = true;
+        dom_element = document.getElementById("green-lock");
+        dom_element.innerHTML = this.green_lock;
+    }
+    else{
+        this.green_lock = "false";
+        dom_element = document.getElementById("green-lock");
+        dom_element.innerHTML = this.green_lock;
+    }
+
+
 
     // combine these into one function somehwere else? maybe in game_functions.js
     if(getTotalValueOfBlocks(this.orange_blocks) > this.win_value){
@@ -110,17 +148,15 @@ function update() {
         var graphics = this.add.graphics();
         graphics.fillStyle(orange_color, 1);
         graphics.fillRect(0, 0, this.game.config.width, this.game.config.height);
-        
         return;
+
     } else if(getTotalValueOfBlocks(this.green_blocks) > this.win_value){
     
         let green_color = game_config.green_color;
         var graphics = this.add.graphics();
         graphics.fillStyle(green_color, 1);
         graphics.fillRect(0, 0, this.game.config.width, this.game.config.height);
- 
         return;
-    
     }
 
 
@@ -289,11 +325,14 @@ function update() {
                 check_collisions(all_block_lists, this.green_blocks, this.orange_blocks);
                 move_blocks(this.green_blocks, this.green_move);
                 move_blocks(this.orange_blocks, this.orange_move);
+
             }    
             if (turn_finished(all_block_lists)) {
                 this.green_move = null;
                 this.orange_move = null;
                 this.movement_started = false;
+                this.green_walls ++;
+                this.orange_walls ++;
             }
             
         }
