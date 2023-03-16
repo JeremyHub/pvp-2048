@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "chai": "^4.3.7",
+    "firebase": "^9.17.2",
     "mocha": "^10.2.0",
     "mocha-each": "^2.0.1",
     "phaser": "^3.50.0"

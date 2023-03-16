@@ -278,41 +278,8 @@ function update() {
                 this.block_spawn_counter ++;
             }
         }
-        if (this.green_move === null) {
-            if (this.w_key.isDown) {
-                this.green_move = 'up';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.a_key.isDown) {
-                this.green_move = 'left';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.s_key.isDown) {
-                this.green_move = 'down';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.d_key.isDown) {
-                this.green_move = 'right';
-                this.block_spawn_counter = 0;
-            }
-        }
-        if (this.orange_move === null) {
-            if (this.up_key.isDown) {
-                this.orange_move = 'up';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.left_key.isDown) {
-                this.orange_move = 'left';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.down_key.isDown) {
-                this.orange_move = 'down';
-                this.block_spawn_counter = 0;
-            }
-            else if (this.right_key.isDown) {
-                this.orange_move = 'right';
-                this.block_spawn_counter = 0;
-            }
+        if (this.green_move !== null || this.orange_move !== null) {
+            this.block_spawn_counter = 0;
         }
         if (this.green_move !== null && this.orange_move !== null) {
             if (this.movement_started === false) {

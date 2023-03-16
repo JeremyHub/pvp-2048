@@ -1,5 +1,6 @@
 var Phaser = require('phaser');
 var {constructor, init, preload, create, update, game_config} = require('./scene');
+var { multiplayer_init } = require('./multiplayer');
 
 
 const config = {
@@ -19,3 +20,5 @@ const config = {
 };
 
 var game = new Phaser.Game(config);
+
+multiplayer_init(game);
