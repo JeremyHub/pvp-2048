@@ -117,30 +117,6 @@ function update() {
     dom_element.innerHTML = this.green_walls;
 
 
-    if(this.orange_move !== null){
-        this.orange_lock = "true";
-        dom_element = document.getElementById("orange-lock");
-        dom_element.innerHTML = this.orange_lock;
-    }
-    else{
-        this.orange_lock = "false";
-        dom_element = document.getElementById("orange-lock");
-        dom_element.innerHTML = this.orange_lock;
-    }
-
-    if(this.green_move !== null){ 
-        this.green_lock = true;
-        dom_element = document.getElementById("green-lock");
-        dom_element.innerHTML = this.green_lock;
-    }
-    else{
-        this.green_lock = "false";
-        dom_element = document.getElementById("green-lock");
-        dom_element.innerHTML = this.green_lock;
-    }
-
-
-
     // combine these into one function somehwere else? maybe in game_functions.js
     if(getTotalValueOfBlocks(this.orange_blocks) > this.win_value){
 
