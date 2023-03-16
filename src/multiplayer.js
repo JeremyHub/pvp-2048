@@ -51,20 +51,20 @@ export function multiplayer_init(game) {
         document.getElementById("current-room-name").innerHTML = "Room: " + joined_game_code;
         your_color = "green";
         let gameRef = ref(database, "games/" + joined_game_code);
-        set(gameRef,
-            {
-                players: {
-                    green: {
-                        is_active: true,
-                        moves: [-1],
-                    },
-                    orange: {
-                        is_active: false,
-                        moves: [-1],
-                    }
+        let data = {
+            players: {
+                green: {
+                    is_active: true,
+                    moves: [-1],
+                },
+                orange: {
+                    is_active: false,
+                    moves: [-1],
                 }
             }
-        )
+        }
+        set(gameRef, data)
+        current_data = data
     });
 
     document.addEventListener('keydown', function(event) {
