@@ -57,12 +57,10 @@ export function multiplayer_init(game) {
                     green: {
                         is_active: true,
                         moves: [-1],
-                        ready: true,
                     },
                     orange: {
                         is_active: false,
                         moves: [-1],
-                        ready: true,
                     }
                 }
             }
@@ -82,15 +80,9 @@ export function multiplayer_init(game) {
         }
         if (direction != null && joined_game_code != null) {
             let players_ref_str = "games/" + joined_game_code + "/players/";
-            let you_ready = current_data[joined_game_code].players[your_color].ready;
-            let opp_color = your_color == "green" ? "orange" : "green";
-            let opponent_ready = current_data[joined_game_code].players[opp_color].ready;
-            console.log(current_data[joined_game_code])
-            if (you_ready && opponent_ready) {
-                let your_moves = current_data[joined_game_code].players[your_color].moves;
-                your_moves.push(direction);
-                set(ref(database, players_ref_str + your_color + "/moves"), your_moves);
-            }
+            let your_moves = current_data[joined_game_code].players[your_color].moves;
+            your_moves.push(direction);
+            set(ref(database, players_ref_str + your_color + "/moves"), your_moves);
         }
         if (single_player) {
             if (direction){
@@ -132,7 +124,6 @@ export function multiplayer_init(game) {
                         game.scene.scenes[0].orange_move = game_data.players[your_color].moves[current_turn];
                     }
                     current_turn++;
-                    set(ref(database, "games/" + joined_game_code + "/players/" + your_color + "/ready"), true);
                 }
             }
         }
