@@ -64,7 +64,6 @@ export function multiplayer_init(game) {
             }
         }
         set(gameRef, data)
-        current_data = data
     });
 
     document.addEventListener('keydown', function(event) {
@@ -78,7 +77,7 @@ export function multiplayer_init(game) {
         } else if (event.key == "s") {
             direction = "down";
         }
-        if (direction != null && joined_game_code != null) {
+        if (direction != null && joined_game_code != null && current_data != null) {
             let players_ref_str = "games/" + joined_game_code + "/players/";
             let your_moves = current_data[joined_game_code].players[your_color].moves;
             your_moves.push(direction);
