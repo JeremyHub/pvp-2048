@@ -30,10 +30,12 @@ export function multiplayer_init(game) {
     signInAnonymously(auth).catch(function(error) {
         console.log(error);
     });
-    
+
     let single_player = true;
     let joined_game_code = null;
     let your_color = null;
+    let current_turn = 1;
+    let current_data = null;
 
     document.getElementById("join_room").addEventListener("click", function() {
         single_player = false;
@@ -54,11 +56,13 @@ export function multiplayer_init(game) {
                 players: {
                     green: {
                         is_active: true,
-                        direction: null,
+                        moves: [-1],
+                        ready: true,
                     },
                     orange: {
                         is_active: false,
-                        direction: null,
+                        moves: [-1],
+                        ready: true,
                     }
                 }
             }
@@ -77,7 +81,16 @@ export function multiplayer_init(game) {
             direction = "down";
         }
         if (direction != null && joined_game_code != null) {
-            set(ref(database, "games/" + joined_game_code + "/players/" + your_color + "/direction"), direction);
+            let players_ref_str = "games/" + joined_game_code + "/players/";
+            let you_ready = current_data[joined_game_code].players[your_color].ready;
+            let opp_color = your_color == "green" ? "orange" : "green";
+            let opponent_ready = current_data[joined_game_code].players[opp_color].ready;
+            console.log(current_data[joined_game_code])
+            if (you_ready && opponent_ready) {
+                let your_moves = current_data[joined_game_code].players[your_color].moves;
+                your_moves.push(direction);
+                set(ref(database, players_ref_str + your_color + "/moves"), your_moves);
+            }
         }
         if (single_player) {
             if (direction){
@@ -99,19 +112,29 @@ export function multiplayer_init(game) {
     });
 
     onValue(ref(database, "games/"), (snapshot) => {
-        const data = snapshot.val();
+        current_data = snapshot.val();
         if (joined_game_code == null) {
             return;
         }
-        if (data[joined_game_code] == null) {
+        if (current_data[joined_game_code] == null) {
             return;
         }
-        let game_data = data[joined_game_code];
-        if (game_data.players.green.is_active) {
-            game.scene.scenes[0].green_move = game_data.players.green.direction;
-        }
-        if (game_data.players.orange.is_active) {
-            game.scene.scenes[0].orange_move = game_data.players.orange.direction;
+        let opp_color = your_color == "green" ? "orange" : "green";
+        let game_data = current_data[joined_game_code];
+        if (game_data.players.green.is_active && game_data.players.orange.is_active) {
+            if (game_data.players[your_color].moves.length > current_turn) {
+                if (game_data.players[opp_color].moves.length > current_turn) {
+                    if (your_color == "green") {
+                        game.scene.scenes[0].green_move = game_data.players[your_color].moves[current_turn];
+                        game.scene.scenes[0].orange_move = game_data.players[opp_color].moves[current_turn];
+                    } else {
+                        game.scene.scenes[0].green_move = game_data.players[opp_color].moves[current_turn];
+                        game.scene.scenes[0].orange_move = game_data.players[your_color].moves[current_turn];
+                    }
+                    current_turn++;
+                    set(ref(database, "games/" + joined_game_code + "/players/" + your_color + "/ready"), true);
+                }
+            }
         }
     });
 }
