@@ -103,7 +103,7 @@ export function multiplayer_init(game) {
             }
         }
         // if you are in single player mode, update the game with both players' moves
-        if (single_player) {
+        if (single_player && game.scene.scenes[0].any_block_is_moving == false) {
             if (direction){
                 game.scene.scenes[0].green_move = direction;
             }

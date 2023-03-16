@@ -140,7 +140,7 @@ function update() {
         all_block_lists[i].update();
     }
 
-    let any_block_is_moving = false;
+    this.any_block_is_moving = false;
     for (let i = 0; i < all_block_lists.length; i++) {
         if (all_block_lists[i].is_moving) {
             this.any_block_is_moving = true;
@@ -245,7 +245,7 @@ function update() {
     }
 
     // TODO combine these
-    if (!any_block_is_moving) {
+    if (!this.any_block_is_moving) {
         if(this.block_spawn_counter === 0 && this.green_move === null && this.orange_move === null){
             // dont spawn blocks when testing
             if (this.is_drawing) {
@@ -264,6 +264,7 @@ function update() {
                     all_block_lists[i].movement_status = 1;
                 }
             }
+            this.any_block_is_moving = true;
             if (!is_any_block_moving(all_block_lists)) {
                 check_collisions(all_block_lists, this.green_blocks, this.orange_blocks);
                 move_blocks(this.green_blocks, this.green_move);
