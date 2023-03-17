@@ -15,7 +15,7 @@ const firebaseConfig = {
 };
 
 // setup everything needed for multiplayer
-export function multiplayer_init(game) {
+export function multiplayer_init(scene) {
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -103,21 +103,31 @@ export function multiplayer_init(game) {
             }
         }
         // if you are in single player mode, update the game with both players' moves
-        if (single_player && game.scene.scenes[0].any_block_is_moving == false) {
+        if (single_player && scene.any_block_is_moving == false) {
             if (direction){
-                game.scene.scenes[0].green_move = direction;
+                scene.green_move = direction;
+                document.getElementById("green-lock").innerHTML = "true";
             }
+            let orange_move = null;
             if (event.key == "ArrowLeft") {
-                game.scene.scenes[0].orange_move = "left";
+                orange_move = "left";
             }
             if (event.key == "ArrowRight") {
-                game.scene.scenes[0].orange_move = "right";
+                orange_move = "right";
             }
             if (event.key == "ArrowUp") {
-                game.scene.scenes[0].orange_move = "up";
+                orange_move = "up";
             }
             if (event.key == "ArrowDown") {
-                game.scene.scenes[0].orange_move = "down";
+                orange_move = "down";
+            }
+            if (orange_move){
+                scene.orange_move = orange_move;
+                document.getElementById("orange-lock").innerHTML = "true";
+            }
+            if (scene.green_move != null && scene.orange_move != null) {
+                document.getElementById("green-lock").innerHTML = "false";
+                document.getElementById("orange-lock").innerHTML = "false";
             }
         }
     });
@@ -140,8 +150,8 @@ export function multiplayer_init(game) {
             if (game_data.players[your_color].moves.length > current_turn) {
                 if (game_data.players[opp_color].moves.length > current_turn) {
                     // update the game with the moves
-                    game.scene.scenes[0].green_move = game_data.players.green.moves[current_turn];
-                    game.scene.scenes[0].orange_move = game_data.players.orange.moves[current_turn];
+                    scene.green_move = game_data.players.green.moves[current_turn];
+                    scene.orange_move = game_data.players.orange.moves[current_turn];
                     current_turn++;
                 }
             }

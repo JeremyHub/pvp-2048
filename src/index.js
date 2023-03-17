@@ -1,6 +1,6 @@
 var Phaser = require('phaser');
-var {constructor, init, preload, create, update, game_config} = require('./scene');
-var { multiplayer_init } = require('./multiplayer');
+var {GameScene, game_config} = require('./scene');
+var {StartScene} = require('./start_menu_scene');
 
 
 const config = {
@@ -9,16 +9,9 @@ const config = {
     height: game_config.num_rows * game_config.tile_size,
     backgroundColor: '#000000',
     parent: 'game',
-    pixelArt: true,
-    scene: {
-        constructor: constructor,
-        init: init,
-        preload: preload,
-        create: create,
-        update: update,
-    }
 };
 
 var game = new Phaser.Game(config);
-
-multiplayer_init(game);
+game.scene.add('GameScene', GameScene);
+game.scene.add('StartScene', StartScene)
+game.scene.start('StartScene');

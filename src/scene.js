@@ -23,10 +23,13 @@ const game_config = {
     empty_space_id: [15,178],
 };
 
-function constructor(game) {
+class GameScene extends Phaser.Scene {
+
+constructor() {
+    super({key: 'GameScene'});
 }
 
-function init() {
+init() {
 
     this.blocks = [];               // all blocks
     this.orange_blocks = [];        // orange blocks            
@@ -71,7 +74,7 @@ function init() {
     return this;
 }
 
-function preload() {
+preload() {
 
     this.load.tilemapTiledJSON('tilemap', 'src/assets/libraryfire.json');
     this.load.image('tiles', 'src/assets/tiles.png');
@@ -79,14 +82,14 @@ function preload() {
 
 }
 
-function create() {
+create() {
 
     this.is_drawing = true;
 
     this.map = this.make.tilemap({ key: 'tilemap' });
-	this.tileset = this.map.addTilesetImage('tiles', 'tiles');
+    this.tileset = this.map.addTilesetImage('tiles', 'tiles');
     // this.tileset.setTileSize(game_config.tile_size, game_config.tile_size);
-	this.map.createLayer('Tile Layer 1', this.tileset);
+    this.map.createLayer('Tile Layer 1', this.tileset);
     // this.map.setBaseTileSize(game_config.tile_size, game_config.tile_size);
 
     this.bounceSOUND = this.sound.add("bounce_sound");     
@@ -101,7 +104,7 @@ function create() {
 
 }
 
-function update() {
+update() {
     let all_block_lists = this.orange_blocks.concat(this.green_blocks);
 
     let dom_element = document.getElementById("orange-total-value");
@@ -193,7 +196,7 @@ function update() {
             barrier_bool: game_config.wall_id[0],
             background_bool: game_config.empty_space_id[0]
         };
-          
+        
         if (this.manual_block_spawn_value === null) {
             for (let key in values) {
                 if (this[key] === true) {
@@ -241,7 +244,7 @@ function update() {
             // then we can use the same code for the other sizes
             
         }
-          
+        
     }
 
     // TODO combine these
@@ -282,13 +285,10 @@ function update() {
         }
     }
 }
+}
 
 module.exports = {
-    constructor,
-    init,
-    preload,
-    create,
-    update,
+    GameScene,
     game_config: game_config,
     block_config: block_config,
     create_block,
