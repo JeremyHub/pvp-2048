@@ -72,7 +72,7 @@ export class Mutliplayer_Manager {
         this.app = null;
         this.auth = null;
         this.gameRef = null;
-        this.gameRefCallback = null;
+        this.game_has_started = false;
     }
 
     init() {
@@ -101,25 +101,29 @@ export class Mutliplayer_Manager {
 
     join_room() {
         this.joined_game_code = document.getElementById("room_id").value;
-        this.gameRef = ref(this.database, "games/" + this.joined_game_code);
+        if (this.joined_game_code == "") {
+            alert("Please enter a room code");
+            return;
+        }
+        let temp_ref = ref(this.database, "games/" + this.joined_game_code);
         // check if game exists
-        onValue(this.gameRef, (snapshot) => {
+        onValue(temp_ref, (snapshot) => {
             if (!snapshot.child("players").exists()) {
                 alert("Room does not exist");
                 return;
             } else if (snapshot.child("players").exists()) {
-                if (snapshot.child("players/orange/is_active").val()) {
-                    if (this.your_color !== null) {
-                        this.update(snapshot);
-                    } else {
-                        alert("Room is full");
-                        return;
-                    }
-                } else {
+                if (snapshot.child("players/orange/is_active").val() && !this.game_has_started) {
+                    // if orange is active and your game has not started, room is full cuz someone else is orange
+                    alert("Room is full");
+                } else if (snapshot.child("players/orange/is_active").val() && this.game_has_started) {
+                    // if orange is active and your game has started, you are orange
+                    this.update(snapshot);
+                } else if (!snapshot.child("players/orange/is_active").val() && !this.game_has_started) {
+                    // if orange is not active and your game has not started, join as orange
+                    this.game_has_started = true;
+                    this.gameRef = temp_ref;
                     document.getElementById("current-room-name").innerHTML = "Room: " + this.joined_game_code;
                     this.your_color = "orange";
-                    console.log(this);
-                    set(ref(this.database, "games/" + this.joined_game_code + "/players/orange/is_active"), true);
                     this.start_game();
                 }
             }
@@ -145,12 +149,13 @@ export class Mutliplayer_Manager {
         }
         set(this.gameRef, data)
         this.start_game();
-        this.gameRefCallback = onValue(this.gameRef, this.update.bind(this));
+        onValue(this.gameRef, this.update.bind(this));
     }
 
     start_game() {
         seedrandom(this.joined_game_code, { global: true });
         this.start_game_callback();
+        set(ref(this.database, "games/" + this.joined_game_code + "/players/" + this.your_color + "/is_active"), true);
     }
 
     update(snapshot) {
