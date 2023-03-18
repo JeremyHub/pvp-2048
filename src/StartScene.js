@@ -13,32 +13,47 @@ class StartScene extends Phaser.Scene {
     }
 
     create() {
-        let image = this.add.image(0, 0, "titlescreen").setOrigin(0, 0);
-        image.setScale(0.54, 0.53);
+        this.image = this.add.image(0, 0, "titlescreen").setOrigin(0, 0);
+        this.image.setScale(0.54, 0.53);
 
-        let title = this.add.text(0, 0, "PvP 2048", { fontSize: "90px", fill: "#fff" });
-        title.setOrigin(0.5, 0.5);
-        title.x = this.game.config.width / 2;
-        title.y = this.game.config.height / 6;
+        this.title = this.add.text(0, 0, "PvP 2048", { fontSize: "90px", fill: "#fff" });
+        this.title.setOrigin(0.5, 0.5);
+        this.title.x = this.game.config.width / 2;
+        this.title.y = this.game.config.height / 6;
 
-        let button = new Button(this, 0, 0, "button_background", "button_background_hover", "Single Player", { fontSize: "30px", fill: "#000" }, this.single_player.bind(this));
-        button.x = this.game.config.width / 2;
-        button.y = this.game.config.height / 2;
+        this.single_player_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Single Player", { fontSize: "30px", fill: "#000" }, this.single_player.bind(this));
+        this.single_player_button.x = this.game.config.width / 2;
+        this.single_player_button.y = this.game.config.height / 2;
 
-        let button2 = new Button(this, 0, 0, "button_background", "button_background_hover", "Multiplayer", { fontSize: "30px", fill: "#000" }, this.multiplayer.bind(this));
-        button2.x = this.game.config.width / 2;
-        button2.y = this.game.config.height / 1.5;
+        this.multiplayer_buton = new Button(this, 0, 0, "button_background", "button_background_hover", "Multiplayer", { fontSize: "30px", fill: "#000" }, this.multiplayer.bind(this));
+        this.multiplayer_buton.x = this.game.config.width / 2;
+        this.multiplayer_buton.y = this.game.config.height / 1.5;
     }
 
     single_player() {
         single_player_init(this.game.scene.keys.GameScene);
-        this.scene.start("GameScene");
+        this.start_game();
     }
     
     multiplayer() {
-        this.mutliplayer_manager = new Mutliplayer_Manager(this.game.scene.keys.GameScene);
-        this.mutliplayer_manager.init(this.scene);
-        // this.scene.start("GameScene");
+        this.mutliplayer_manager = new Mutliplayer_Manager(this.game.scene.keys.GameScene, this.start_game.bind(this));
+        this.mutliplayer_manager.init();
+        this.single_player_button.destroy();
+        this.multiplayer_buton.destroy();
+
+        // create room button
+        this.create_room_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Create Room", { fontSize: "30px", fill: "#000" }, this.mutliplayer_manager.create_room.bind(this.mutliplayer_manager));
+        this.create_room_button.x = this.game.config.width / 2;
+        this.create_room_button.y = this.game.config.height / 2;
+
+        // join room button
+        this.join_room_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Join Room", { fontSize: "30px", fill: "#000" }, this.mutliplayer_manager.join_room.bind(this.mutliplayer_manager));
+        this.join_room_button.x = this.game.config.width / 2;
+        this.join_room_button.y = this.game.config.height / 1.5;
+    }
+
+    start_game() {
+        this.scene.start("GameScene");
     }
 
 }
