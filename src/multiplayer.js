@@ -1,6 +1,7 @@
 var { initializeApp } = require("firebase/app");
 var { getDatabase, ref, set, onValue } = require("firebase/database");
 var { getAuth, signInAnonymously } = require("firebase/auth");
+var seedrandom = require('seedrandom');
 
 // this is all safe to expose to the user even if it doesnt look like it lol
 const firebaseConfig = {
@@ -73,7 +74,9 @@ export class Mutliplayer_Manager {
         this.gameRefCallback = null;
     }
 
-    init() {
+    init(super_scene) {
+        this.super_scene = super_scene;
+
         document.getElementById("all-multiplayer-items").style.visibility = "visible";
         this.app = initializeApp(firebaseConfig);
         this.auth = getAuth(this.app);
@@ -106,7 +109,7 @@ export class Mutliplayer_Manager {
     }
 
     create_room() {
-        this.joined_game_code = Math.random().toString(36).substring(2, 10);
+        this.joined_game_code = Math.random().toString(36).substring(2, 7);
         document.getElementById("current-room-name").innerHTML = "Room: " + this.joined_game_code;
         this.your_color = "green";
         this.gameRef = ref(this.database, "games/" + this.joined_game_code);
@@ -133,7 +136,9 @@ export class Mutliplayer_Manager {
     }
 
     start_listening() {
+        seedrandom(this.joined_game_code, { global: true });
         this.gameRefCallback = onValue(this.gameRef, this.update.bind(this));
+        this.super_scene.start("GameScene");
     }
 
     update(snapshot) {

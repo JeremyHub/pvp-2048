@@ -37,8 +37,8 @@ class StartScene extends Phaser.Scene {
     
     multiplayer() {
         this.mutliplayer_manager = new Mutliplayer_Manager(this.game.scene.keys.GameScene);
-        this.mutliplayer_manager.init();
-        this.scene.start("GameScene");
+        this.mutliplayer_manager.init(this.scene);
+        // this.scene.start("GameScene");
     }
 
 }
