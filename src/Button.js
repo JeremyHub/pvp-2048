@@ -13,7 +13,8 @@ class Button extends Phaser.GameObjects.Container {
         this.button = this.scene.add.image(0, 0, background_img).setInteractive();
 
         this.text = this.scene.add.text(0, 0, text, text_style);
-        Phaser.Display.Align.In.Center(this.text, this.button);
+        this.text.setOrigin(0.5, 0.5);
+        this.text.setResolution(3);
 
         // stretch the button so that it fits the text
         this.button.displayWidth = this.text.width + 20;
@@ -21,19 +22,25 @@ class Button extends Phaser.GameObjects.Container {
         this.add(this.button);
         this.add(this.text);
 
-        this.button.on('pointerover', function() {
-            this.setTexture(on_over_img);
-        });
+        this.button.on('pointerover', this.on_hover.bind(this));
 
-        this.button.on('pointerout', function() {
-            this.setTexture(background_img);
-        });
+        this.button.on('pointerout', this.on_out.bind(this));
 
         this.button.on('pointerdown', function() {
             call_when_pressed();
         });
 
         this.scene.add.existing(this);
+    }
+
+    on_hover() {
+        this.button.setTexture(this.on_over_img);
+        this.text.setStyle({ fill: '#fff' });
+    }
+
+    on_out() {
+        this.button.setTexture(this.background_img);
+        this.text.setStyle({ fill: '#000' });
     }
 }
 
