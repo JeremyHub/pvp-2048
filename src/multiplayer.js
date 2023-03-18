@@ -14,8 +14,56 @@ const firebaseConfig = {
   measurementId: "G-VHGWG8TK15"
 };
 
+// setup everything needed for single player
+export function single_player_init(scene) {
+    document.addEventListener('keydown', function(event) {
+        let green_move = null;
+        if (event.key == "w") {
+            green_move = "up";
+        } else if (event.key == "a") {
+            green_move = "left";
+        } else if (event.key == "d") {
+            green_move = "right";
+        } else if (event.key == "s") {
+            green_move = "down";
+        }
+
+        let orange_move = null;
+        if (event.key == "ArrowLeft") {
+            orange_move = "left";
+        }
+        if (event.key == "ArrowRight") {
+            orange_move = "right";
+        }
+        if (event.key == "ArrowUp") {
+            orange_move = "up";
+        }
+        if (event.key == "ArrowDown") {
+            orange_move = "down";
+        }
+
+        if (!scene.any_block_is_moving) {
+            if (green_move){
+                scene.green_move = green_move;
+                document.getElementById("green-lock").innerHTML = "true";
+            }
+            if (orange_move){
+                scene.orange_move = orange_move;
+                document.getElementById("orange-lock").innerHTML = "true";
+            }
+            if (scene.green_move != null && scene.orange_move != null) {
+                document.getElementById("green-lock").innerHTML = "false";
+                document.getElementById("orange-lock").innerHTML = "false";
+            }
+        }
+    });
+}
+
 // setup everything needed for multiplayer
 export function multiplayer_init(scene) {
+
+    document.getElementById("all-multiplayer-items").style.visibility = "visible";
+
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -36,7 +84,6 @@ export function multiplayer_init(scene) {
     });
 
     // variables for multiplayer
-    let single_player = true;
     let joined_game_code = null;
     let your_color = null;
     let current_turn = 1;
@@ -44,7 +91,6 @@ export function multiplayer_init(scene) {
 
     // when the join room button is clicked, join the room
     document.getElementById("join_room").addEventListener("click", function() {
-        single_player = false;
         joined_game_code = document.getElementById("room_id").value;
         document.getElementById("current-room-name").innerHTML = "Room: " + joined_game_code;
         your_color = "orange";
@@ -53,8 +99,7 @@ export function multiplayer_init(scene) {
 
     // when the create room button is clicked, create a new room
     document.getElementById("create_room").addEventListener("click", function() {
-        single_player = false;
-        joined_game_code = auth.lastNotifiedUid;
+        joined_game_code = Math.random().toString(36).substring(2, 10);
         document.getElementById("current-room-name").innerHTML = "Room: " + joined_game_code;
         your_color = "green";
         let gameRef = ref(database, "games/" + joined_game_code);
@@ -100,34 +145,6 @@ export function multiplayer_init(scene) {
                 set(ref(database, players_ref_str + your_color + "/moves"), your_moves);
             } else {
                 console.error("you are behind the current turn, this should never happen");
-            }
-        }
-        // if you are in single player mode, update the game with both players' moves
-        if (single_player && scene.any_block_is_moving == false) {
-            if (direction){
-                scene.green_move = direction;
-                document.getElementById("green-lock").innerHTML = "true";
-            }
-            let orange_move = null;
-            if (event.key == "ArrowLeft") {
-                orange_move = "left";
-            }
-            if (event.key == "ArrowRight") {
-                orange_move = "right";
-            }
-            if (event.key == "ArrowUp") {
-                orange_move = "up";
-            }
-            if (event.key == "ArrowDown") {
-                orange_move = "down";
-            }
-            if (orange_move){
-                scene.orange_move = orange_move;
-                document.getElementById("orange-lock").innerHTML = "true";
-            }
-            if (scene.green_move != null && scene.orange_move != null) {
-                document.getElementById("green-lock").innerHTML = "false";
-                document.getElementById("orange-lock").innerHTML = "false";
             }
         }
     });

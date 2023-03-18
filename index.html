@@ -60,7 +60,9 @@
             left: 15%;
         }
 
-        
+        #all-multiplayer-items {
+            visibility: hidden;
+        }
 
     </style>
 
@@ -102,16 +104,18 @@
     </div>
 </div>
 
-<div>
-    <input type="text" id="room_id" placeholder="Room ID">
-    <button id="join_room">Join Room</button>
-    <div id="current-room">Currently <span id="current-room-name">Single Player</span></div>
-    <button id="create_room">Create Room</button>
-</div>
-
-<div>
-    <div>You are controlling: <span id="current-player"></span></div>
-    <div>Youre move: <span id="current-move"></span></div>
+<div id="all-multiplayer-items">
+    <div>
+        <input type="text" id="room_id" placeholder="Room ID">
+        <button id="join_room">Join Room</button>
+        <div id="current-room">Currently Joined <span id="current-room-name">No Room (please create a room or join existing one)</span></div>
+        <button id="create_room">Create Room</button>
+    </div>
+    
+    <div>
+        <div>You are controlling: <span id="current-player"></span></div>
+        <div>Youre move: <span id="current-move"></span></div>
+    </div>
 </div>
 
 
