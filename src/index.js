@@ -1,6 +1,6 @@
 var Phaser = require('phaser');
 var {GameScene, game_config} = require('./scene');
-var {StartScene} = require('./start_menu_scene');
+var {StartScene} = require('./StartScene');
 
 
 const config = {
