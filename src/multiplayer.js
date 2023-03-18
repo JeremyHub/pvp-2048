@@ -113,6 +113,7 @@ export class Mutliplayer_Manager {
                         this.update(snapshot);
                     } else {
                         alert("Room is full");
+                        return;
                     }
                 } else {
                     document.getElementById("current-room-name").innerHTML = "Room: " + this.joined_game_code;
