@@ -137,7 +137,6 @@ export class Mutliplayer_Manager {
     }
 
     update(snapshot) {
-        console.log("update")
         this.current_data = snapshot.val();
         if (this.joined_game_code == null) {
             return;
