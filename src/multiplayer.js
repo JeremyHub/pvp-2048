@@ -15,52 +15,142 @@ const firebaseConfig = {
   measurementId: "G-VHGWG8TK15"
 };
 
-// setup everything needed for single player
-export function single_player_init(scene) {
-    document.addEventListener('keydown', function(event) {
-        let green_move = null;
-        if (event.key == "w") {
-            green_move = "up";
-        } else if (event.key == "a") {
-            green_move = "left";
-        } else if (event.key == "d") {
-            green_move = "right";
-        } else if (event.key == "s") {
-            green_move = "down";
-        }
+class InputManager {
 
-        let orange_move = null;
+    constructor(when_wasd, when_arrow, when_swipe) {
+        this.when_wasd = when_wasd;
+        this.when_arrow = when_arrow;
+        this.when_swipe = when_swipe;
+        this.touchstartX = 0
+        this.touchendX = 0
+        this.touchstartY = 0
+        this.touchendY = 0
+        this.setup()
+    }
+
+    touch_start(event) {
+        this.touchstartX = event.changedTouches[0].screenX
+        this.touchstartY = event.changedTouches[0].screenY
+    }
+
+    touch_end(event) {
+        this.touchendX = event.changedTouches[0].screenX
+        this.touchendY = event.changedTouches[0].screenY
+        this.checkDirection()
+    }
+
+    
+    setup() {
+        document.addEventListener('touchstart', this.touch_start.bind(this));
+        document.addEventListener('touchend', this.touch_end.bind(this));
+        document.addEventListener('keydown', this.handle_key.bind(this));
+    }
+
+    handle_key(event) {
+        this.wasd_move = null;
+        if (event.key == "w") {
+            this.wasd_move = "up";
+        } else if (event.key == "a") {
+            this.wasd_move = "left";
+        } else if (event.key == "d") {
+            this.wasd_move = "right";
+        } else if (event.key == "s") {
+            this.wasd_move = "down";
+        }
+        
+        this.arrow_move = null;
         if (event.key == "ArrowLeft") {
-            orange_move = "left";
+            this.arrow_move = "left";
         }
         if (event.key == "ArrowRight") {
-            orange_move = "right";
+            this.arrow_move = "right";
         }
         if (event.key == "ArrowUp") {
-            orange_move = "up";
+            this.arrow_move = "up";
         }
         if (event.key == "ArrowDown") {
-            orange_move = "down";
+            this.arrow_move = "down";
         }
 
-        if (!scene.any_block_is_moving) {
-            if (green_move){
-                scene.green_move = green_move;
+        if (this.wasd_move != null) {
+            this.when_wasd(this.wasd_move);
+        }
+        if (this.arrow_move != null) {
+            this.when_arrow(this.arrow_move);
+        }
+    }
+
+    checkDirection() {
+        let x = this.touchendX - this.touchstartX
+        let y = this.touchendY - this.touchstartY
+        
+        if (Math.abs(x) > Math.abs(y)) {
+            if (x > 0) {
+                this.swpie = "right";
+            } else {
+                this.swpie = "left";
+            }
+        } else {
+            if (y > 0) {
+                this.swpie = "down";
+            } else {
+                this.swpie = "up";
+            }
+        }
+
+        if (this.swpie != null) {
+            this.when_swipe(this.swpie);
+        }
+    }
+
+}
+
+// setup everything needed for single player
+export class SinglePlayerManager {
+
+    constructor(scene) {
+        this.scene = scene;
+        this.green_move = null;
+        this.orange_move = null;
+        this.input_manager = new InputManager(this.wasd.bind(this), this.arrow.bind(this), this.swipe.bind(this));
+    }
+
+    wasd(move) {
+        this.green_move = move;
+        this.single_player_update();
+    }
+
+    arrow(move) {
+        this.orange_move = move;
+        this.single_player_update();
+    }
+
+    swipe(move) {
+        this.green_move = move;
+        this.single_player_update();
+    }
+
+    single_player_update() {
+        if (!this.scene.any_block_is_moving) {
+            if (this.green_move){
+                this.scene.green_move = this.green_move;
+                this.green_move = null;
                 document.getElementById("green-lock").innerHTML = "true";
             }
-            if (orange_move){
-                scene.orange_move = orange_move;
+            if (this.orange_move){
+                this.scene.orange_move = this.orange_move;
+                this.orange_move = null;
                 document.getElementById("orange-lock").innerHTML = "true";
             }
-            if (scene.green_move != null && scene.orange_move != null) {
+            if (this.scene.green_move != null && this.scene.orange_move != null) {
                 document.getElementById("green-lock").innerHTML = "false";
                 document.getElementById("orange-lock").innerHTML = "false";
             }
         }
-    });
+    }
 }
 
-export class Mutliplayer_Manager {
+export class MutliplayerManager {
     constructor(scene, start_game_callback) {
         this.start_game_callback = start_game_callback;
         this.scene = scene;
@@ -73,6 +163,7 @@ export class Mutliplayer_Manager {
         this.auth = null;
         this.gameRef = null;
         this.game_has_started = false;
+        this.input_manager = new InputManager(this.update_with_direction.bind(this), this.update_with_direction.bind(this), this.update_with_direction.bind(this));
     }
 
     init() {
@@ -95,8 +186,6 @@ export class Mutliplayer_Manager {
         signInAnonymously(this.auth).catch(function(error) {
             console.log(error);
         });
-
-        document.addEventListener('keydown', this.update_on_key.bind(this));
     }
 
     join_room() {
@@ -196,17 +285,7 @@ export class Mutliplayer_Manager {
         }
     }
 
-    update_on_key(event) {
-        let direction = null;
-        if (event.key == "w") {
-            direction = "up";
-        } else if (event.key == "a") {
-            direction = "left";
-        } else if (event.key == "d") {
-            direction = "right";
-        } else if (event.key == "s") {
-            direction = "down";
-        }
+    update_with_direction(direction) {
         // if you are in multiplayer mode, update the database
         if (direction != null && this.joined_game_code != null && this.current_data != null) {
             let players_ref_str = "games/" + this.joined_game_code + "/players/";

@@ -1,4 +1,4 @@
-var { Mutliplayer_Manager, single_player_init } = require('./multiplayer');
+var { MutliplayerManager, SinglePlayerManager } = require('./multiplayer');
 var { Button } = require('./Button');
 
 class StartScene extends Phaser.Scene {
@@ -31,12 +31,12 @@ class StartScene extends Phaser.Scene {
     }
 
     single_player() {
-        single_player_init(this.game.scene.keys.GameScene);
+        this.single_player_manager = new SinglePlayerManager(this.game.scene.keys.GameScene);
         this.start_game();
     }
     
     multiplayer() {
-        this.mutliplayer_manager = new Mutliplayer_Manager(this.game.scene.keys.GameScene, this.start_game.bind(this));
+        this.mutliplayer_manager = new MutliplayerManager(this.game.scene.keys.GameScene, this.start_game.bind(this));
         this.mutliplayer_manager.init();
         this.single_player_button.destroy();
         this.multiplayer_buton.destroy();
