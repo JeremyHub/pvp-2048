@@ -1,5 +1,5 @@
 var { initializeApp } = require("firebase/app");
-var { getDatabase, ref, set, onValue } = require("firebase/database");
+var { getDatabase, ref, set, onValue, off } = require("firebase/database");
 var { getAuth, signInAnonymously } = require("firebase/auth");
 var { InputManager } = require("./InputManager");
 var seedrandom = require('seedrandom');
@@ -65,11 +65,14 @@ export class MutliplayerManager {
         onValue(temp_ref, (snapshot) => {
             if (!snapshot.child("players").exists()) {
                 alert("Room does not exist");
+                off(temp_ref, "value")
                 return;
             } else if (snapshot.child("players").exists()) {
                 if (snapshot.child("players/orange/is_active").val() && !this.game_has_started) {
                     // if orange is active and your game has not started, room is full cuz someone else is orange
                     alert("Room is full");
+                    off(temp_ref, "value");
+                    return;
                 } else if (snapshot.child("players/orange/is_active").val() && this.game_has_started) {
                     // if orange is active and your game has started, you are orange
                     this.update(snapshot);
