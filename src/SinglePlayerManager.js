@@ -10,6 +10,10 @@ export class SinglePlayerManager {
         this.input_manager = new InputManager(this.wasd.bind(this), this.arrow.bind(this), this.swipe.bind(this));
     }
 
+    init(num_players) {
+        this.num_players = num_players;
+    }
+
     wasd(move) {
         this.green_move = move;
         this.single_player_update();
@@ -32,14 +36,21 @@ export class SinglePlayerManager {
                 this.green_move = null;
                 document.getElementById("green-lock").innerHTML = "true";
             }
-            if (this.orange_move){
-                this.scene.orange_move = this.orange_move;
-                this.orange_move = null;
+            if (this.num_players === 2) {
+                if (this.orange_move){
+                    this.scene.orange_move = this.orange_move;
+                    this.orange_move = null;
+                    document.getElementById("orange-lock").innerHTML = "true";
+                }
+            } else if (this.num_players === 1) {
+                let choices = ["up", "down", "left", "right"];
+                let random_index = Math.floor(Math.random() * choices.length);
+                this.scene.orange_move = choices[random_index];
                 document.getElementById("orange-lock").innerHTML = "true";
             }
             if (this.scene.green_move != null && this.scene.orange_move != null) {
                 document.getElementById("green-lock").innerHTML = "false";
-                document.getElementById("orange-lock").innerHTML = "false";
+                if (this.num_players === 2) document.getElementById("orange-lock").innerHTML = "false";
             }
         }
     }
