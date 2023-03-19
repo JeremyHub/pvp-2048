@@ -1,4 +1,5 @@
-var { MutliplayerManager, SinglePlayerManager } = require('./multiplayer');
+var { MutliplayerManager } = require('./MultiplayerManager');
+var { SinglePlayerManager } = require('./SinglePlayerManager');
 var { Button } = require('./Button');
 
 class StartScene extends Phaser.Scene {
