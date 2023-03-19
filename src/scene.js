@@ -1,5 +1,6 @@
 var {block_config} = require('./block');
 var {
+    removePlayerWalls,
     getTotalValueOfBlocks,
     box_in,
     spawnblocks,
@@ -35,6 +36,9 @@ init() {
     this.orange_blocks = [];        // orange blocks            
     this.green_blocks = [];         // green blocks
 
+    this.orange_walls = [];         // orange walls
+    this.green_walls = [];          // green walls
+
     this.orange_move = null;
     this.green_move = null;
 
@@ -61,13 +65,16 @@ init() {
     this.win_value = 100;
     
     // Define a list of the keys
-    this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M'];
+    this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M', 'L', 'K', 'N'];
 
 
-    this.green_walls = 0;
-    this.orange_walls = 0;
+    this.green_walls_count = 0;
+    this.orange_walls_count = 0;
+    this.green_wall_bool = false;
+    this.orange_wall_bool = false;
 
-    this.green_lock = "false";
+
+    this.green_lock = "false";      
     this.orange_lock = "false";
 
 
@@ -106,6 +113,7 @@ create() {
 
 update() {
     let all_block_lists = this.orange_blocks.concat(this.green_blocks);
+    
 
     let dom_element = document.getElementById("orange-total-value");
     dom_element.innerHTML = getTotalValueOfBlocks(this.orange_blocks);
@@ -114,10 +122,10 @@ update() {
     dom_element.innerHTML = getTotalValueOfBlocks(this.green_blocks);
 
     dom_element = document.getElementById("orange-walls");
-    dom_element.innerHTML = this.orange_walls;
+    dom_element.innerHTML = this.orange_walls_count;
 
     dom_element = document.getElementById("green-walls");
-    dom_element.innerHTML = this.green_walls;
+    dom_element.innerHTML = this.green_walls_count;
 
 
     // combine these into one function somehwere else? maybe in game_functions.js
@@ -183,13 +191,26 @@ update() {
         this.manual_block_spawn_value = null;
     } if(this.m_key.isDown){
         box_in(this, game_config.wall_id[0], game_config);
-    }
+    } if(this.n_key.isDown){                                    // for now some type of set all bools to false
+        this.orange_bool = false;
+        this.green_bool = false;
+        this.barrier_bool = false;
+        this.background_bool = false;
+    } if(this.l_key.isDown){
+        this.orange_wall_bool = true;
+        this.green_wall_bool = false;
+    } if(this.k_key.isDown){
+        this.orange_wall_bool = false;
+        this.green_wall_bool = true;
+    } 
+
     if(this.pointer.isDown){            // we can now place walls with the mouse, 
         let x = this.pointer.x;         // pressing o will change it to place orange spawn blocks
         let y = this.pointer.y;         // pressing g will change it to place green spawn blocks
                                         // pressing b will change it to place barriers
         let value = game_config.wall_id[0];
 
+        
         let values = {
             orange_bool: game_config.orange_id[0],
             green_bool: game_config.green_id[0],
@@ -238,11 +259,19 @@ update() {
                     block.value = this.manual_block_spawn_value;
                 }
             }
+            
+        }
 
-            
-            // make the block using information from the booleans
-            // then we can use the same code for the other sizes
-            
+        // this can be condensed
+        if(this.green_wall_bool === true && this.green_walls_count > 0 && this.map.getTileAtWorldXY(x, y).index !== game_config.wall_id[0]){
+            this.map.putTileAtWorldXY(game_config.wall_id[0], x, y);
+            this.green_walls.push(this.map.getTileAtWorldXY(x, y));
+            this.green_walls_count --;
+        }
+        if(this.orange_wall_bool === true && this.orange_walls_count > 0 && this.map.getTileAtWorldXY(x, y).index !== game_config.wall_id[0]){
+            this.map.putTileAtWorldXY(game_config.wall_id[0], x, y);
+            this.orange_walls.push(this.map.getTileAtWorldXY(x, y));
+            this.orange_walls_count --;
         }
         
     }
@@ -278,8 +307,23 @@ update() {
                 this.green_move = null;
                 this.orange_move = null;
                 this.movement_started = false;
-                this.green_walls ++;
-                this.orange_walls ++;
+                this.green_walls_count ++;
+                this.orange_walls_count ++;
+
+
+                // PUT THIS IN A FUNCTION SOMEWHERE ELSE! I was having trouble with it - Zane
+
+                for( let i = 0; i < this.green_walls.length; i++){
+                    if(this.green_walls[i].index === game_config.wall_id[0]){
+                        this.green_walls[i].index = game_config.empty_space_id[0];
+                    }
+                }
+                for( let i = 0; i < this.orange_walls.length; i++){
+                    if(this.orange_walls[i].index === game_config.wall_id[0]){
+                        this.orange_walls[i].index = game_config.empty_space_id[0];
+                    }
+                }
+              
             }
             
         }
