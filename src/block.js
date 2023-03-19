@@ -37,7 +37,7 @@ class Block{
     create() {
         this.rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.size, this.size, this.color);
         this.container.add(this.rect);
-        let style = { font: "bold 0.01px Arial", fill: "#fffff"};
+        let style = { font: "bold 1px Arial", fill: "#fffff"};
 
         this.text = new Phaser.GameObjects.Text(this.scene, 0, 0, this.value, style);
         this.container.add(this.text);
