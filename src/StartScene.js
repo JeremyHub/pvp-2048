@@ -15,7 +15,8 @@ class StartScene extends Phaser.Scene {
 
     create() {
         this.image = this.add.image(0, 0, "titlescreen").setOrigin(0, 0);
-        this.image.setScale(0.54, 0.53);
+        this.image.displayWidth = this.game.config.width;
+        this.image.displayHeight = this.game.config.height;
 
         this.title = this.add.text(0, 0, "PvP 2048", { fontSize: "90px", fill: "#fff" });
         this.title.setOrigin(0.5, 0.5);
