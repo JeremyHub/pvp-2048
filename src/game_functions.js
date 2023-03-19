@@ -281,20 +281,21 @@ function box_in(game, value, game_config) {
     game.box_in_counter++;
 }
 
-function getTotalValueOfBlocks(blockList) {             // Not sure which file this should go in
-    let totalValue = 0;                                 //  or if this works
+function getTotalValueOfBlocks(blockList) {             
+    let totalValue = 0;                                 
     for (let i = 0; i < blockList.length; i++) {
       totalValue += blockList[i].value;
     }
     return totalValue;
 }
 
-function removePlayerWalls(blocklist){
-
+function removePlayerWalls() {
+    
 }
 
 
 module.exports = {
+    removePlayerWalls,
     getTotalValueOfBlocks,
     box_in,
     spawnblocks,
