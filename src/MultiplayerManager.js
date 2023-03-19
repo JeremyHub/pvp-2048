@@ -40,19 +40,21 @@ export class MutliplayerManager {
         this.database = getDatabase(this.app);
 
         // check if user is logged in
-        this.auth.onAuthStateChanged(function(user) {
-            if (user) {
-                console.log("User " + user.uid);
-                this.user = user;
-            } else {
-                console.log("No user");
-            }
-        });
+        this.auth.onAuthStateChanged(this.onAuthChange.bind(this));
         
         // sign in anonymously
         signInAnonymously(this.auth).catch(function(error) {
             console.log(error);
         });
+    }
+
+    onAuthChange(user) {
+        if (user) {
+            console.log("User " + user.uid);
+            this.user = user;
+        } else {
+            console.log("No user");
+        }
     }
 
     is_signed_in() {
