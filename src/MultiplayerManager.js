@@ -132,10 +132,13 @@ export class MutliplayerManager {
             // if both players have made a move, update the game with the moves
             if (game_data.players[this.your_color].moves.length > this.current_turn) {
                 if (game_data.players[opp_color].moves.length > this.current_turn) {
-                    // update the game with the moves
-                    this.scene.green_move = game_data.players.green.moves[this.current_turn];
-                    this.scene.orange_move = game_data.players.orange.moves[this.current_turn];
-                    this.current_turn++;
+                    // and the game has finished with the current move
+                    if (this.scene.green_move == null && this.scene.orange_move == null){
+                        // update the game with the moves
+                        this.scene.green_move = game_data.players.green.moves[this.current_turn];
+                        this.scene.orange_move = game_data.players.orange.moves[this.current_turn];
+                        this.current_turn++;
+                    }
                 }
             }
             // update the indicators for which player's has made a move
