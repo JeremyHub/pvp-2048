@@ -14,6 +14,8 @@ class StartScene extends Phaser.Scene {
     }
 
     create() {
+        document.getElementById("all-multiplayer-items").style.visibility = "hidden";
+
         this.image = this.add.image(0, 0, "titlescreen").setOrigin(0, 0);
         this.image.displayWidth = this.game.config.width;
         this.image.displayHeight = this.game.config.height;
@@ -47,6 +49,8 @@ class StartScene extends Phaser.Scene {
         this.two_player_button = new Button(this, 0, 0, "button_background", "button_background_hover", "2 Player", { fontSize: "30px", fill: "#000" }, this.two_player.bind(this));
         this.two_player_button.x = this.game.config.width / 2;
         this.two_player_button.y = this.game.config.height / 1.5;
+
+        this.add_back_button();
     }
 
     one_player() {
@@ -60,6 +64,9 @@ class StartScene extends Phaser.Scene {
     }
     
     multiplayer() {
+        
+        document.getElementById("all-multiplayer-items").style.visibility = "visible";
+
         this.mutliplayer_manager = new MutliplayerManager(this.game.scene.keys.GameScene, this.start_game.bind(this));
         this.mutliplayer_manager.init();
         this.single_player_button.destroy();
@@ -74,6 +81,19 @@ class StartScene extends Phaser.Scene {
         this.join_room_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Join Room", { fontSize: "30px", fill: "#000" }, this.mutliplayer_manager.join_room.bind(this.mutliplayer_manager));
         this.join_room_button.x = this.game.config.width / 2;
         this.join_room_button.y = this.game.config.height / 1.5;
+
+        this.add_back_button();
+    }
+
+    add_back_button() {
+        // TODO change this to be a back icon
+        this.back_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Back", { fontSize: "10px", fill: "#fff"}, this.restart_scene.bind(this));
+        this.back_button.x = 20
+        this.back_button.y = this.game.config.height - 20
+    }
+
+    restart_scene() {
+        this.scene.start("StartScene");
     }
 
     start_game() {

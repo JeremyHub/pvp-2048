@@ -28,13 +28,13 @@ export class MutliplayerManager {
         this.app = null;
         this.auth = null;
         this.gameRef = null;
+        this.user = null;
         this.game_has_started = false;
         this.input_manager = new InputManager(this.update_with_direction.bind(this), this.update_with_direction.bind(this), this.update_with_direction.bind(this));
     }
 
     init() {
 
-        document.getElementById("all-multiplayer-items").style.visibility = "visible";
         this.app = initializeApp(firebaseConfig);
         this.auth = getAuth(this.app);
         this.database = getDatabase(this.app);
@@ -43,6 +43,7 @@ export class MutliplayerManager {
         this.auth.onAuthStateChanged(function(user) {
             if (user) {
                 console.log("User " + user.uid);
+                this.user = user;
             } else {
                 console.log("No user");
             }
@@ -54,7 +55,19 @@ export class MutliplayerManager {
         });
     }
 
+    is_signed_in() {
+        if (this.user === null) {
+            alert("Can't access database")
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     join_room() {
+        if (!this.is_signed_in()) {
+            return;
+        }
         this.joined_game_code = document.getElementById("room_id").value;
         if (this.joined_game_code == "") {
             alert("Please enter a room code");
@@ -89,6 +102,9 @@ export class MutliplayerManager {
     }
 
     create_room() {
+        if (!this.is_signed_in()) {
+            return;
+        }
         this.joined_game_code = Math.random().toString(36).substring(2, 7);
         document.getElementById("current-room-name").innerHTML = "Room: " + this.joined_game_code;
         this.your_color = "green";
