@@ -75,7 +75,7 @@ export class MutliplayerManager {
                     return;
                 } else if (snapshot.child("players/orange/is_active").val() && this.game_has_started) {
                     // if orange is active and your game has started, you are orange
-                    this.update(snapshot);
+                    this.on_dataset_update(snapshot);
                 } else if (!snapshot.child("players/orange/is_active").val() && !this.game_has_started) {
                     // if orange is not active and your game has not started, join as orange
                     this.game_has_started = true;
@@ -107,7 +107,7 @@ export class MutliplayerManager {
         }
         set(this.gameRef, data)
         this.start_game();
-        onValue(this.gameRef, this.update.bind(this));
+        onValue(this.gameRef, this.on_dataset_update.bind(this));
     }
 
     start_game() {
@@ -116,7 +116,7 @@ export class MutliplayerManager {
         set(ref(this.database, "games/" + this.joined_game_code + "/players/" + this.your_color + "/is_active"), true);
     }
 
-    update(snapshot) {
+    on_dataset_update(snapshot) {
         this.current_data = snapshot.val();
         if (this.joined_game_code == null) {
             return;
@@ -132,10 +132,13 @@ export class MutliplayerManager {
             // if both players have made a move, update the game with the moves
             if (game_data.players[this.your_color].moves.length > this.current_turn) {
                 if (game_data.players[opp_color].moves.length > this.current_turn) {
-                    // update the game with the moves
-                    this.scene.green_move = game_data.players.green.moves[this.current_turn];
-                    this.scene.orange_move = game_data.players.orange.moves[this.current_turn];
-                    this.current_turn++;
+                    // and the game has finished with the current move
+                    if (this.scene.green_move == null && this.scene.orange_move == null){
+                        // update the game with the moves
+                        this.scene.green_move = game_data.players.green.moves[this.current_turn];
+                        this.scene.orange_move = game_data.players.orange.moves[this.current_turn];
+                        this.current_turn++;
+                    }
                 }
             }
             // update the indicators for which player's has made a move
@@ -155,7 +158,7 @@ export class MutliplayerManager {
     }
 
     update_with_direction(direction) {
-        // if you are in multiplayer mode, update the database
+        // update the database with the new direction
         if (direction != null && this.joined_game_code != null && this.current_data != null) {
             let players_ref_str = "games/" + this.joined_game_code + "/players/";
             let your_moves = this.current_data.players[this.your_color].moves;

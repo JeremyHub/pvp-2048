@@ -1,6 +1,7 @@
 var Phaser = require('phaser');
 var {GameScene, game_config} = require('./scene');
 var {StartScene} = require('./StartScene');
+var {LossScene, WinScene} = require('./WinLossScenes');
 
 
 const config = {
@@ -14,4 +15,6 @@ const config = {
 var game = new Phaser.Game(config);
 game.scene.add('GameScene', GameScene);
 game.scene.add('StartScene', StartScene)
+game.scene.add('WinScene', WinScene);
+game.scene.add('LossScene', LossScene);
 game.scene.start('StartScene');

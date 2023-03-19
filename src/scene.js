@@ -131,18 +131,12 @@ update() {
     // combine these into one function somehwere else? maybe in game_functions.js
     if(getTotalValueOfBlocks(this.orange_blocks) > this.win_value){
 
-        let orange_color = game_config.orange_color;
-        var graphics = this.add.graphics();
-        graphics.fillStyle(orange_color, 1);
-        graphics.fillRect(0, 0, this.game.config.width, this.game.config.height);
+        this.scene.start('WinScene', {winner: 'Orange'});
         return;
 
     } else if(getTotalValueOfBlocks(this.green_blocks) > this.win_value){
     
-        let green_color = game_config.green_color;
-        var graphics = this.add.graphics();
-        graphics.fillStyle(green_color, 1);
-        graphics.fillRect(0, 0, this.game.config.width, this.game.config.height);
+        this.scene.start('WinScene', {winner: 'Green'});
         return;
     }
 
