@@ -48,7 +48,7 @@ export class SinglePlayerManager {
                 this.scene.orange_move = choices[random_index];
                 document.getElementById("orange-lock").innerHTML = "true";
             } else {
-                console.log("ERROR: num_players must be 1 or 2");
+                console.error("num_players must be 1 or 2");
             }
             if (this.scene.green_move != null && this.scene.orange_move != null) {
                 document.getElementById("green-lock").innerHTML = "false";
