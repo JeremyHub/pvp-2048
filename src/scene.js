@@ -298,7 +298,6 @@ update() {
                 check_collisions(all_block_lists, this.green_blocks, this.orange_blocks);
                 move_blocks(this.green_blocks, this.green_move);
                 move_blocks(this.orange_blocks, this.orange_move);
-
             }    
             if (calculations_finished(all_block_lists)) {
                 if (this.animations_started === false) {

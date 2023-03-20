@@ -99,14 +99,17 @@ class Block{
                 this.is_moving = false;
             }
             else if (this.total_movement_distance === 0) {
+                // this makes sure other animations don't start mid-movement
                 let animation_step = this.animations.shift()
                 if (animation_step.at(0) === "move") {
+                    // move format: ["move", number of steps to move]
                     this.total_movement_distance = (this.size+(this.padding*2)) * animation_step.at(1)
                 }
                 else if (animation_step.at(0) === "merge" || animation_step.at(0) === "destroy") {
                     // there might be an issue here, if the two blocks in a destroy event aren't ever visually in the same space
                     // (that shouldn't happen because it would look odd but it's something to consider)
                     // would probably want to seperate this later after animations get added
+                    // destroy/merge format: ["merge" or "destroy", (block that this block is merging into/being destroyed by)]
                     if (animation_step.at(1).container.x === this.container.x && animation_step.at(1).container.y === this.container.y) {
                         console.log('block destroyed', this, animation_step.at(1))
                         this.rect.destroy()
@@ -117,6 +120,7 @@ class Block{
                     }
                 }
                 else if (animation_step.at(0) === "increase value") {
+                    // increase value format: ["increase value", (block that this block is merging with)]
                     if (animation_step.at(1).container.x === this.container.x && animation_step.at(1).container.y === this.container.y) {
                         this.text_value *= 2
                     }
