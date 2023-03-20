@@ -278,8 +278,8 @@ update() {
         if(this.block_spawn_counter === 0 && this.green_move === null && this.orange_move === null){
             // dont spawn blocks when testing
             if (this.is_drawing) {
-                // spawnblocks(this, game_config.green_id, 'green', this.green_blocks, game_config);
-                // spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks, game_config);
+                spawnblocks(this, game_config.green_id, 'green', this.green_blocks, game_config);
+                spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks, game_config);
                 this.block_spawn_counter ++;
             }
         }
