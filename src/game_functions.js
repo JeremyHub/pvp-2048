@@ -1,4 +1,4 @@
-var {Block, block_config} = require('./block');
+var {Block, block_config} = require('./Block');
 
 /**
  * Checks if all of the given blocks have finished moving for the turn.

@@ -1,4 +1,4 @@
-var {block_config} = require('./block');
+var {block_config} = require('./Block');
 var {
     removePlayerWalls,
     getTotalValueOfBlocks,
