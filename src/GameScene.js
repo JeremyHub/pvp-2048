@@ -214,6 +214,7 @@ class GameScene extends Phaser.Scene {
                                             // pressing b will change it to place barriers
             let value = game_config.wall_id[0];
 
+
             
             let values = {
                 orange_bool: game_config.orange_id[0],
@@ -250,6 +251,9 @@ class GameScene extends Phaser.Scene {
 
                 if (this.green_bool === true || this.orange_bool === true) {
                     let tile = this.map.getTileAtWorldXY(x, y);
+                    if (tile === null) {
+                        return;
+                    }
                     // if there is no tile already at that block, then we can spawn a block
                     let should_spawn = true;
                     for (block of this.all_block_lists) {
