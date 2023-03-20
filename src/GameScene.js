@@ -259,8 +259,7 @@ class GameScene extends Phaser.Scene {
                         }
                     }
                     if (should_spawn) {
-                        let block = create_block(this, block_list, tile.x, tile.y, color, team, game_config);
-                        block.value = this.manual_block_spawn_value;
+                        let block = create_block(this, block_list, tile.x, tile.y, color, team, game_config, this.manual_block_spawn_value);
                     }
                 }
                 
@@ -381,7 +380,7 @@ class GameScene extends Phaser.Scene {
         
         if (!this.any_block_is_moving) {
 
-            this.check_block_spawning();
+            // this.check_block_spawning();
             
             if (this.green_move !== null && this.orange_move !== null) {
                 

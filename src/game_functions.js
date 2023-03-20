@@ -220,9 +220,9 @@ function remove_block(block, blocks, green_blocks, orange_blocks) {
     }
 }
 
-function create_block(game, list_of_blocks, x, y, color, team, game_config) {
+function create_block(game, list_of_blocks, x, y, color, team, game_config, value=2) {
     const coords = convert_tile_to_world(x, y, game_config);
-    const block = new Block(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding, team, 2, x, y, Math.random(), game_config.wall_id, game.is_drawing);
+    const block = new Block(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding, team, value, x, y, Math.random(), game_config.wall_id, game.is_drawing);
     list_of_blocks.push(block);
     return block;
 }
