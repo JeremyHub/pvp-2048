@@ -1,5 +1,5 @@
 var Phaser = require('phaser');
-var {GameScene, game_config} = require('./scene');
+var {GameScene, game_config} = require('./GameScene');
 var {StartScene} = require('./StartScene');
 var {LossScene, WinScene} = require('./WinLossScenes');
 

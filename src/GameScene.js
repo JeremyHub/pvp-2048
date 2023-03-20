@@ -378,7 +378,7 @@ class GameScene extends Phaser.Scene {
 
         this.check_pointer_press();
 
-        // TODO combine these
+        
         if (!this.any_block_is_moving) {
 
             this.check_block_spawning();
