@@ -5,8 +5,10 @@ var {
     box_in,
     spawnblocks,
     create_block,
+    remove_block,
     check_collisions,
     is_any_block_moving,
+    calculations_finished,
     turn_finished,
     move_blocks,
 } = require('./game_functions');
@@ -45,6 +47,7 @@ init() {
     this.block_spawn_counter = 0;   // used to spawn blocks
 
     this.movement_started = false; // used to set up movement at the start of each turn
+    this.animations_started = false;
 
     this.timer = 0;
     this.blocks_moved = false;
@@ -275,8 +278,8 @@ update() {
         if(this.block_spawn_counter === 0 && this.green_move === null && this.orange_move === null){
             // dont spawn blocks when testing
             if (this.is_drawing) {
-                spawnblocks(this, game_config.green_id, 'green', this.green_blocks, game_config);
-                spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks, game_config);
+                // spawnblocks(this, game_config.green_id, 'green', this.green_blocks, game_config);
+                // spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks, game_config);
                 this.block_spawn_counter ++;
             }
         }
@@ -296,6 +299,29 @@ update() {
                 move_blocks(this.green_blocks, this.green_move);
                 move_blocks(this.orange_blocks, this.orange_move);
 
+            }    
+            if (calculations_finished(all_block_lists)) {
+                if (this.animations_started === false) {
+                    this.animations_started = true;
+                    for (let i = 0; i < all_block_lists.length; i++) {
+                        all_block_lists[i].is_moving = true;
+                    }
+                }
+                if (turn_finished(all_block_lists)) {
+                    this.green_move = null;
+                    this.orange_move = null;
+                    this.movement_started = false;
+                    this.animations_started = false;
+                    for (let i = 0; i < all_block_lists.length; i++) {
+                        if (all_block_lists[i].will_be_removed) {
+                            remove_block(all_block_lists[i], this.blocks, this.green_blocks, this.orange_blocks)
+                        }
+                        else {
+                            all_block_lists[i].update_visuals();
+                        }
+                        
+                    }
+                }
             }    
             if (turn_finished(all_block_lists)) {
                 this.green_move = null;

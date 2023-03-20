@@ -5,9 +5,18 @@ var {Block, block_config} = require('./block');
  * @param {*} blocks 
  * @returns 
  */
-function turn_finished(blocks) {
+function calculations_finished(blocks) {
     for (let i = 0; i < blocks.length; i++) {
         if (blocks[i].movement_status !== 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function turn_finished(blocks) {
+    for (let i = 0; i < blocks.length; i++) {
+        if (blocks[i].movement_status !== 0 || blocks[i].is_moving) {
             return false;
         }
     }
@@ -65,11 +74,13 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
 
     let blocks_on_each_tile = {};
     for (let i = 0; i < blocks.length; i++) {
-        if (blocks_on_each_tile[blocks[i].tile_x + "," + blocks[i].tile_y] === undefined) {
-            blocks_on_each_tile[blocks[i].tile_x + "," + blocks[i].tile_y] = [blocks[i]];
-        }
-        else {
-            blocks_on_each_tile[blocks[i].tile_x + "," + blocks[i].tile_y].push(blocks[i]);
+        if (blocks[i].will_be_removed === false) {
+            if (blocks_on_each_tile[blocks[i].tile_x + "," + blocks[i].tile_y] === undefined) {
+                blocks_on_each_tile[blocks[i].tile_x + "," + blocks[i].tile_y] = [blocks[i]];
+            }
+            else {
+                blocks_on_each_tile[blocks[i].tile_x + "," + blocks[i].tile_y].push(blocks[i]);
+            }
         }
     }
     
@@ -141,8 +152,11 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
                 if (team_colliding_blocks[i].value === team_colliding_blocks[j].value) {
                     // valid friendly collision, merge blocks
                     team_colliding_blocks[i].value = team_colliding_blocks[i].value * 2;
+                    team_colliding_blocks[i].animations.push(["increase value", team_colliding_blocks[j]])
                     let removed_team = team_colliding_blocks[j].team;
-                    remove_block(team_colliding_blocks[j], blocks, green_blocks, orange_blocks);
+                    team_colliding_blocks[j].animations.push(["merge", team_colliding_blocks[i]])
+                    console.log("block should have added merge to animations", team_colliding_blocks[j], team_colliding_blocks[j].animations)
+                    team_colliding_blocks[j].will_be_removed = true
                     if (removed_team === first_team) {
                         first_team_blocks.splice(first_team_blocks.indexOf(team_colliding_blocks[j]), 1);
                     }
@@ -163,13 +177,15 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
             if (removed_blocks.indexOf(j) === -1 && first_team_blocks[i].value !== second_team_blocks[j].value) {
                 // valid enemy collision, one block should be destroyed
                 if (first_team_blocks[i].value > second_team_blocks[j].value) {
-                    remove_block(second_team_blocks[j], blocks, green_blocks, orange_blocks);
+                    second_team_blocks[j].animations.push(["destroy", first_team_blocks[i]])
+                    second_team_blocks[j].will_be_removed = true
                     removed_blocks.push(j)
                     // after a valid collision, the block should stop moving
                     first_team_blocks[i].movement_status = 0;
                 }
                 else {
-                    remove_block(first_team_blocks[i], blocks, green_blocks, orange_blocks);
+                    first_team_blocks[i].animations.push(["destroy", second_team_blocks[j]])
+                    first_team_blocks[i].will_be_removed = true
                     // after a valid collision, the block should stop moving
                     second_team_blocks[j].movement_status = 0;
                 }
@@ -202,8 +218,6 @@ function remove_block(block, blocks, green_blocks, orange_blocks) {
     else if (block.team === 'orange') {
         orange_blocks.splice(orange_blocks.indexOf(block), 1);
     }
-    block.block_remove();
-    // removes the block from the canvas
 }
 
 function create_block(game, list_of_blocks, x, y, color, team, game_config) {
@@ -305,6 +319,7 @@ module.exports = {
     remove_block,
     check_collisions,
     is_any_block_moving,
+    calculations_finished,
     turn_finished,
     move_blocks,
 }
