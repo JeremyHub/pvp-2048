@@ -368,7 +368,6 @@ class GameScene extends Phaser.Scene {
             }
         }    
         
-        this.handle_getting_rid_of_player_placed_walls();
     }
 
     update_timers() {
@@ -404,6 +403,7 @@ class GameScene extends Phaser.Scene {
             if (this.green_move !== null && this.orange_move !== null) {
                 
                 this.handle_moving();
+                this.handle_getting_rid_of_player_placed_walls();
                 
             }
 
