@@ -365,10 +365,14 @@ class GameScene extends Phaser.Scene {
         this.handle_getting_rid_of_player_placed_walls();
     }
 
-    update() {
-        
+    update_timers() {
         this.green_timer.update();
         this.orange_timer.update();
+    }
+
+    update() {
+        
+        this.update_timers();
         
         this.all_block_lists = this.orange_blocks.concat(this.green_blocks);
         
@@ -397,15 +401,17 @@ class GameScene extends Phaser.Scene {
                 
             }
 
-            
-            if (this.green_move === null && this.green_has_moved) {
-                this.green_timer.unpause();
-            }
-            
-            if (this.orange_move === null && this.orange_has_moved)  {
-                this.orange_timer.unpause();
-            }
-            
+            this.check_unpause_timers();
+        }
+    }
+
+    check_unpause_timers() {
+        if (this.green_move === null && this.green_has_moved) {
+            this.green_timer.unpause();
+        }
+        
+        if (this.orange_move === null && this.orange_has_moved)  {
+            this.orange_timer.unpause();
         }
     }
 
