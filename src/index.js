@@ -6,8 +6,14 @@ var {LossScene, WinScene} = require('./WinLossScenes');
 
 const config = {
     type: Phaser.AUTO,
-    width: game_config.num_cols * game_config.tile_size,
-    height: game_config.num_rows * game_config.tile_size,
+    scale: {
+        min: {
+            width: 500,
+            height: 500
+        },
+        mode: Phaser.Scale.FIT,
+        parent: 'game',
+    },    
     backgroundColor: '#000000',
     parent: 'game',
 };

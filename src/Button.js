@@ -18,6 +18,7 @@ class Button extends Phaser.GameObjects.Container {
 
         // stretch the button so that it fits the text
         this.button.displayWidth = this.text.width + 20;
+        this.button.displayHeight = this.text.height + 20;
 
         this.add(this.button);
         this.add(this.text);

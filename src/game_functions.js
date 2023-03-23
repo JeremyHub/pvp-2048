@@ -221,17 +221,12 @@ function remove_block(block, blocks, green_blocks, orange_blocks) {
 }
 
 function create_block(game, list_of_blocks, x, y, color, team, game_config, value=2) {
-    const coords = convert_tile_to_world(x, y, game_config);
-    const block = new Block(game, coords.x, coords.y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding, team, value, x, y, Math.random(), game_config.wall_id, game.is_drawing);
+    const tile = game.map.getTileAt(x, y);
+    const world_x = tile.getCenterX();
+    const world_y = tile.getCenterY();
+    const block = new Block(game, world_x, world_y, [], color, game_config.tile_size - (game_config.padding * 2), game_config.padding, team, value, x, y, Math.random(), game_config.wall_id, game.is_drawing);
     list_of_blocks.push(block);
     return block;
-}
-
-function convert_tile_to_world(tile_x, tile_y, game_config) {
-    return {
-        x: (tile_x * game_config.tile_size) + (game_config.tile_size / 2),
-        y: (tile_y * game_config.tile_size) + (game_config.tile_size / 2)
-    }
 }
 
 function block_in_tile(x, y, game, list_of_blocks) {
@@ -314,7 +309,6 @@ module.exports = {
     box_in,
     spawnblocks,
     block_in_tile,
-    convert_tile_to_world,
     create_block,
     remove_block,
     check_collisions,

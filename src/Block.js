@@ -278,10 +278,13 @@ class Block{
         }
     }
 
-    convert_tile_to_world(tile_x, tile_y) {
+    convert_tile_to_world(x, y) {
+        const tile = this.scene.map.getTileAt(x, y);
+        const world_x = tile.getCenterX();
+        const world_y = tile.getCenterY();
         return {
-            x: (tile_x * this.space_size) + (this.space_size / 2),
-            y: (tile_y * this.space_size) + (this.space_size / 2)
+            x: world_x,
+            y: world_y,
         }
     }
 

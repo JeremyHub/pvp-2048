@@ -12,24 +12,27 @@ class StartScene extends Phaser.Scene {
         this.load.image("button_background", "src/assets/button_background.png");
         this.load.image("button_background_hover", "src/assets/button_background_hover.png");
     }
-
+    
     create() {
-        document.getElementById("all-multiplayer-items").style.visibility = "hidden";
+        this.title_size = this.game.config.width / 5;
+        this.button_text_size = this.game.config.width / 15;
 
+        document.getElementById("all-multiplayer-items").style.visibility = "hidden";
+        
         this.image = this.add.image(0, 0, "titlescreen").setOrigin(0, 0);
         this.image.displayWidth = this.game.config.width;
         this.image.displayHeight = this.game.config.height;
 
-        this.title = this.add.text(0, 0, "PvP 2048", { fontSize: "90px", fill: "#fff" });
+        this.title = this.add.text(0, 0, "PvP 2048", { fontSize: this.title_size + "px", fill: "#fff" });
         this.title.setOrigin(0.5, 0.5);
         this.title.x = this.game.config.width / 2;
         this.title.y = this.game.config.height / 6;
 
-        this.single_player_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Single Player", { fontSize: "30px", fill: "#000" }, this.single_player.bind(this));
+        this.single_player_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Single Player", { fontSize: this.button_text_size + "px", fill: "#000" }, this.single_player.bind(this));
         this.single_player_button.x = this.game.config.width / 2;
         this.single_player_button.y = this.game.config.height / 2;
 
-        this.multiplayer_buton = new Button(this, 0, 0, "button_background", "button_background_hover", "Multiplayer", { fontSize: "30px", fill: "#000" }, this.multiplayer.bind(this));
+        this.multiplayer_buton = new Button(this, 0, 0, "button_background", "button_background_hover", "Multiplayer", { fontSize: this.button_text_size + "px", fill: "#000" }, this.multiplayer.bind(this));
         this.multiplayer_buton.x = this.game.config.width / 2;
         this.multiplayer_buton.y = this.game.config.height / 1.5;
     }
@@ -41,12 +44,12 @@ class StartScene extends Phaser.Scene {
         this.multiplayer_buton.destroy();
 
         // create 1 player mode button
-        this.one_player_button = new Button(this, 0, 0, "button_background", "button_background_hover", "1 Player", { fontSize: "30px", fill: "#000" }, this.one_player.bind(this));
+        this.one_player_button = new Button(this, 0, 0, "button_background", "button_background_hover", "1 Player", { fontSize: this.button_text_size + "px", fill: "#000" }, this.one_player.bind(this));
         this.one_player_button.x = this.game.config.width / 2;
         this.one_player_button.y = this.game.config.height / 2;
 
         // create 2 player mode button
-        this.two_player_button = new Button(this, 0, 0, "button_background", "button_background_hover", "2 Player", { fontSize: "30px", fill: "#000" }, this.two_player.bind(this));
+        this.two_player_button = new Button(this, 0, 0, "button_background", "button_background_hover", "2 Player", { fontSize: this.button_text_size + "px", fill: "#000" }, this.two_player.bind(this));
         this.two_player_button.x = this.game.config.width / 2;
         this.two_player_button.y = this.game.config.height / 1.5;
 
@@ -73,12 +76,12 @@ class StartScene extends Phaser.Scene {
         this.multiplayer_buton.destroy();
 
         // create room button
-        this.create_room_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Create Room", { fontSize: "30px", fill: "#000" }, this.mutliplayer_manager.create_room.bind(this.mutliplayer_manager));
+        this.create_room_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Create Room", { fontSize: this.button_text_size + "px", fill: "#000" }, this.mutliplayer_manager.create_room.bind(this.mutliplayer_manager));
         this.create_room_button.x = this.game.config.width / 2;
         this.create_room_button.y = this.game.config.height / 2;
 
         // join room button
-        this.join_room_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Join Room", { fontSize: "30px", fill: "#000" }, this.mutliplayer_manager.join_room.bind(this.mutliplayer_manager));
+        this.join_room_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Join Room", { fontSize: this.button_text_size + "px", fill: "#000" }, this.mutliplayer_manager.join_room.bind(this.mutliplayer_manager));
         this.join_room_button.x = this.game.config.width / 2;
         this.join_room_button.y = this.game.config.height / 1.5;
 
@@ -87,9 +90,9 @@ class StartScene extends Phaser.Scene {
 
     add_back_button() {
         // TODO change this to be a back icon
-        this.back_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Back", { fontSize: "10px", fill: "#fff"}, this.restart_scene.bind(this));
-        this.back_button.x = 20
-        this.back_button.y = this.game.config.height - 20
+        this.back_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Back", { fontSize: this.button_text_size/2 + "px", fill: "#fff"}, this.restart_scene.bind(this));
+        this.back_button.x = this.back_button.getBounds().width / 2 + 1;
+        this.back_button.y = this.game.config.height - this.back_button.getBounds().height / 2;
     }
 
     restart_scene() {

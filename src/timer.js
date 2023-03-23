@@ -5,7 +5,8 @@ export class Timer extends Phaser.GameObjects.Container{
         super(scene, x, y);
         this.scene = scene;
         this.time = time;
-        let style = { font: "bold 30px Arial", fill: "#fffff", boundsAlignH: "center", boundsAlignV: "middle" };
+        let text_size = this.scene.game.config.width/20;
+        let style = { font: "bold " + text_size + "px Arial", fill: "#fffff", boundsAlignH: "center", boundsAlignV: "middle" };
         this.text = new Phaser.GameObjects.Text(this.scene, 0, 0, "", style);
         this.add(this.text);
         this.create();

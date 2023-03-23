@@ -24,7 +24,8 @@ class WinLossScene extends Phaser.Scene {
         this.image.displayHeight = this.game.config.height;
 
         this.text = this.winner + " " + (this.type === "WinScene" ? " Wins!" : " Loses!");
-        this.title = this.add.text(0, 0, this.text, { fontSize: "50px", fill: "#000"});
+        let text_size = this.game.config.width / 10;
+        this.title = this.add.text(0, 0, this.text, { fontSize: text_size + "px", fill: "#000"});
         this.title.setOrigin(0.5, 0.5);
         this.title.scaleY = 2;
         this.title.x = this.game.config.width / 2;

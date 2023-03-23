@@ -18,7 +18,7 @@ var {
 const game_config = {
     num_rows: 14,
     num_cols: 14,
-    tile_size: 32, // currently this must match the size of the tiles in the tileset
+    tile_size: null, // set in preload
     padding: 3,
     orange_color: 0xffa500,
     green_color: 0x00ff00,
@@ -87,6 +87,8 @@ class GameScene extends Phaser.Scene {
 
     preload() {
 
+        game_config.tile_size = Math.min(this.game.config.width,this.game.config.height) / game_config.num_cols;
+
         this.load.tilemapTiledJSON('tilemap', 'src/assets/libraryfire.json');
         this.load.image('tiles', 'src/assets/tiles.png');
         this.load.audio("bounce_sound", "src/assets/bounceSound.mp3");     
@@ -99,9 +101,13 @@ class GameScene extends Phaser.Scene {
 
         this.map = this.make.tilemap({ key: 'tilemap' });
         this.tileset = this.map.addTilesetImage('tiles', 'tiles');
-        // this.tileset.setTileSize(game_config.tile_size, game_config.tile_size);
-        this.map.createLayer('Tile Layer 1', this.tileset);
-        // this.map.setBaseTileSize(game_config.tile_size, game_config.tile_size);
+        
+        this.map.createLayer('Tile Layer 1', this.tileset, 0, 0);
+        // scale the tilemap to the correct size
+        this.map.layers[0].tilemapLayer.setScale(game_config.tile_size / 32, game_config.tile_size / 32);
+        // center it in the game
+        this.map.layers[0].tilemapLayer.x = Math.max((this.game.config.width - (game_config.tile_size*game_config.num_rows)) / 2,0);
+        this.map.layers[0].tilemapLayer.y = Math.max((this.game.config.height - (game_config.tile_size*game_config.num_cols)) / 2,0);
 
         this.bounceSOUND = this.sound.add("bounce_sound");     
         this.bounceSOUND.play();      
@@ -113,8 +119,8 @@ class GameScene extends Phaser.Scene {
         this[`${key.toLowerCase()}_key`] = this.input.keyboard.addKey(key);
         }
 
-        this.green_timer = new Timer(this, this.game.config.width*0.11, this.game.config.height*0.15, 120000);
-        this.orange_timer = new Timer(this, this.game.config.width*0.75, this.game.config.height*0.8, 120000);
+        this.green_timer = new Timer(this, this.game.config.width*0.2, this.game.config.height*0.15, 120000);
+        this.orange_timer = new Timer(this, this.game.config.width*0.7, this.game.config.height*0.8, 120000);
 
         
     }
