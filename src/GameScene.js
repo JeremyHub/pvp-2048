@@ -1,3 +1,5 @@
+var {Timer} = require('./Timer');
+
 var {block_config} = require('./Block');
 var {
     removePlayerWalls,
@@ -49,7 +51,6 @@ class GameScene extends Phaser.Scene {
         this.movement_started = false; // used to set up movement at the start of each turn
         this.animations_started = false;
 
-        this.timer = 0;
         this.blocks_moved = false;
 
         this.orange_bool = false;
@@ -70,16 +71,16 @@ class GameScene extends Phaser.Scene {
         // Define a list of the keys
         this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M', 'L', 'K', 'N'];
 
-
         this.green_walls_count = 0;
         this.orange_walls_count = 0;
         this.green_wall_bool = false;
         this.orange_wall_bool = false;
 
-
         this.green_lock = "false";      
         this.orange_lock = "false";
 
+        this.green_has_moved = false;
+        this.orange_has_moved = false;
 
         return this;
     }
@@ -112,6 +113,10 @@ class GameScene extends Phaser.Scene {
         this[`${key.toLowerCase()}_key`] = this.input.keyboard.addKey(key);
         }
 
+        this.green_timer = new Timer(this, this.game.config.width*0.11, this.game.config.height*0.15, 120000);
+        this.orange_timer = new Timer(this, this.game.config.width*0.75, this.game.config.height*0.8, 120000);
+
+        
     }
 
     update_dom_elements() {
@@ -130,12 +135,12 @@ class GameScene extends Phaser.Scene {
 
     check_win_loss() {
         // combine these into one function somehwere else? maybe in game_functions.js
-        if(getTotalValueOfBlocks(this.orange_blocks) > this.win_value){
+        if(getTotalValueOfBlocks(this.orange_blocks) > this.win_value || this.green_timer.time <= 0){
 
             this.scene.start('WinScene', {winner: 'Orange'});
             return true;
 
-        } else if(getTotalValueOfBlocks(this.green_blocks) > this.win_value){
+        } else if(getTotalValueOfBlocks(this.green_blocks) > this.win_value || this.orange_timer.time <= 0){
         
             this.scene.start('WinScene', {winner: 'Green'});
             return true;
@@ -292,9 +297,6 @@ class GameScene extends Phaser.Scene {
             this.green_walls_count ++;
             this.orange_walls_count ++;
 
-
-            // PUT THIS IN A FUNCTION SOMEWHERE ELSE! I was having trouble with it - Zane
-
             for( let i = 0; i < this.green_walls.length; i++){
                 if(this.green_walls[i].index === game_config.wall_id[0]){
                     this.green_walls[i].index = game_config.empty_space_id[0];
@@ -305,7 +307,6 @@ class GameScene extends Phaser.Scene {
                     this.orange_walls[i].index = game_config.empty_space_id[0];
                 }
             }
-        
         }
     }
 
@@ -365,6 +366,10 @@ class GameScene extends Phaser.Scene {
     }
 
     update() {
+        
+        this.green_timer.update();
+        this.orange_timer.update();
+        
         this.all_block_lists = this.orange_blocks.concat(this.green_blocks);
         
         this.update_dom_elements();
@@ -391,9 +396,37 @@ class GameScene extends Phaser.Scene {
                 this.handle_moving();
                 
             }
+
+            
+            if (this.green_move === null && this.green_has_moved) {
+                this.green_timer.unpause();
+            }
+            
+            if (this.orange_move === null && this.orange_has_moved)  {
+                this.orange_timer.unpause();
+            }
+            
         }
     }
+
+    make_green_move(move) {
+        this.green_move = move;
+        this.green_timer.pause();
+        this.green_has_moved = true;
+    }
+
+    make_orange_move(move) {
+        this.orange_move = move;
+        this.orange_timer.pause();
+        this.orange_has_moved = true;
+    }
+
+
+
+
 }
+
+
 
 module.exports = {
     GameScene,

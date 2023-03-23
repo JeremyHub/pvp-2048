@@ -33,20 +33,20 @@ export class SinglePlayerManager {
         if (this.num_players) {
             if (!this.scene.any_block_is_moving) {
                 if (this.green_move){
-                    this.scene.green_move = this.green_move;
+                    this.scene.make_green_move(this.green_move);
                     this.green_move = null;
                     document.getElementById("green-lock").innerHTML = "true";
                 }
                 if (this.num_players === 2) {
                     if (this.orange_move){
-                        this.scene.orange_move = this.orange_move;
+                        this.scene.make_orange_move(this.orange_move);
                         this.orange_move = null;
                         document.getElementById("orange-lock").innerHTML = "true";
                     }
                 } else if (this.num_players === 1) {
                     let choices = ["up", "down", "left", "right"];
                     let random_index = Math.floor(Math.random() * choices.length);
-                    this.scene.orange_move = choices[random_index];
+                    this.scene.make_orange_move(choices[random_index]);
                     document.getElementById("orange-lock").innerHTML = "true";
                 } else {
                     console.error("num_players must be 1 or 2");
