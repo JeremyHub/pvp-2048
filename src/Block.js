@@ -110,23 +110,23 @@ class Block{
                     // (that shouldn't happen because it would look odd but it's something to consider)
                     // would probably want to seperate this later after animations get added
                     // destroy/merge format: ["merge" or "destroy", (block that this block is merging into/being destroyed by)]
-                    if (animation_step.at(1).container.x === this.container.x && animation_step.at(1).container.y === this.container.y) {
+                    // if (animation_step.at(1).container.x === this.container.x && animation_step.at(1).container.y === this.container.y) {
                         console.log('block destroyed', this, animation_step.at(1))
                         this.rect.destroy()
                         this.text.destroy()
-                    }
-                    else {
-                        this.animations = [["merge", animation_step.at(1)]].concat(this.animations)
-                    }
+                    // }
+                    // else {
+                    //     this.animations = [["merge", animation_step.at(1)]].concat(this.animations)
+                    // }
                 }
                 else if (animation_step.at(0) === "increase value") {
                     // increase value format: ["increase value", (block that this block is merging with)]
-                    if (animation_step.at(1).container.x === this.container.x && animation_step.at(1).container.y === this.container.y) {
+                    // if (animation_step.at(1).container.x === this.container.x && animation_step.at(1).container.y === this.container.y) {
                         this.text_value *= 2
-                    }
-                    else {
-                        this.animations = [["increase value", animation_step.at(1)]].concat(this.animations)
-                    }
+                    // }
+                    // else {
+                    //     this.animations = [["increase value", animation_step.at(1)]].concat(this.animations)
+                    // }
                 }
             }
         }
