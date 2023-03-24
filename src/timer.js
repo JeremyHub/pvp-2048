@@ -1,4 +1,4 @@
-export class Timer extends Phaser.GameObjects.Container{
+class Timer extends Phaser.GameObjects.Container{
 
     
     constructor(scene, x, y, time){
@@ -51,3 +51,7 @@ export class Timer extends Phaser.GameObjects.Container{
 
 
 }
+
+module.exports = {
+    Timer,
+};

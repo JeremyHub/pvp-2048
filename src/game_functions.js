@@ -155,7 +155,7 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
                     team_colliding_blocks[i].animations.push(["increase value", team_colliding_blocks[j]])
                     let removed_team = team_colliding_blocks[j].team;
                     team_colliding_blocks[j].animations.push(["merge", team_colliding_blocks[i]])
-                    console.log("block should have added merge to animations", team_colliding_blocks[j], team_colliding_blocks[j].animations)
+                    // console.log("block should have added merge to animations", team_colliding_blocks[j], team_colliding_blocks[j].animations)
                     team_colliding_blocks[j].will_be_removed = true
                     if (removed_team === first_team) {
                         first_team_blocks.splice(first_team_blocks.indexOf(team_colliding_blocks[j]), 1);

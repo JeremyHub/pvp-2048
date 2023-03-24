@@ -1,27 +1,63 @@
-var {constructor, init, preload, create, update, game_config, block_config} = require('../src/scene.js');
+// mock Phaser
+global.Phaser = {
+    GameObjects: {
+        Container: class Container {
+            constructor(scene, x, y) {
+            }
+        },
+    },
+    Scene: class Scene {
+        constructor() {
+        }
+    },
+}
+
+// setup .at becuase for some reason the test runner doesn't like it
+function at(n) {
+    // ToInteger() abstract op
+    n = Math.trunc(n) || 0;
+    // Allow negative indexing from the end
+    if (n < 0) n += this.length;
+    // OOB access is guaranteed to return undefined
+    if (n < 0 || n >= this.length) return undefined;
+    // Otherwise, this is just normal property access
+    return this[n];
+}
+
+const TypedArray = Reflect.getPrototypeOf(Int8Array);
+for (const C of [Array, String, TypedArray]) {
+    Object.defineProperty(C.prototype, "at",
+                          { value: at,
+                            writable: true,
+                            enumerable: false,
+                            configurable: true });
+}
+
+var {GameScene, game_config, block_config, create_block} = require('../src/GameScene.js');
 
 function make_scene() { // make a mock scene object
-    let scene ={
-        init: init,
-        update: update,
-        map: {
-            putTileAtWorldXY: function(data, x, y) {
-                this.layer.data[y][x].index = data;
-            },
-            getTileAtWorldXY: function(x, y) {
-                let tile_x = Math.floor(x / game_config.tile_size);
-                let tile_y = Math.floor(y / game_config.tile_size);
-                return this.layer.data[tile_y][tile_x];
-            },
-            getTileAt: function(x, y) {
-                return this.layer.data[y][x];
-            },
-            layer: {
-                data: [],
-            },
+    let scene = new GameScene();
+    scene.green_timer = {
+        pause: function() {},
+    }
+    scene.orange_timer = {
+        pause: function() {},
+    }
+    scene.map = {
+        putTileAtWorldXY: function(data, x, y) {
+            this.layer.data[y][x].index = data;
         },
-        add: {existing: function() {},},
-        pointer: {x: 0, y: 0, isDown: false},
+        getTileAtWorldXY: function(x, y) {
+            let tile_x = x;
+            let tile_y = y;
+            return this.layer.data[tile_y][tile_x];
+        },
+        getTileAt: function(x, y) {
+            return this.layer.data[y][x];
+        },
+        layer: {
+            data: [],
+        },
     };
     scene.init();
     for (let key of scene.keyList) {
@@ -36,10 +72,33 @@ function make_map(scene, x, y) {
         scene.map.layer.data[i] = [];
         for (var j = 0; j < y; j++) {
             if (i === 0 || i === x - 1 || j === 0 || j === y - 1) {
-                scene.map.layer.data[i][j] = {index: game_config.wall_id[0], x: j, y: i, layer: scene.map.layer};
+                scene.map.layer.data[i][j] = {
+                    index: game_config.wall_id[0],
+                    x: j,
+                    y: i,
+                    layer: scene.map.layer,
+                    getCenterX: function() {
+                        return this.x;
+                    },
+                    getCenterY: function() {
+                        return this.y;
+                    },
+                };
             }
             else {
-                scene.map.layer.data[i][j] = {index: -1, x: j, y: i, layer: scene.map.layer};
+                scene.map.layer.data[i][j] = {
+                    index: -1,
+                    x: j,
+                    y: i,
+                    layer:
+                    scene.map.layer,
+                    getCenterX: function() {
+                        return this.x;
+                    },
+                    getCenterY: function() {
+                        return this.y;
+                    },
+                };
             }
         }
     }
@@ -49,9 +108,6 @@ module.exports = {
     make_scene,
     block_config: block_config,
     game_config: game_config,
-    constructor,
-    preload,
-    create,
-    update,
+    create_block: create_block,
     make_map,
 }

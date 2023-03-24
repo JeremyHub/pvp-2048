@@ -18,7 +18,7 @@ var {
 const game_config = {
     num_rows: 14,
     num_cols: 14,
-    tile_size: null, // set in preload
+    tile_size: 32, // reset in preload
     padding: 3,
     orange_color: 0xffa500,
     green_color: 0x00ff00,
@@ -331,6 +331,9 @@ class GameScene extends Phaser.Scene {
     }
 
     handle_moving() {
+        this.update_all_blocks_list();
+
+        
         if (this.movement_started === false) {
             this.movement_started = true;
             for (let i = 0; i < this.all_block_lists.length; i++) {
@@ -342,7 +345,7 @@ class GameScene extends Phaser.Scene {
             check_collisions(this.all_block_lists, this.green_blocks, this.orange_blocks);
             move_blocks(this.green_blocks, this.green_move);
             move_blocks(this.orange_blocks, this.orange_move);
-
+            
         }    
         if (calculations_finished(this.all_block_lists)) {
             if (this.animations_started === false) {
@@ -375,11 +378,15 @@ class GameScene extends Phaser.Scene {
         this.orange_timer.update();
     }
 
+    update_all_blocks_list() {
+        this.all_block_lists = this.orange_blocks.concat(this.green_blocks);
+    }
+
     update() {
         
         this.update_timers();
         
-        this.all_block_lists = this.orange_blocks.concat(this.green_blocks);
+        this.update_all_blocks_list();
         
         this.update_dom_elements();
         
