@@ -235,7 +235,6 @@ describe('Game', function () {
                         expect(has_destroy_animation).to.equal(true, "second block does not have a destroy animation");
                     } else {
                         // block should be in the position and value described by input
-                        console.log(block.tile_x, x)
                         expect(block.tile_x).to.equal(x, "x position of " + team + " block is wrong");
                         expect(block.tile_y).to.equal(y, "y position of " + team + " block is wrong");
                         expect(block.value).to.equal(value, "value of " + team + " block is wrong");
