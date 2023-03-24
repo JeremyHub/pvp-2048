@@ -30,6 +30,8 @@ export class MutliplayerManager {
         this.gameRef = null;
         this.user = null;
         this.game_has_started = false;
+        this.you_have_moved = false;
+        this.opp_has_moved = false;
         this.input_manager = new InputManager(this.update_with_direction.bind(this), this.update_with_direction.bind(this), this.update_with_direction.bind(this));
     }
 
@@ -147,35 +149,29 @@ export class MutliplayerManager {
         document.getElementById("current-player").innerHTML = this.your_color;
         // if both players are active, update the game with the moves
         if (game_data.players.green.is_active && game_data.players.orange.is_active) {
-            // if both players have made a move, update the game with the moves
-            if (game_data.players[this.your_color].moves.length > this.current_turn) {
-                if (game_data.players[opp_color].moves.length > this.current_turn) {
-                    // and the game has finished with the current move
-                    if (this.scene.green_move == null && this.scene.orange_move == null){
-                        // update the game with the moves
-                        this.current_turn++;
-                    }
-                }
-            }
+
+            // update the game with the moves
             if (game_data.players[this.your_color].moves.length > this.current_turn) {
                 this.scene["make_" + this.your_color + "_move"](game_data.players[this.your_color].moves[this.current_turn]);
+                this.you_have_moved = true;
+                document.getElementById(this.your_color + "-lock").innerHTML = "true";
+                document.getElementById("current-move").innerHTML = game_data.players[this.your_color].moves[this.current_turn];
             }
             if (game_data.players[opp_color].moves.length > this.current_turn) {
                 this.scene["make_" + opp_color + "_move"](game_data.players[opp_color].moves[this.current_turn]);
+                document.getElementById(opp_color + "-lock").innerHTML = "true";
+                this.opp_has_moved = true;
             }
 
-            // update the indicators for which player's has made a move
-            if (game_data.players[this.your_color].moves.length > this.current_turn) {
-                document.getElementById(this.your_color + "-lock").innerHTML = "true";
-                document.getElementById("current-move").innerHTML = game_data.players[this.your_color].moves[this.current_turn];
-            } else {
-                document.getElementById(this.your_color + "-lock").innerHTML = "false";
+            // if the game has two moves in it
+            if (this.you_have_moved && this.opp_has_moved) {
+                // update the dom
                 document.getElementById("current-move").innerHTML = "";
-            }
-            if (game_data.players[opp_color].moves.length > this.current_turn) {
-                document.getElementById(opp_color + "-lock").innerHTML = "true";
-            } else {
+                document.getElementById(this.your_color + "-lock").innerHTML = "false";
                 document.getElementById(opp_color + "-lock").innerHTML = "false";
+                this.you_have_moved = false;
+                this.opp_has_moved = false;
+                this.current_turn++;
             }
         }
     }
