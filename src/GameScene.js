@@ -34,7 +34,11 @@ class GameScene extends Phaser.Scene {
         super({key: 'GameScene'});
     }
 
-    init() {
+    init(args) {
+
+        this.args = args;
+        this.mode = args.mode;
+        this.your_color = args.your_color;
 
         this.blocks = [];               // all blocks
         this.orange_blocks = [];        // orange blocks            
@@ -66,7 +70,7 @@ class GameScene extends Phaser.Scene {
 
         this.orange_total_value = 0;
         this.green_total_value = 0;
-        this.win_value = 100;
+        this.win_value = 10;
         
         // Define a list of the keys
         this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M', 'L', 'K', 'N'];
@@ -119,9 +123,19 @@ class GameScene extends Phaser.Scene {
         this[`${key.toLowerCase()}_key`] = this.input.keyboard.addKey(key);
         }
 
-        this.green_timer = new Timer(this, this.game.config.width*0.2, this.game.config.height*0.15, 120000);
-        this.orange_timer = new Timer(this, this.game.config.width*0.7, this.game.config.height*0.8, 120000);
-
+        // no timer when against bot
+        if (this.mode == "single") {
+            let dummy = {
+                update: function() {},
+                pause: function() {},
+                unpause: function() {},
+            }
+            this.green_timer = dummy;
+            this.orange_timer = dummy;
+        } else {
+            this.green_timer = new Timer(this, this.game.config.width*0.2, this.game.config.height*0.15, 120000);
+            this.orange_timer = new Timer(this, this.game.config.width*0.7, this.game.config.height*0.8, 120000);
+        }
         
     }
 
@@ -143,12 +157,32 @@ class GameScene extends Phaser.Scene {
         // combine these into one function somehwere else? maybe in game_functions.js
         if(getTotalValueOfBlocks(this.orange_blocks) > this.win_value || this.green_timer.time <= 0){
 
-            this.scene.start('WinScene', {winner: 'Orange'});
+            if (this.mode == "single") {
+                this.scene.start('LossScene', {player: "you"});
+            } else if (this.mode == "multiplayer") {
+                if (this.your_color == "orange") {
+                    this.scene.start('WinScene', {player: "you"});
+                } else {
+                    this.scene.start('LossScene', {player: "you"});
+                }
+            } else if (this.mode == "local-multiplayer") {
+                this.scene.start('WinScene', {player: 'Orange'});
+            }
             return true;
 
         } else if(getTotalValueOfBlocks(this.green_blocks) > this.win_value || this.orange_timer.time <= 0){
         
-            this.scene.start('WinScene', {winner: 'Green'});
+            if (this.mode == "single") {
+                this.scene.start('WinScene', {player: "you"});
+            } else if (this.mode == "multiplayer") {
+                if (this.your_color == "green") {
+                    this.scene.start('WinScene', {player: "you"});
+                } else {
+                    this.scene.start('LossScene', {player: "you"});
+                }
+            } else if (this.mode == "local-multiplayer") {
+                this.scene.start('WinScene', {player: 'Green'});
+            }
             return true;
         }
 

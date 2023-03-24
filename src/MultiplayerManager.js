@@ -132,7 +132,7 @@ export class MutliplayerManager {
 
     start_game() {
         seedrandom(this.joined_game_code, { global: true });
-        this.start_game_callback();
+        this.start_game_callback({mode: "multiplayer", your_color: this.your_color});
         set(ref(this.database, "games/" + this.joined_game_code + "/players/" + this.your_color + "/is_active"), true);
     }
 

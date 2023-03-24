@@ -58,12 +58,12 @@ class StartScene extends Phaser.Scene {
 
     one_player() {
         this.single_player_manager.init(1);
-        this.start_game();
+        this.start_game({ mode: "single"});
     }
 
     two_player() {
         this.single_player_manager.init(2);
-        this.start_game();
+        this.start_game({ mode: "local_multiplayer"});
     }
     
     multiplayer() {
@@ -99,8 +99,8 @@ class StartScene extends Phaser.Scene {
         this.scene.start("StartScene");
     }
 
-    start_game() {
-        this.scene.start("GameScene");
+    start_game(args) {
+        this.scene.start("GameScene", args);
     }
 
 }

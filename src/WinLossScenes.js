@@ -6,7 +6,7 @@ class WinLossScene extends Phaser.Scene {
     }
 
     init(data) {
-        this.winner = data.winner;
+        this.player = data.player;
     }
 
     preload() {
@@ -23,7 +23,11 @@ class WinLossScene extends Phaser.Scene {
         this.image.displayWidth = this.game.config.width;
         this.image.displayHeight = this.game.config.height;
 
-        this.text = this.winner + " " + (this.type === "WinScene" ? " Wins!" : " Loses!");
+        if (this.player == "you") {
+            this.text = this.type === "WinScene" ? "You Win!" : "You Lose!";
+        } else {
+            this.text = this.player + " " + (this.type === "WinScene" ? " Wins!" : " Loses!");
+        }
         let text_size = this.game.config.width / 10;
         this.title = this.add.text(0, 0, this.text, { fontSize: text_size + "px", fill: "#000"});
         this.title.setOrigin(0.5, 0.5);
@@ -31,6 +35,13 @@ class WinLossScene extends Phaser.Scene {
         this.title.x = this.game.config.width / 2;
         this.title.y = this.game.config.height / 2;
         this.title.setResolution(2);
+
+        this.instruction_text = this.add.text(0, 0, "Click anywhere to play again", { fontSize: text_size / 2 + "px", fill: "#000"});
+        this.instruction_text.setOrigin(0.5, 0.5);
+        this.instruction_text.scaleY = 2;
+        this.instruction_text.x = this.game.config.width / 2;
+        this.instruction_text.y = this.game.config.height / 1.5;
+        this.instruction_text.setResolution(2);
 
         this.input.on("pointerdown", () => {
             this.scene.start("StartScene");

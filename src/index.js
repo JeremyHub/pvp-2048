@@ -11,6 +11,10 @@ const config = {
             width: 500,
             height: 500
         },
+        max: {
+            width: 1000,
+            height: 1000
+        },
         mode: Phaser.Scale.FIT,
         parent: 'game',
     },    
