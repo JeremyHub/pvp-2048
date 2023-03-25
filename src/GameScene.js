@@ -22,7 +22,7 @@ const game_config = {
     padding: 3,
     orange_color: 0xffa500,
     green_color: 0x00ff00,
-    wall_id: [6,262],
+    wall_id: [6,262,268],
     green_id: [57, 1, 2, 3, 17, 18, 19, 33, 34, 35],   // spawning area
     orange_id: [127, 7, 8, 9, 23, 24,25, 39, 40, 41], // spawning area
     empty_space_id: [15,178],
@@ -31,8 +31,9 @@ const game_config = {
         'basic',
         'halls',
         'claust',
+        'frfrfr',
     ],
-    selected_map: 0, // default map
+    selected_map: 4, // default map
 };
 
 class GameScene extends Phaser.Scene {
@@ -77,7 +78,7 @@ class GameScene extends Phaser.Scene {
 
         this.orange_total_value = 0;
         this.green_total_value = 0;
-        this.win_value = 10;
+        this.win_value = 100;
         
         // Define a list of the keys
         this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M', 'L', 'K', 'N'];
@@ -100,6 +101,7 @@ class GameScene extends Phaser.Scene {
         for (let map of game_config.maps) {
             this.load.tilemapTiledJSON(map, `src/assets/${map}.json`);
         }
+        this.load.image('combinedmaps', 'src/assets/combinedmaps.png');
         this.load.image('tiles', 'src/assets/tiles.png');
         this.load.audio("bounce_sound", "src/assets/bounceSound.mp3");
         
@@ -110,7 +112,8 @@ class GameScene extends Phaser.Scene {
         this.is_drawing = true;
         
         this.map = this.make.tilemap({ key: game_config.maps[game_config.selected_map] });
-        this.tileset = this.map.addTilesetImage('tiles', 'tiles');
+        let tileset_name = this.map.tilesets[0].name;
+        this.tileset = this.map.addTilesetImage(tileset_name, tileset_name);
         
         this.map.createLayer('Tile Layer 1', this.tileset, 0, 0);
 
@@ -395,6 +398,7 @@ class GameScene extends Phaser.Scene {
         }
         this.any_block_is_moving = true;
         if (!is_any_block_moving(this.all_block_lists)) {
+            
             check_collisions(this.all_block_lists, this.green_blocks, this.orange_blocks);
             move_blocks(this.green_blocks, this.green_move);
             move_blocks(this.orange_blocks, this.orange_move);

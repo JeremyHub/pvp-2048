@@ -4,14 +4,14 @@ const block_config = {
 }
 
 class Block{
-    constructor(scene, x, y, children, color, size, padding, team, value, tile_x, tile_y, block_id, wall_id, drawing) {
+    constructor(scene, x, y, children, color, size, padding, team, value, tile_x, tile_y, block_id, wall_ids, drawing) {
         if (drawing) {
             this.container = new Phaser.GameObjects.Container(scene, x, y, children);
             scene.add.existing(this.container);
         } else {
             this.container = {x: x, y: y, destroy : function() {return;}}; // stub for testing
         }
-        this.wall_id = wall_id;
+        this.wall_ids = wall_ids;
         this.color = color;
         this.size = size;
         this.scene = scene;
@@ -237,7 +237,7 @@ class Block{
         const tile_in_direction = this.get_tile_in_direction(direction);
 
         if (tile_in_direction !== null) {
-            if (this.wall_id.includes(tile_in_direction.layer.data[tile_in_direction.y][tile_in_direction.x].index)) {
+            if (this.wall_ids.includes(tile_in_direction.layer.data[tile_in_direction.y][tile_in_direction.x].index)) {
                 return true;
             }
         }
