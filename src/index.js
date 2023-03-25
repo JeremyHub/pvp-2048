@@ -1,7 +1,7 @@
 var Phaser = require('phaser');
 var {GameScene, game_config} = require('./GameScene');
 var {StartScene} = require('./StartScene');
-var {LossScene, WinScene} = require('./WinLossScenes');
+var {LossScene, WinScene, TieScene} = require('./WinLossScenes');
 
 
 const config = {
@@ -27,4 +27,5 @@ game.scene.add('GameScene', GameScene);
 game.scene.add('StartScene', StartScene)
 game.scene.add('WinScene', WinScene);
 game.scene.add('LossScene', LossScene);
+game.scene.add('TieScene', TieScene)
 game.scene.start('StartScene');

@@ -166,8 +166,14 @@ class GameScene extends Phaser.Scene {
     }
 
     check_win_loss() {
-        // combine these into one function somehwere else? maybe in game_functions.js
-        if(getTotalValueOfBlocks(this.orange_blocks) > this.win_value || this.green_timer.time <= 0){
+        
+        // check tie
+        if(getTotalValueOfBlocks(this.orange_blocks) >= this.win_value && getTotalValueOfBlocks(this.green_blocks) >= this.win_value || this.green_timer.time <= 0 && this.orange_timer.time <= 0){
+            this.scene.start('TieScene');
+            return true;
+
+        // check orange win
+        } else if(getTotalValueOfBlocks(this.orange_blocks) >= this.win_value || this.green_timer.time <= 0){
 
             if (this.mode == "single") {
                 this.scene.start('LossScene', {player: "you"});
@@ -182,7 +188,8 @@ class GameScene extends Phaser.Scene {
             }
             return true;
 
-        } else if(getTotalValueOfBlocks(this.green_blocks) > this.win_value || this.orange_timer.time <= 0){
+        // check green win
+        } else if(getTotalValueOfBlocks(this.green_blocks) >= this.win_value || this.orange_timer.time <= 0){
         
             if (this.mode == "single") {
                 this.scene.start('WinScene', {player: "you"});
@@ -436,20 +443,21 @@ class GameScene extends Phaser.Scene {
         
         this.update_dom_elements();
         
-        if (this.check_win_loss()) {
-            return;
-        }
-
+        
         this.update_all_blocks();
-
+        
         this.update_is_any_block_moving();
-
+        
         this.check_key_presses();
-
+        
         this.check_pointer_press();
-
+        
         
         if (!this.any_block_is_moving) {
+            
+            if (this.check_win_loss()) {
+                return;
+            }
 
             this.check_block_spawning();
             
