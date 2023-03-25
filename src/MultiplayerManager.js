@@ -1,3 +1,5 @@
+import { game_config } from "./GameScene";
+
 var { initializeApp } = require("firebase/app");
 var { getDatabase, ref, set, onValue, off } = require("firebase/database");
 var { getAuth, signInAnonymously } = require("firebase/auth");
@@ -99,6 +101,7 @@ export class MutliplayerManager {
                     this.gameRef = temp_ref;
                     document.getElementById("current-room-name").innerHTML = "Room: " + this.joined_game_code;
                     this.your_color = "orange";
+                    game_config.selected_map = snapshot.child("map_selection").val();
                     this.start_game();
                 }
             }
@@ -123,7 +126,8 @@ export class MutliplayerManager {
                     is_active: false,
                     moves: [-1],
                 }
-            }
+            },
+            map_selection: game_config.selected_map,
         }
         set(this.gameRef, data)
         this.start_game();

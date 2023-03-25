@@ -1,6 +1,7 @@
 var { MutliplayerManager } = require('./MultiplayerManager');
 var { SinglePlayerManager } = require('./SinglePlayerManager');
 var { Button } = require('./Button');
+const { game_config } = require('./GameScene');
 
 class StartScene extends Phaser.Scene {
     constructor() {
@@ -35,13 +36,54 @@ class StartScene extends Phaser.Scene {
         this.multiplayer_buton = new Button(this, 0, 0, "button_background", "button_background_hover", "Multiplayer", { fontSize: this.button_text_size + "px", fill: "#000" }, this.multiplayer.bind(this));
         this.multiplayer_buton.x = this.game.config.width / 2;
         this.multiplayer_buton.y = this.game.config.height / 1.5;
+
+        this.map_selection_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Map Selection", { fontSize: this.button_text_size/2 + "px", fill: "#000" }, this.map_selection.bind(this));
+        this.map_selection_button.x = this.game.config.width - this.map_selection_button.button.displayWidth/2;
+        this.map_selection_button.y = this.game.config.height - this.map_selection_button.button.displayHeight/2;
+
+    }
+
+    destroy_main_menu_buttons() {
+        this.single_player_button.destroy();
+        this.multiplayer_buton.destroy();
+        this.map_selection_button.destroy();
+    }
+
+    map_selection() {
+        this.destroy_main_menu_buttons();
+        let num_buttons = game_config.maps.length;
+
+        let x_pos = 0;
+        let y_pos = this.game.config.height / 2.7;
+        let padding = Math.min(this.game.config.width, this.game.config.height) / 30;
+
+        let map_buttons = [];
+        // create map buttons
+        for (let i = 0; i < num_buttons; i++) {
+            let map_button = new Button(this, 0, 0, "button_background", "button_background_hover", game_config.maps[i], { fontSize: this.button_text_size + "px", fill: "#000" }, this.choose_map.bind(this, i));
+            if (x_pos + map_button.button.displayWidth > this.game.config.width) {
+                x_pos = 0;
+                y_pos += map_button.button.displayHeight + padding;
+            }
+            x_pos += map_button.button.displayWidth / 2 + padding;
+            map_button.x = x_pos;
+            map_button.y = y_pos;
+            x_pos += map_button.button.displayWidth/2;
+            map_buttons.push(map_button);
+        }
+
+        this.add_back_button();
+    }
+
+    choose_map(map_num) {
+        game_config.selected_map = map_num;
+        this.restart_scene();
     }
 
     single_player() {
         this.single_player_manager = new SinglePlayerManager(this.game.scene.keys.GameScene);
 
-        this.single_player_button.destroy();
-        this.multiplayer_buton.destroy();
+        this.destroy_main_menu_buttons();
 
         // create 1 player mode button
         this.one_player_button = new Button(this, 0, 0, "button_background", "button_background_hover", "1 Player", { fontSize: this.button_text_size + "px", fill: "#000" }, this.one_player.bind(this));
@@ -72,8 +114,7 @@ class StartScene extends Phaser.Scene {
 
         this.mutliplayer_manager = new MutliplayerManager(this.game.scene.keys.GameScene, this.start_game.bind(this));
         this.mutliplayer_manager.init();
-        this.single_player_button.destroy();
-        this.multiplayer_buton.destroy();
+        this.destroy_main_menu_buttons();
 
         // create room button
         this.create_room_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Create Room", { fontSize: this.button_text_size + "px", fill: "#000" }, this.mutliplayer_manager.create_room.bind(this.mutliplayer_manager));
