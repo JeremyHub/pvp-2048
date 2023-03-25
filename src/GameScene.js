@@ -33,7 +33,7 @@ const game_config = {
         'claust',
         'frfrfr',
     ],
-    selected_map: 4, // default map
+    selected_map: 0, // default map
 };
 
 class GameScene extends Phaser.Scene {
