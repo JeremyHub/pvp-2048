@@ -59,7 +59,7 @@ function make_scene() { // make a mock scene object
             data: [],
         },
     };
-    scene.init();
+    scene.init({mode: ""});
     for (let key of scene.keyList) {
         scene[`${key.toLowerCase()}_key`] = {is_down: false}
     }
