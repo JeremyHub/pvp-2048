@@ -16,6 +16,7 @@ class Block{
         this.size = size;
         this.scene = scene;
         this.moving_direction = null;
+        this.reverse_movement = false;
         this.is_moving = false;
         this.will_be_removed = false;
         this.movement_status = 0
@@ -33,8 +34,8 @@ class Block{
         this.space_size = this.size+(this.padding*2);
         this.rect = null
         this.block_id = block_id
-        this.animations = []
         // block_id is just a random value assigned to every block, I use it to tell blocks apart in console logs
+        this.animations = []
         if (drawing) {
             this.create();
         }
@@ -70,6 +71,10 @@ class Block{
             } else {
                 to_move = block_config.animation_speed;
             }
+
+            if (this.reverse_movement) {
+                to_move *= -1
+            }
             
             if (this.moving_direction === 'up') {
                 this.container.y -= to_move;
@@ -84,13 +89,20 @@ class Block{
                 this.container.x += to_move;
             }
             
-            this.total_moved += to_move;
+            if (this.reverse_movement) {
+                this.total_moved -= to_move;
+            } else {
+                this.total_moved += to_move;
+            }
 
             // we want to stop moving if we are at the center of a block and we cant keep moving
             
             if (this.total_moved === this.total_movement_distance) {
                 this.total_moved = 0;
                 this.total_movement_distance = 0;
+                if (this.reverse_movement) {
+                    this.reverse_movement = false
+                }
             }
             
         }
@@ -100,40 +112,98 @@ class Block{
             }
             else if (this.total_movement_distance === 0) {
                 // this makes sure other animations don't start mid-movement
-                let animation_step = this.animations.shift()
-                if (animation_step.at(0) === "move") {
-                    // move format: ["move", number of steps to move]
-                    this.total_movement_distance = (this.size+(this.padding*2)) * animation_step.at(1)
-                }
-                else if (animation_step.at(0) === "merge" || animation_step.at(0) === "destroy") {
-                    // there might be an issue here, if the two blocks in a destroy event aren't ever visually in the same space
-                    // (that shouldn't happen because it would look odd but it's something to consider)
-                    // would probably want to seperate this later after animations get added
-                    // destroy/merge format: ["merge" or "destroy", (block that this block is merging into/being destroyed by)]
-                    // if (animation_step.at(1).container.x === this.container.x && animation_step.at(1).container.y === this.container.y) {
-                        console.log('block destroyed', this, animation_step.at(1))
-                        this.rect.destroy()
-                        this.text.destroy()
-                    // }
-                    // else {
-                    //     this.animations = [["merge", animation_step.at(1)]].concat(this.animations)
-                    // }
-                }
-                else if (animation_step.at(0) === "increase value") {
-                    // increase value format: ["increase value", (block that this block is merging with)]
-                    // if (animation_step.at(1).container.x === this.container.x && animation_step.at(1).container.y === this.container.y) {
-                        this.text_value *= 2
-                    // }
-                    // else {
-                    //     this.animations = [["increase value", animation_step.at(1)]].concat(this.animations)
-                    // }
-                }
+                this.evaluate_animations()
+            }
+        }
+    }
+
+    evaluate_animations() {
+        let animation_step = this.animations.shift()
+        if (animation_step.at(0) === "move") {
+            // move format: ["move", number of steps to move]
+            this.total_movement_distance = (this.size+(this.padding*2)) * animation_step.at(1)
+        }
+        else if (animation_step.at(0) === "merge" || animation_step.at(0) === "destroy") {
+            // there might be an issue here, if the two blocks in a destroy event aren't ever visually in the same space
+            // (that shouldn't happen because it would look odd but it's something to consider)
+            // would probably want to seperate this later after animations get added
+            // destroy/merge format: ["merge" or "destroy", (block that this block is merging into/being destroyed by), is_direct]
+            if (!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true)) {
+                this.rect.destroy()
+                this.text.destroy()
+            } else if (animation_step.at(2) && this.balance_decimals(animation_step.at(1).container.x) === this.balance_decimals(this.container.x) 
+            && this.balance_decimals(animation_step.at(1).container.y) === this.balance_decimals(this.container.y)) {
+                this.rect.destroy()
+                this.text.destroy()
+            } else {
+                this.animations = [animation_step].concat(this.animations)
+            }
+        } else if (animation_step.at(0) === "increase value") {
+            // increase value format: ["increase value", (block that this block is merging with), is_direct]
+            // is_direct isn't being used at the moment since merges are always direct
+            if (animation_step.at(2) && this.balance_decimals(animation_step.at(1).container.x) === this.balance_decimals(this.container.x) && 
+            this.balance_decimals(animation_step.at(1).container.y) === this.balance_decimals(this.container.y)) {
+                    this.text_value *= 2
+            } else if (!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true)) {
+                this.text_value *= 2
+            } else {
+                this.animations = [animation_step].concat(this.animations)
+            }
+        } else if (animation_step.at(0) === "bounce") {
+            // bounce format: ["bounce"]
+            this.total_movement_distance = (this.size+(this.padding*2))
+            this.reverse_movement = true
+        }
+    }
+
+    balance_decimals(number) {
+        let larger_number = number * 100000000000
+        Math.round(larger_number)
+        return larger_number / 100000000000
+    }
+
+    /**
+     * Checks if the given block is one tile behind the current block.
+     * @param {*} block 
+     * @param {*} using_visual_position Whether or not the function checks the visual position of the blocks (true) or the tile positon (false).
+     * @returns True if the given block is behind the current block, false if not.
+     */
+    block_at_opposite_tile(block, using_visual_position) {
+        let direction = this.get_reverse_direction(this.moving_direction)
+        if (using_visual_position) {
+            if (direction === 'up') {
+                return (this.balance_decimals(block.container.x) === this.balance_decimals(this.container.x) && 
+                this.balance_decimals(block.container.y) === this.balance_decimals(this.container.y-this.size+(this.padding*2)))
+            }
+            else if (direction === 'down') {
+                return (this.balance_decimals(block.container.x) === this.balance_decimals(this.container.x) && 
+                this.balance_decimals(block.container.y) === this.balance_decimals(this.container.y+this.size+(this.padding*2)))
+            }
+            else if (direction === 'left') {
+                return (this.balance_decimals(block.container.x-this.size+(this.padding*2)) === this.balance_decimals(this.container.x) && 
+                this.balance_decimals(block.container.y) === this.balance_decimals(this.container.y))
+            }
+            else if (direction === 'right') {
+                return (this.balance_decimals(block.container.x+this.size+(this.padding*2)) === this.balance_decimals(this.container.x) && 
+                this.balance_decimals(block.container.y) === this.balance_decimals(this.container.y))
+            }
+        } else {
+            if (direction === 'up') {
+                return (block.tile_x === this.tile_x && block.tile_y === this.tile_y-1)
+            }
+            else if (direction === 'down') {
+                return (block.tile_x === this.tile_x && block.tile_y === this.tile_y+1)
+            }
+            else if (direction === 'left') {
+                return (block.tile_x === this.tile_x-1 && block.tile_y === this.tile_y)
+            }
+            else if (direction === 'right') {
+                return (block.tile_x === this.tile_x+1 && block.tile_y === this.tile_y)
             }
         }
     }
 
     block_remove() {
-        console.log("block was removed", this)
         this.container.destroy();
         // set all properties to null so that the garbage collector can clean up the object and errors will be throw if we try access it
         for (let prop in this) {
@@ -207,6 +277,7 @@ class Block{
         else if (this.moving_direction === 'right') {
             this.tile_x -= 1;
         }
+        this.animations.push(["bounce"])
         this.movement_status = 0;
     }
 
@@ -216,18 +287,10 @@ class Block{
      * @param {*} list_of_blocks The list of blocks to check for collision with.
      * @returns 
      */
-    passed_block(direction, list_of_blocks) {
-        const tile_in_direction = this.get_tile_in_direction(this.get_reverse_direction(direction));
+    passed_block(list_of_blocks) {
         for (let block of list_of_blocks) {
-            const tile = this.scene.map.getTileAtWorldXY(block.container.x, block.container.y);
-            if (tile === tile_in_direction) {
-                // if the tile is moving the same direction and it can move another space then we dont care about interacting with it
-                if (block.moving_direction === this.get_reverse_direction(direction) && block.movement_status !== 0) {
-                    return block;
-                }
-                else {
-                    return null;
-                }
+            if (this.block_at_opposite_tile(block, false) && block.moving_direction === this.get_reverse_direction(this.moving_direction)) {
+                return block
             }
         }
         return null;

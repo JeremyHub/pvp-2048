@@ -63,10 +63,10 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
     let other_block = null;
     for (let green_block of green_blocks) {
         // this checks if two adjacent blocks are moving towards eachother
-        other_block = green_block.passed_block(green_block.moving_direction, orange_blocks)
+        other_block = green_block.passed_block(orange_blocks)
         // TODO currently it only checks for enemy blocks, since all blocks on the same team move the same direction
         if (other_block !== null) {
-            if (!evaluate_collision([green_block, other_block], blocks, green_blocks, orange_blocks)) {
+            if (!evaluate_collision([green_block, other_block], false)) {
                 should_recheck_collision = true;
             }
         }
@@ -86,7 +86,7 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
     
     for (let tile in blocks_on_each_tile) {
         if (blocks_on_each_tile[tile].length > 1) {
-            if (!evaluate_collision(blocks_on_each_tile[tile], blocks, green_blocks, orange_blocks)) {
+            if (!evaluate_collision(blocks_on_each_tile[tile], true)) {
                 should_recheck_collision = true;
             }
         }
@@ -100,10 +100,10 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
 /**
  * Handles collision movment/destruction between two blocks. 
  * Returns true if the collision is valid, meaning that one of the blocks stays on the space while the other is removed.
- * @param {*} first_block 
- * @param {*} second_block 
+ * @param {*} colliding_blocks the list of blocks to check collision for
+ * @param {*} is_direct whether or not the collision is direct (blocks are on the same tile) or indirect (blocks passes each other)
  */
-function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_blocks) {
+function evaluate_collision(colliding_blocks, is_direct) {
 
     // assert at least one block is moving
     let moving_block = null;
@@ -152,11 +152,12 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
                 if (team_colliding_blocks[i].value === team_colliding_blocks[j].value) {
                     // valid friendly collision, merge blocks
                     team_colliding_blocks[i].value = team_colliding_blocks[i].value * 2;
-                    team_colliding_blocks[i].animations.push(["increase value", team_colliding_blocks[j]])
+                    team_colliding_blocks[i].animations.push(["increase value", team_colliding_blocks[j], is_direct])
                     let removed_team = team_colliding_blocks[j].team;
-                    team_colliding_blocks[j].animations.push(["merge", team_colliding_blocks[i]])
+                    team_colliding_blocks[j].animations.push(["merge", team_colliding_blocks[i], is_direct])
                     // console.log("block should have added merge to animations", team_colliding_blocks[j], team_colliding_blocks[j].animations)
                     team_colliding_blocks[j].will_be_removed = true
+                    team_colliding_blocks[j].movement_status = 0;
                     if (removed_team === first_team) {
                         first_team_blocks.splice(first_team_blocks.indexOf(team_colliding_blocks[j]), 1);
                     }
@@ -164,7 +165,7 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
                         second_team_blocks.splice(second_team_blocks.indexOf(team_colliding_blocks[j]), 1);
                     }
                     team_colliding_blocks[i].movement_status = 0;
-                    // after a valid collision, the block should stop moving
+                    // after a valid collision, the blocks should stop moving
                 }
             }
         }
@@ -177,14 +178,14 @@ function evaluate_collision(colliding_blocks, blocks, green_blocks, orange_block
             if (removed_blocks.indexOf(j) === -1 && first_team_blocks[i].value !== second_team_blocks[j].value) {
                 // valid enemy collision, one block should be destroyed
                 if (first_team_blocks[i].value > second_team_blocks[j].value) {
-                    second_team_blocks[j].animations.push(["destroy", first_team_blocks[i]])
+                    second_team_blocks[j].animations.push(["destroy", first_team_blocks[i], is_direct])
                     second_team_blocks[j].will_be_removed = true
                     removed_blocks.push(j)
                     // after a valid collision, the block should stop moving
                     first_team_blocks[i].movement_status = 0;
                 }
                 else {
-                    first_team_blocks[i].animations.push(["destroy", second_team_blocks[j]])
+                    first_team_blocks[i].animations.push(["destroy", second_team_blocks[j], is_direct])
                     first_team_blocks[i].will_be_removed = true
                     // after a valid collision, the block should stop moving
                     second_team_blocks[j].movement_status = 0;
