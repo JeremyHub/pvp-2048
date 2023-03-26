@@ -190,8 +190,7 @@ class Block{
         } else if (animation_step.at(0) === "increase value") {
             // increase value format: ["increase value", (block that this block is merging with), is_direct]
             // is_direct isn't being used at the moment since merges are always direct
-            if (animation_step.at(2) && Math.round(animation_step.at(1).container.x) === Math.round(this.container.x) && 
-            Math.round(animation_step.at(1).container.y) === Math.round(this.container.y)) {
+            if (animation_step.at(2) && this.block_at_same_tile(animation_step.at(1))) {
                     this.text_value *= 2
             } else if (!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true)) {
                 this.text_value *= 2
