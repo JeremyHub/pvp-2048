@@ -24,6 +24,9 @@ class Block{
         this.total_moved = 0;
         this.total_movement_distance = 0;
         // the distance the block will move for the current animation step
+        this.next_space_distance = 0;
+        // the total amount of space traveled needed to reach the next space during movement animations
+        // this.log_count = 0;
         this.padding = padding;
         this.team = team;
         this.value = value;
@@ -31,6 +34,8 @@ class Block{
         // the value of the block currently displayed, used for animations
         this.tile_x = tile_x;
         this.tile_y = tile_y;
+        this.visual_tile_x = tile_x;
+        this.visual_tile_y = tile_y;
         this.space_size = this.size+(this.padding*2);
         this.rect = null
         this.block_id = block_id
@@ -102,6 +107,46 @@ class Block{
                 this.total_movement_distance = 0;
                 if (this.reverse_movement) {
                     this.reverse_movement = false
+                    if (this.moving_direction === 'up') {
+                        this.visual_tile_y++;
+                    }
+                    else if (this.moving_direction === 'down') {
+                        this.visual_tile_y--;
+                    }
+                    else if (this.moving_direction === 'left') {
+                        this.visual_tile_x++;
+                    }
+                    else if (this.moving_direction === 'right') {
+                        this.visual_tile_x--;
+                    }
+                }
+                else {
+                    if (this.moving_direction === 'up') {
+                        this.visual_tile_y--;
+                    }
+                    else if (this.moving_direction === 'down') {
+                        this.visual_tile_y++;
+                    }
+                    else if (this.moving_direction === 'left') {
+                        this.visual_tile_x--;
+                    }
+                    else if (this.moving_direction === 'right') {
+                        this.visual_tile_x++;
+                    }
+                }
+            } else if (this.total_moved >= this.next_space_distance) {
+                this.next_space_distance += this.size+(this.padding*2);
+                if (this.moving_direction === 'up') {
+                    this.visual_tile_y--;
+                }
+                else if (this.moving_direction === 'down') {
+                    this.visual_tile_y++;
+                }
+                else if (this.moving_direction === 'left') {
+                    this.visual_tile_x--;
+                }
+                else if (this.moving_direction === 'right') {
+                    this.visual_tile_x++;
                 }
             }
             
@@ -122,6 +167,7 @@ class Block{
         if (animation_step.at(0) === "move") {
             // move format: ["move", number of steps to move]
             this.total_movement_distance = (this.size+(this.padding*2)) * animation_step.at(1)
+            this.next_space_distance = this.size+(this.padding*2)
         }
         else if (animation_step.at(0) === "merge" || animation_step.at(0) === "destroy") {
             // there might be an issue here, if the two blocks in a destroy event aren't ever visually in the same space
@@ -131,22 +177,29 @@ class Block{
             if (!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true)) {
                 this.rect.destroy()
                 this.text.destroy()
-            } else if (animation_step.at(2) && this.balance_decimals(animation_step.at(1).container.x) === this.balance_decimals(this.container.x) 
-            && this.balance_decimals(animation_step.at(1).container.y) === this.balance_decimals(this.container.y)) {
+            } else if (animation_step.at(2) && this.block_at_same_tile(animation_step.at(1))) {
                 this.rect.destroy()
                 this.text.destroy()
             } else {
+                // if (this.log_count < 50) {
+                //     console.log("block", this, "failed to find", animation_step.at(1), "for step", animation_step)
+                //     this.log_count++
+                // }
                 this.animations = [animation_step].concat(this.animations)
             }
         } else if (animation_step.at(0) === "increase value") {
             // increase value format: ["increase value", (block that this block is merging with), is_direct]
             // is_direct isn't being used at the moment since merges are always direct
-            if (animation_step.at(2) && this.balance_decimals(animation_step.at(1).container.x) === this.balance_decimals(this.container.x) && 
-            this.balance_decimals(animation_step.at(1).container.y) === this.balance_decimals(this.container.y)) {
+            if (animation_step.at(2) && Math.round(animation_step.at(1).container.x) === Math.round(this.container.x) && 
+            Math.round(animation_step.at(1).container.y) === Math.round(this.container.y)) {
                     this.text_value *= 2
             } else if (!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true)) {
                 this.text_value *= 2
             } else {
+                // if (this.log_count < 50) {
+                //     console.log("block", this, "failed to find", animation_step.at(1))
+                //     this.log_count++
+                // }
                 this.animations = [animation_step].concat(this.animations)
             }
         } else if (animation_step.at(0) === "bounce") {
@@ -156,10 +209,13 @@ class Block{
         }
     }
 
-    balance_decimals(number) {
-        let larger_number = number * 100000000000
-        Math.round(larger_number)
-        return larger_number / 100000000000
+    /**
+     * Checks if the given block is visually on the same space as the current block.
+     * @param {*} block 
+     * @returns True if the given block is on the same space as the current block, false if not.
+     */
+    block_at_same_tile(block) {
+        return (block.visual_tile_x === this.visual_tile_x && block.visual_tile_y === this.visual_tile_y)
     }
 
     /**
@@ -172,20 +228,16 @@ class Block{
         let direction = this.get_reverse_direction(this.moving_direction)
         if (using_visual_position) {
             if (direction === 'up') {
-                return (this.balance_decimals(block.container.x) === this.balance_decimals(this.container.x) && 
-                this.balance_decimals(block.container.y) === this.balance_decimals(this.container.y-this.size+(this.padding*2)))
+                return (block.visual_tile_x === this.visual_tile_x && block.visual_tile_y === this.visual_tile_y-1)
             }
             else if (direction === 'down') {
-                return (this.balance_decimals(block.container.x) === this.balance_decimals(this.container.x) && 
-                this.balance_decimals(block.container.y) === this.balance_decimals(this.container.y+this.size+(this.padding*2)))
+                return (block.visual_tile_x === this.visual_tile_x && block.visual_tile_y === this.visual_tile_y+1)
             }
             else if (direction === 'left') {
-                return (this.balance_decimals(block.container.x-this.size+(this.padding*2)) === this.balance_decimals(this.container.x) && 
-                this.balance_decimals(block.container.y) === this.balance_decimals(this.container.y))
+                return (block.visual_tile_x === this.visual_tile_x-1 && block.visual_tile_y === this.visual_tile_y)
             }
             else if (direction === 'right') {
-                return (this.balance_decimals(block.container.x+this.size+(this.padding*2)) === this.balance_decimals(this.container.x) && 
-                this.balance_decimals(block.container.y) === this.balance_decimals(this.container.y))
+                return (block.visual_tile_x === this.visual_tile_x+1 && block.visual_tile_y === this.visual_tile_y)
             }
         } else {
             if (direction === 'up') {
@@ -352,10 +404,13 @@ class Block{
     }
 
     update_visuals() {
+        // this.log_count = 0
         let canvas_coordiantes = this.convert_tile_to_world(this.tile_x, this.tile_y);
         this.container.x = canvas_coordiantes.x;
         this.container.y = canvas_coordiantes.y;
         this.text_value = this.value;
+        this.visual_tile_x = this.tile_x;
+        this.visual_tile_y = this.tile_y;
     }
 }
 
