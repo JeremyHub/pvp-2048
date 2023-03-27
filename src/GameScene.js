@@ -204,7 +204,7 @@ class GameScene extends Phaser.Scene {
                 } else {
                     this.scene.start('LossScene', {player: "you"});
                 }
-            } else if (this.mode == "local-multiplayer") {
+            } else if (this.mode == "local_multiplayer") {
                 this.scene.start('WinScene', {player: 'Green'});
             }
             return true;
