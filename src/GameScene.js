@@ -161,20 +161,25 @@ class GameScene extends Phaser.Scene {
         document.getElementById("green-walls").innerHTML = this.green_walls_count;
     }
 
+    update_total_values() {
+        this.orange_total_value = getTotalValueOfBlocks(this.orange_blocks);
+        document.getElementById("orange-total-value").innerHTML = this.orange_total_value;
+
+        this.green_total_value = getTotalValueOfBlocks(this.green_blocks);
+        document.getElementById("green-total-value").innerHTML = this.green_total_value;
+    }
+
     check_win_loss() {
 
-        document.getElementById("orange-total-value").innerHTML = getTotalValueOfBlocks(this.orange_blocks);
-
-        document.getElementById("green-total-value").innerHTML = getTotalValueOfBlocks(this.green_blocks);
         
         // check tie
-        if(getTotalValueOfBlocks(this.orange_blocks) >= this.win_value && getTotalValueOfBlocks(this.green_blocks) >= this.win_value || this.green_timer.time <= 0 && this.orange_timer.time <= 0){
+        if(this.orange_total_value >= this.win_value && this.green_total_value >= this.win_value || this.green_timer.time <= 0 && this.orange_timer.time <= 0){
             this.scene.start('TieScene');
             return true;
-
-        // check orange win
-        } else if(getTotalValueOfBlocks(this.orange_blocks) >= this.win_value || this.green_timer.time <= 0){
-
+            
+            // check orange win
+        } else if(this.orange_total_value >= this.win_value || this.green_timer.time <= 0){
+            
             if (this.mode == "single") {
                 this.scene.start('LossScene', {player: "you"});
             } else if (this.mode == "multiplayer") {
@@ -183,13 +188,13 @@ class GameScene extends Phaser.Scene {
                 } else {
                     this.scene.start('LossScene', {player: "you"});
                 }
-            } else if (this.mode == "local-multiplayer") {
+            } else if (this.mode == "local_multiplayer") {
                 this.scene.start('WinScene', {player: 'Orange'});
             }
             return true;
 
         // check green win
-        } else if(getTotalValueOfBlocks(this.green_blocks) >= this.win_value || this.orange_timer.time <= 0){
+        } else if(this.green_total_value >= this.win_value || this.orange_timer.time <= 0){
         
             if (this.mode == "single") {
                 this.scene.start('WinScene', {player: "you"});
@@ -422,7 +427,7 @@ class GameScene extends Phaser.Scene {
                     }
                 }
                 if (this.animation_finished()) {
-                    this.check_win_loss();
+                    this.update_total_values();
                 }
             }
         }
@@ -447,6 +452,8 @@ class GameScene extends Phaser.Scene {
     }
 
     update() {
+
+        this.check_win_loss();
         
         this.update_timers();
         
