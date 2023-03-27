@@ -155,20 +155,17 @@ class GameScene extends Phaser.Scene {
     }
 
     update_dom_elements() {
-        let dom_element = document.getElementById("orange-total-value");
-        dom_element.innerHTML = getTotalValueOfBlocks(this.orange_blocks);
+        
+        document.getElementById("orange-walls").innerHTML = this.orange_walls_count;
 
-        dom_element = document.getElementById("green-total-value");
-        dom_element.innerHTML = getTotalValueOfBlocks(this.green_blocks);
-
-        dom_element = document.getElementById("orange-walls");
-        dom_element.innerHTML = this.orange_walls_count;
-
-        dom_element = document.getElementById("green-walls");
-        dom_element.innerHTML = this.green_walls_count;
+        document.getElementById("green-walls").innerHTML = this.green_walls_count;
     }
 
     check_win_loss() {
+
+        document.getElementById("orange-total-value").innerHTML = getTotalValueOfBlocks(this.orange_blocks);
+
+        document.getElementById("green-total-value").innerHTML = getTotalValueOfBlocks(this.green_blocks);
         
         // check tie
         if(getTotalValueOfBlocks(this.orange_blocks) >= this.win_value && getTotalValueOfBlocks(this.green_blocks) >= this.win_value || this.green_timer.time <= 0 && this.orange_timer.time <= 0){
@@ -423,11 +420,21 @@ class GameScene extends Phaser.Scene {
                     else {
                         this.all_block_lists[i].update_visuals();
                     }
-                    
+                }
+                if (this.animation_finished()) {
+                    this.check_win_loss();
                 }
             }
-        }    
-        
+        }
+    }
+
+    animation_finished() {
+        for (let i = 0; i < this.all_block_lists.length; i++) {
+            if (this.all_block_lists[i].animations.length > 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     update_timers() {
@@ -458,10 +465,6 @@ class GameScene extends Phaser.Scene {
         
         
         if (!this.any_block_is_moving) {
-            
-            if (this.check_win_loss()) {
-                return;
-            }
 
             this.check_block_spawning();
             
