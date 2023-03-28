@@ -252,6 +252,11 @@ describe('Game', function () {
         // two twos combining, one 4 block moving perpedicular to the others, should combine first then stop the movement of the 4
         ["green", 5, 1, 2, "green", 5, 2, 2, "orange", 4, 1, 4, "up", "right", 5, 1, null, null, 4, 1, 100, 4, null, 4],
         ["orange", 5, 1, 2, "orange", 5, 2, 2, "green", 4, 1, 4, "right", "up", 5, 1, null, null, 4, 1, 100, 4, null, 4],
+
+        // two twos moving into a 4 of the other team, should both be eaten by the 4
+        ["green", 1, 1, 2, "green", 2, 1, 2, "orange", 4, 1, 4, "right", "up", null, null, null, null, 4, 1, 100, null, null, 4],
+        ["orange", 1, 1, 2, "orange", 2, 1, 2, "green", 4, 1, 4, "up", "right", null, null, null, null, 4, 1, 100, null, null, 4],
+
     ])
         .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), third tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d, third tile ended at value of %d`,
             function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, third_team, third_tile_x, third_tile_y, third_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, new_third_tile_x, new_third_tile_y, num_updates, expected_value, expected_other_value, expected_third_value) {
@@ -273,7 +278,6 @@ describe('Game', function () {
                 for (var i = 0; i < num_updates-1; i++) {
                     game.handle_moving();
                 }
-                
                 for ([block, x, y, value, team] of [[block, new_tile_x, new_tile_y, expected_value, team], [other_block, new_other_tile_x, new_other_tile_y, expected_other_value, other_team], [third_block, new_third_tile_x, new_third_tile_y, expected_third_value, third_team]]) {
                     if (x === null || y === null || value === null) {
                         // block should be gone
@@ -294,4 +298,55 @@ describe('Game', function () {
             }
     );
 
+    // quadruple block tests
+    forEach([
+        // two green twos moving into 2 orange twos (one space inbetween), should combine into 4s with one space inbetween
+        ["green", 2, 1, 2, "green", 1, 1, 2, "orange", 3, 1, 2, "orange", 4, 1, 2, "right", "left", 2, 1, null, null, 3, 1, null, null, 100, 4, null, 4, null],
+
+        // the test that never worked (visual of it: https://i.imgur.com/3LqPhev.png) green goes up, orange goes left
+        ["green", 1, 2, 4, "green", 1, 3, 8, "orange", 2, 1, 4, "orange", 2, 2, 2, "up", "left", 1, 2, 1, 3, 2, 1, null, null, 100, 4, 8, 4, null]
+    ])
+        .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), third tile ends at (%d,%d), fourth tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d, third tile ended at value of %d, fourth tile ended at value of %d`,
+            function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, third_team, third_tile_x, third_tile_y, third_value, fourth_team, fourth_tile_x, fourth_tile_y, fourth_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, new_third_tile_x, new_third_tile_y, new_fourth_tile_x, new_fourth_tile_y, num_updates, expected_value, expected_other_value, expected_third_value, expected_fourth_value) {
+                let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
+                let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
+                let third_list_of_blocks = third_team === "orange" ? game.orange_blocks : game.green_blocks;
+                let fourth_list_of_blocks = fourth_team === "orange" ? game.orange_blocks : game.green_blocks;
+                let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
+                block.value = first_value;
+                let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team, game_config);
+                other_block.value = second_value;
+                let third_block = create_block(game, third_list_of_blocks, third_tile_x, third_tile_y, "color", third_team, game_config);
+                third_block.value = third_value;
+                let fourth_block = create_block(game, fourth_list_of_blocks, fourth_tile_x, fourth_tile_y, "color", fourth_team, game_config);
+                fourth_block.value = fourth_value;
+                
+                game.make_green_move(green_key);
+                game.make_orange_move(orange_key);
+                game.handle_moving();
+                game[green_key + "_key"].isDown = false;
+                game[orange_key + "_key"].isDown = false;
+                for (var i = 0; i < num_updates-1; i++) {
+                    game.handle_moving();
+                }
+                for ([block, x, y, value, team] of [[block, new_tile_x, new_tile_y, expected_value, team], [other_block, new_other_tile_x, new_other_tile_y, expected_other_value, other_team], [third_block, new_third_tile_x, new_third_tile_y, expected_third_value, third_team], [fourth_block, new_fourth_tile_x, new_fourth_tile_y, expected_fourth_value, fourth_team]]) {
+                    // block should be gone
+                    let has_destroy_animation = false;
+                    for (anim of block.animations) {
+                        if (anim[0] === "merge" || anim[0] === "destroy") {
+                            has_destroy_animation = true;
+                        }
+                    }
+                    expect(has_destroy_animation).to.equal((x === null || y === null || value === null), "second block does not have a destroy animation");
+
+                    if (x === null || y === null || value === null) {
+                        continue;
+                    }
+                    // block should be in the position and value described by input
+                    expect(block.tile_x).to.equal(x, "x position of " + team + " block is wrong");
+                    expect(block.tile_y).to.equal(y, "y position of " + team + " block is wrong");
+                    expect(block.value).to.equal(value, "value of " + team + " block is wrong");
+                }
+            }
+    );
 });

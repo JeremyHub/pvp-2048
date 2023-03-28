@@ -419,7 +419,7 @@ class GameScene extends Phaser.Scene {
 
                 this.green_moves.push(this.green_move);
                 this.orange_moves.push(this.orange_move);
-                console.log(this.green_moves, this.orange_moves)
+                // console.log(this.green_moves, this.orange_moves)
 
                 this.total_moves ++;
                 this.green_move = null;
