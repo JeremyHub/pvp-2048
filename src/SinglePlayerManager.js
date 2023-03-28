@@ -31,7 +31,7 @@ export class SinglePlayerManager {
 
     single_player_update() {
         if (this.num_players) {
-            if (!this.scene.any_block_is_moving) {
+            if (this.scene.is_waiting_for_input()) {
                 if (this.green_move){
                     this.scene.make_green_move(this.green_move);
                     this.green_move = null;
@@ -55,6 +55,9 @@ export class SinglePlayerManager {
                     document.getElementById("green-lock").innerHTML = "false";
                     if (this.num_players === 2) document.getElementById("orange-lock").innerHTML = "false";
                 }
+            } else {
+                this.green_move = null;
+                this.orange_move = null;
             }
         }
     }

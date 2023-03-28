@@ -47,6 +47,15 @@ class GameScene extends Phaser.Scene {
         this.args = args;
         this.mode = args.mode;
         this.your_color = args.your_color;
+        this.seed = args.seed;
+        if (this.seed === undefined) {
+            this.seed = Math.floor(Math.random() * 1000000000);
+        } else {
+            let utf8Encode = new TextEncoder();
+            let encoded = utf8Encode.encode(this.seed);
+            let buffer = Buffer.from(encoded);
+            this.seed = buffer.readUIntBE(0, 5);
+        }
 
         this.blocks = [];               // all blocks
         this.orange_blocks = [];        // orange blocks            
@@ -93,6 +102,8 @@ class GameScene extends Phaser.Scene {
 
         this.green_has_moved = false;
         this.orange_has_moved = false;
+
+        this.total_moves = 0;
 
         return this;
     }
@@ -151,7 +162,6 @@ class GameScene extends Phaser.Scene {
             this.green_timer = new Timer(this, this.game.config.width*0.2, this.game.config.height*0.15, 120000);
             this.orange_timer = new Timer(this, this.game.config.width*0.7, this.game.config.height*0.8, 120000);
         }
-        
     }
 
     update_dom_elements() {
@@ -355,9 +365,6 @@ class GameScene extends Phaser.Scene {
 
     handle_getting_rid_of_player_placed_walls() {
         if (turn_finished(this.all_block_lists)) {
-            this.green_move = null;
-            this.orange_move = null;
-            this.movement_started = false;
             this.green_walls_count ++;
             this.orange_walls_count ++;
 
@@ -378,8 +385,8 @@ class GameScene extends Phaser.Scene {
         if(this.block_spawn_counter === 0 && this.green_move === null && this.orange_move === null){
             // dont spawn blocks when testing
             if (this.is_drawing) {
-                spawnblocks(this, game_config.green_id, 'green', this.green_blocks, game_config);
-                spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks, game_config);
+                spawnblocks(this, game_config.green_id, 'green', this.green_blocks, game_config, this.seed + this.total_moves);
+                spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks, game_config, this.seed + this.total_moves);
                 this.block_spawn_counter ++;
             }
         }
@@ -401,7 +408,7 @@ class GameScene extends Phaser.Scene {
         this.any_block_is_moving = true;
         if (!is_any_block_moving(this.all_block_lists)) {
             
-            check_collisions(this.all_block_lists, this.green_blocks, this.orange_blocks);
+            check_collisions(this.all_block_lists, this.green_blocks, this.orange_blocks, this.seed + this.total_moves);
             move_blocks(this.green_blocks, this.green_move);
             move_blocks(this.orange_blocks, this.orange_move);
             
@@ -414,6 +421,7 @@ class GameScene extends Phaser.Scene {
                 }
             }
             if (turn_finished(this.all_block_lists)) {
+                this.total_moves ++;
                 this.green_move = null;
                 this.orange_move = null;
                 this.movement_started = false;
@@ -431,6 +439,10 @@ class GameScene extends Phaser.Scene {
                 }
             }
         }
+    }
+
+    is_waiting_for_input() {
+        return this.green_move === null && this.orange_move === null;
     }
 
     animation_finished() {

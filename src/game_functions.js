@@ -1,4 +1,5 @@
 var {Block, block_config} = require('./Block');
+var seedrandom = require('seedrandom');
 
 /**
  * Checks if all of the given blocks have finished moving for the turn.
@@ -57,7 +58,7 @@ function is_any_block_moving(blocks) {
  * Checks if any blocks within the given list of blocks are on the same space, and if so resolves the collision.
  * @param {*} blocks 
  */
-function check_collisions(blocks, green_blocks, orange_blocks) {
+function check_collisions(blocks, green_blocks, orange_blocks, seed) {
 
     let should_recheck_collision = false;
     let other_block = null;
@@ -66,7 +67,7 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
         other_block = green_block.passed_block(orange_blocks)
         // TODO currently it only checks for enemy blocks, since all blocks on the same team move the same direction
         if (other_block !== null) {
-            if (!evaluate_collision([green_block, other_block], false)) {
+            if (!evaluate_collision([green_block, other_block], false, seed)) {
                 should_recheck_collision = true;
             }
         }
@@ -86,14 +87,14 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
     
     for (let tile in blocks_on_each_tile) {
         if (blocks_on_each_tile[tile].length > 1) {
-            if (!evaluate_collision(blocks_on_each_tile[tile], true)) {
+            if (!evaluate_collision(blocks_on_each_tile[tile], true, seed)) {
                 should_recheck_collision = true;
             }
         }
     }
     if (should_recheck_collision) {
         // it's possible that a block bounces into another block, so if a block bounces collision needs to be checked again
-        check_collisions(blocks, green_blocks, orange_blocks);
+        check_collisions(blocks, green_blocks, orange_blocks, seed);
     }
 }
 
@@ -103,7 +104,7 @@ function check_collisions(blocks, green_blocks, orange_blocks) {
  * @param {*} colliding_blocks the list of blocks to check collision for
  * @param {*} is_direct whether or not the collision is direct (blocks are on the same tile) or indirect (blocks passes each other)
  */
-function evaluate_collision(colliding_blocks, is_direct) {
+function evaluate_collision(colliding_blocks, is_direct, seed) {
 
     // assert at least one block is moving
     let moving_block = null;
@@ -137,7 +138,8 @@ function evaluate_collision(colliding_blocks, is_direct) {
 
     // TODO the team who moved first should combine first
     // randomize which team moves first
-    let first_team = Math.random() < 0.5 ? "green" : "orange";
+    let seededrandom = seedrandom(seed);
+    let first_team = seededrandom.double() < 0.5 ? "green" : "orange";
 
     let first_team_blocks = first_team === "green" ? green_colliding_blocks : orange_colliding_blocks;
     let second_team_blocks = first_team === "orange" ? green_colliding_blocks : orange_colliding_blocks;
@@ -242,7 +244,7 @@ function block_in_tile(x, y, game, list_of_blocks) {
 }
 
 
-function spawnblocks(game, spawnarea, team, list_of_blocks, game_config) {
+function spawnblocks(game, spawnarea, team, list_of_blocks, game_config, seed) {
 
     let color;
     if (team === 'green') {
@@ -267,7 +269,8 @@ function spawnblocks(game, spawnarea, team, list_of_blocks, game_config) {
         return;
     }
 
-    const spawn_tile = spawnable_tiles[Math.floor(Math.random() * spawnable_tiles.length)];
+    let seededrandom = seedrandom(seed);
+    const spawn_tile = spawnable_tiles[Math.floor(seededrandom.double() * spawnable_tiles.length)];
     create_block(game, list_of_blocks, spawn_tile.x, spawn_tile.y, color, team, game_config);
 
 }
