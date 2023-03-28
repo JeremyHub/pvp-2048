@@ -68,8 +68,6 @@ class GameScene extends Phaser.Scene {
         this.orange_move = null;
         this.green_move = null;
 
-        this.block_spawn_counter = 0;   // used to spawn blocks
-
         this.movement_started = false; // used to set up movement at the start of each turn
         this.animations_started = false;
 
@@ -105,6 +103,9 @@ class GameScene extends Phaser.Scene {
         this.orange_has_moved = false;
 
         this.total_moves = 0;
+
+        this.green_moves = [];
+        this.orange_moves = [];
 
         return this;
     }
@@ -383,16 +384,9 @@ class GameScene extends Phaser.Scene {
     }
 
     check_block_spawning() {
-        if(this.block_spawn_counter === 0 && this.green_move === null && this.orange_move === null){
-            // dont spawn blocks when testing
-            if (this.is_drawing) {
-                spawnblocks(this, game_config.green_id, 'green', this.green_blocks, game_config, this.seed + this.total_moves);
-                spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks, game_config, this.seed + this.total_moves);
-                this.block_spawn_counter ++;
-            }
-        }
-        if (this.green_move !== null || this.orange_move !== null) {
-            this.block_spawn_counter = 0;
+        if (this.is_drawing) {
+            spawnblocks(this, game_config.green_id, 'green', this.green_blocks, game_config, this.seed + this.total_moves);
+            spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks, game_config, this.seed + this.total_moves);
         }
     }
 
@@ -422,6 +416,11 @@ class GameScene extends Phaser.Scene {
                 }
             }
             if (turn_finished(this.all_block_lists)) {
+
+                this.green_moves.push(this.green_move);
+                this.orange_moves.push(this.orange_move);
+                console.log(this.green_moves, this.orange_moves)
+
                 this.total_moves ++;
                 this.green_move = null;
                 this.orange_move = null;
@@ -435,9 +434,13 @@ class GameScene extends Phaser.Scene {
                         this.all_block_lists[i].update_visuals();
                     }
                 }
+
                 if (this.animation_finished()) {
                     this.update_total_values();
                 }
+
+                
+                this.check_block_spawning();
             }
         }
     }
@@ -466,6 +469,7 @@ class GameScene extends Phaser.Scene {
 
     update() {
 
+        
         this.check_win_loss();
         
         this.update_timers();
@@ -474,6 +478,10 @@ class GameScene extends Phaser.Scene {
         
         this.update_dom_elements();
         
+        // this is just to spawn blocks in at the start of the game (it shouldnt do anything else)
+        if (this.all_block_lists.length === 0) {
+            this.check_block_spawning();
+        }
         
         this.update_all_blocks();
         
@@ -485,8 +493,6 @@ class GameScene extends Phaser.Scene {
         
         
         if (!this.any_block_is_moving) {
-
-            this.check_block_spawning();
             
             if (this.green_move !== null && this.orange_move !== null) {
 

@@ -139,6 +139,7 @@ function evaluate_collision(colliding_blocks, is_direct, seed) {
     // TODO the team who moved first should combine first
     // randomize which team moves first
     let seededrandom = seedrandom(seed);
+    console.log("seed: " + seed, " first")
     let first_team = seededrandom.double() < 0.5 ? "green" : "orange";
 
     let first_team_blocks = first_team === "green" ? green_colliding_blocks : orange_colliding_blocks;
@@ -270,6 +271,7 @@ function spawnblocks(game, spawnarea, team, list_of_blocks, game_config, seed) {
     }
 
     let seededrandom = seedrandom(seed);
+    console.log("seed: " + seed, " second")
     const spawn_tile = spawnable_tiles[Math.floor(seededrandom.double() * spawnable_tiles.length)];
     create_block(game, list_of_blocks, spawn_tile.x, spawn_tile.y, color, team, game_config);
 

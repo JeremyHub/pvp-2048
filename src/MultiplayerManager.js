@@ -188,9 +188,10 @@ export class MutliplayerManager {
             let players_ref_str = "games/" + this.joined_game_code + "/players/";
             let your_moves = this.current_data.players[this.your_color].moves;
             // if you are caught up to the current turn, add a new move
-            if (this.current_data.players[this.your_color].moves.length == this.current_turn && this.scene.is_waiting_for_input()) {
+            if (this.current_data.players[this.your_color].moves.length === this.current_turn && this.scene.is_waiting_for_input()) {
                 your_moves.push(direction);
                 set(ref(this.database, players_ref_str + this.your_color + "/moves"), your_moves);
+                console.log("updated with direction: " + direction);
             }
         }
     }
