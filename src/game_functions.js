@@ -106,6 +106,8 @@ function check_collisions(blocks, green_blocks, orange_blocks, seed) {
  */
 function evaluate_collision(colliding_blocks, is_direct, seed) {
 
+    let tile_colliding_on_coords = {x: colliding_blocks[0].tile_x, y: colliding_blocks[0].tile_y};
+
     // assert at least one block is moving
     let moving_block = null;
     for (let i = 0; i < colliding_blocks.length; i++) {
@@ -199,12 +201,52 @@ function evaluate_collision(colliding_blocks, is_direct, seed) {
 
     // if nothing happened, the blocks should bounce off of each other
     for (let block of colliding_blocks) {
-        if (block.movement_status !== null){
-            block.bounce();
-            return_value = false;
+        block.bounce();
+        return_value = false;
+    }
+
+    let blocks_still_on_tile = [];
+    for (let block of colliding_blocks) {
+        if (block.tile_x === tile_colliding_on_coords.x && block.tile_y === tile_colliding_on_coords.y && block.will_be_removed === false) {
+            blocks_still_on_tile.push(block);
         }
     }
+    if (blocks_still_on_tile.length == 2) {
+        if (blocks_still_on_tile[0].team === blocks_still_on_tile[1].team) {
+            if (blocks_still_on_tile[0].value !== blocks_still_on_tile[1].value) {
+                // same team, diff value, bounce
+                // figure out which block should move relative to the direction of the collision
+                let block_to_move;
+                if (blocks_still_on_tile[0].moving_direction === "up") {
+                    block_to_move = (blocks_still_on_tile[0].tile_y < blocks_still_on_tile[1].tile_y) ? blocks_still_on_tile[0] : blocks_still_on_tile[1];
+                } else if (blocks_still_on_tile[0].moving_direction === "down") {
+                    block_to_move = (blocks_still_on_tile[0].tile_y > blocks_still_on_tile[1].tile_y) ? blocks_still_on_tile[0] : blocks_still_on_tile[1];
+                } else if (blocks_still_on_tile[0].moving_direction === "left") {
+                    block_to_move = (blocks_still_on_tile[0].tile_x < blocks_still_on_tile[1].tile_x) ? blocks_still_on_tile[0] : blocks_still_on_tile[1];
+                } else if (blocks_still_on_tile[0].moving_direction === "right") {
+                    block_to_move = (blocks_still_on_tile[0].tile_x > blocks_still_on_tile[1].tile_x) ? blocks_still_on_tile[0] : blocks_still_on_tile[1];
+                }
+
+                let opposite_direction = get_opposite_direction(block_to_move.moving_direction);
+                block_to_move.movement_status = 1;
+                block_to_move.move_space(opposite_direction);
+            }
+        }
+    }
+
     return return_value;
+}
+
+function get_opposite_direction(direction) {
+    if (direction === "up") {
+        return "down";
+    } else if (direction === "down") {
+        return "up";
+    } else if (direction === "left") {
+        return "right";
+    } else if (direction === "right") {
+        return "left";
+    }
 }
 
 /**

@@ -232,7 +232,7 @@ describe('Game', function () {
                                 has_destroy_animation = true;
                             }
                         }
-                        expect(has_destroy_animation).to.equal(true, "second block does not have a destroy animation");
+                        expect(has_destroy_animation).to.equal(true, "block does not have a destroy animation");
                     } else {
                         // block should be in the position and value described by input
                         expect(block.tile_x).to.equal(x, "x position of " + team + " block is wrong");
@@ -287,7 +287,7 @@ describe('Game', function () {
                                 has_destroy_animation = true;
                             }
                         }
-                        expect(has_destroy_animation).to.equal(true, "second block does not have a destroy animation");
+                        expect(has_destroy_animation).to.equal(true, "block does not have a destroy animation");
                     } else {
                         // block should be in the position and value described by input
                         expect(block.tile_x).to.equal(x, "x position of " + team + " block is wrong");
@@ -337,7 +337,7 @@ describe('Game', function () {
                             has_destroy_animation = true;
                         }
                     }
-                    expect(has_destroy_animation).to.equal((x === null || y === null || value === null), "second block does not have a destroy animation");
+                    expect(has_destroy_animation).to.equal((x === null || y === null || value === null), "block does not have a destroy animation");
 
                     if (x === null || y === null || value === null) {
                         continue;
