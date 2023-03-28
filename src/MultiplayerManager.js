@@ -33,6 +33,7 @@ export class MutliplayerManager {
         this.game_has_started = false;
         this.you_have_moved = false;
         this.opp_has_moved = false;
+        this.opponent_is_animating = false;
         this.input_manager = new InputManager(this.update_with_direction.bind(this), this.update_with_direction.bind(this), this.update_with_direction.bind(this));
     }
 
@@ -134,7 +135,7 @@ export class MutliplayerManager {
     }
 
     start_game() {
-        this.start_game_callback({mode: "multiplayer", your_color: this.your_color, seed: this.joined_game_code});
+        this.start_game_callback({mode: "multiplayer", your_color: this.your_color, seed: this.joined_game_code, manager: this});
         set(ref(this.database, "games/" + this.joined_game_code + "/players/" + this.your_color + "/is_active"), true);
     }
 
@@ -152,21 +153,24 @@ export class MutliplayerManager {
         // if both players are active, update the game with the moves
         if (game_data.players.green.is_active && game_data.players.orange.is_active) {
 
+            // update if opp is animating
+            this.opponent_is_animating = game_data.players[opp_color].is_animating;
+
             // update the game with the moves
             if (game_data.players[this.your_color].moves.length > this.current_turn) {
+                this.scene["make_" + this.your_color + "_move"](game_data.players[this.your_color].moves[this.current_turn]);
                 this.you_have_moved = true;
                 document.getElementById(this.your_color + "-lock").innerHTML = "true";
                 document.getElementById("current-move").innerHTML = game_data.players[this.your_color].moves[this.current_turn];
             }
             if (game_data.players[opp_color].moves.length > this.current_turn) {
+                this.scene["make_" + opp_color + "_move"](game_data.players[opp_color].moves[this.current_turn]);
                 document.getElementById(opp_color + "-lock").innerHTML = "true";
                 this.opp_has_moved = true;
             }
-
+            
             // if the game has two moves in it
             if (this.you_have_moved && this.opp_has_moved) {
-                this.scene["make_" + this.your_color + "_move"](game_data.players[this.your_color].moves[this.current_turn]);
-                this.scene["make_" + opp_color + "_move"](game_data.players[opp_color].moves[this.current_turn]);
                 // update the dom
                 document.getElementById("current-move").innerHTML = "";
                 document.getElementById(this.your_color + "-lock").innerHTML = "false";
@@ -188,6 +192,22 @@ export class MutliplayerManager {
                 your_moves.push(direction);
                 set(ref(this.database, players_ref_str + this.your_color + "/moves"), your_moves);
             }
+        }
+    }
+
+    done_animating() {
+        // update the database with the fact that you are done animating
+        if (this.joined_game_code != null && this.current_data != null) {
+            let players_ref_str = "games/" + this.joined_game_code + "/players/";
+            set(ref(this.database, players_ref_str + this.your_color + "/is_animating"), false);
+        }
+    }
+
+    animating_started() {
+        // update the database with the fact that you are done animating
+        if (this.joined_game_code != null && this.current_data != null) {
+            let players_ref_str = "games/" + this.joined_game_code + "/players/";
+            set(ref(this.database, players_ref_str + this.your_color + "/is_animating"), true);
         }
     }
 }

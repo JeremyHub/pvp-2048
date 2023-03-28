@@ -47,6 +47,7 @@ class GameScene extends Phaser.Scene {
         this.args = args;
         this.mode = args.mode;
         this.your_color = args.your_color;
+        this.manager = args.manager;
         this.seed = args.seed;
         if (this.seed === undefined) {
             this.seed = Math.floor(Math.random() * 1000000000);
@@ -442,7 +443,7 @@ class GameScene extends Phaser.Scene {
     }
 
     is_waiting_for_input() {
-        return this.green_move === null && this.orange_move === null;
+        return this.green_move === null || this.orange_move === null;
     }
 
     animation_finished() {
@@ -488,6 +489,10 @@ class GameScene extends Phaser.Scene {
             this.check_block_spawning();
             
             if (this.green_move !== null && this.orange_move !== null) {
+
+                if (this.mode === 'multiplayer') {
+                    this.manager.animating_started();
+                }
                 
                 this.handle_moving();
                 this.handle_getting_rid_of_player_placed_walls();
@@ -499,6 +504,15 @@ class GameScene extends Phaser.Scene {
     }
 
     check_unpause_timers() {
+        if (this.mode === 'multiplayer') {
+            if (this.green_move === null && this.orange_move === null) {
+                this.manager.done_animating();
+            }
+            if (this.manager.opponent_is_animating) {
+                return;
+            }
+        }
+
         if (this.green_move === null && this.green_has_moved) {
             this.green_timer.unpause();
         }
