@@ -134,12 +134,15 @@ class GameScene extends Phaser.Scene {
         game_config.num_cols = this.map.width;
         game_config.num_rows = this.map.height;
         // set the tile size to the smallest of the two dimensions
-        game_config.tile_size = Math.min(this.game.config.width / game_config.num_cols,this.game.config.height / game_config.num_rows);
+        let map_width = this.game.config.width
+        let map_height = this.game.config.height
+
+        game_config.tile_size = Math.min(map_width / game_config.num_cols,map_height / game_config.num_rows);
         // scale the tilemap to the correct size
         this.map.layers[0].tilemapLayer.setScale(game_config.tile_size / this.map.tileWidth, game_config.tile_size / this.map.tileHeight);
         // center it in the game
-        this.map.layers[0].tilemapLayer.x = Math.max((this.game.config.width - (game_config.tile_size*game_config.num_cols)) / 2,0);
-        this.map.layers[0].tilemapLayer.y = Math.max((this.game.config.height - (game_config.tile_size*game_config.num_rows)) / 2,0);
+        this.map.layers[0].tilemapLayer.x = Math.max((map_width - (game_config.tile_size*game_config.num_cols)) / 2,0);
+        this.map.layers[0].tilemapLayer.y = Math.max((map_height - (game_config.tile_size*game_config.num_rows)) / 2,0);
 
         this.bounceSOUND = this.sound.add("bounce_sound");     
         this.bounceSOUND.play();      
