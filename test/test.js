@@ -303,7 +303,7 @@ describe('Game', function () {
         // two green twos moving into 2 orange twos (one space inbetween), should combine into 4s with one space inbetween
         ["green", 2, 1, 2, "green", 1, 1, 2, "orange", 3, 1, 2, "orange", 4, 1, 2, "right", "left", 2, 1, null, null, 3, 1, null, null, 100, 4, null, 4, null],
 
-        // the test that never worked (visual of it: https://i.imgur.com/3LqPhev.png) green goes up, orange goes left
+        // visual: https://i.imgur.com/3LqPhev.png, green goes up, orange goes left
         ["green", 1, 2, 4, "green", 1, 3, 8, "orange", 2, 1, 4, "orange", 2, 2, 2, "up", "left", 1, 2, 1, 3, 2, 1, null, null, 100, 4, 8, 4, null],
 
         // visual: https://i.imgur.com/Ixs09U8.png, green goes up, orange goes left
