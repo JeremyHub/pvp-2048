@@ -308,6 +308,8 @@ describe('Game', function () {
 
         // visual: https://i.imgur.com/Ixs09U8.png, green goes up, orange goes left
         ["green", 1, 1, 4, "green", 1, 2, 2, "orange", 2, 1, 4, "orange", 2, 2, 2, "up", "left", 1, 1, 1, 2, 2, 1, 2, 2, 100, 4, 2, 4, 2],
+
+        ["green", 7, 8, 2, "green", 8, 9, 4, "orange", 7, 7, 2, "orange", 8, 8, 2, "up", "right", 7, 1, 8, 1, 18, 7, 18, 8, 100, 2, 4, 2, 2],
     ])
         .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), third tile ends at (%d,%d), fourth tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d, third tile ended at value of %d, fourth tile ended at value of %d`,
             function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, third_team, third_tile_x, third_tile_y, third_value, fourth_team, fourth_tile_x, fourth_tile_y, fourth_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, new_third_tile_x, new_third_tile_y, new_fourth_tile_x, new_fourth_tile_y, num_updates, expected_value, expected_other_value, expected_third_value, expected_fourth_value) {
