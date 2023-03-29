@@ -191,7 +191,7 @@ export class MutliplayerManager {
             if (this.current_data.players[this.your_color].moves.length === this.current_turn && this.scene.is_waiting_for_input()) {
                 your_moves.push(direction);
                 set(ref(this.database, players_ref_str + this.your_color + "/moves"), your_moves);
-                console.log("updated with direction: " + direction);
+                // console.log("updated with direction: " + direction);
             }
         }
     }
