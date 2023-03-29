@@ -304,7 +304,10 @@ describe('Game', function () {
         ["green", 2, 1, 2, "green", 1, 1, 2, "orange", 3, 1, 2, "orange", 4, 1, 2, "right", "left", 2, 1, null, null, 3, 1, null, null, 100, 4, null, 4, null],
 
         // the test that never worked (visual of it: https://i.imgur.com/3LqPhev.png) green goes up, orange goes left
-        ["green", 1, 2, 4, "green", 1, 3, 8, "orange", 2, 1, 4, "orange", 2, 2, 2, "up", "left", 1, 2, 1, 3, 2, 1, null, null, 100, 4, 8, 4, null]
+        ["green", 1, 2, 4, "green", 1, 3, 8, "orange", 2, 1, 4, "orange", 2, 2, 2, "up", "left", 1, 2, 1, 3, 2, 1, null, null, 100, 4, 8, 4, null],
+
+        // visual: https://i.imgur.com/Ixs09U8.png, green goes up, orange goes left
+        ["green", 1, 1, 4, "green", 1, 2, 2, "orange", 2, 1, 4, "orange", 2, 2, 2, "up", "left", 1, 1, 1, 2, 2, 1, 2, 2, 100, 4, 2, 4, 2],
     ])
         .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), third tile ends at (%d,%d), fourth tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d, third tile ended at value of %d, fourth tile ended at value of %d`,
             function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, third_team, third_tile_x, third_tile_y, third_value, fourth_team, fourth_tile_x, fourth_tile_y, fourth_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, new_third_tile_x, new_third_tile_y, new_fourth_tile_x, new_fourth_tile_y, num_updates, expected_value, expected_other_value, expected_third_value, expected_fourth_value) {
