@@ -39,7 +39,7 @@ class Block{
         this.space_size = this.size+(this.padding*2);
         this.rect = null
         this.block_id = block_id
-        // block_id is just a random value assigned to every block, I use it to tell blocks apart in console logs
+        // block_id is just a value assigned to every block, I use it to tell blocks apart in console logs
         this.animations = []
         if (drawing) {
             this.create();
