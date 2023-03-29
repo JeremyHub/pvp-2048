@@ -18,9 +18,9 @@ PADDING = 2
 
 # Create the grid
 grid = []
-for row in range(20):
+for row in range(19):
     grid.append([])
-    for column in range(20):
+    for column in range(19):
         grid[row].append(0)
 
 # Set up the font
@@ -93,8 +93,8 @@ while True:
                 blocks.append((team, column, row, int(value)))
 
     # Draw the grid and values on blocks
-    for row in range(20):
-        for column in range(20):
+    for row in range(19):
+        for column in range(19):
             color = (255, 255, 255)
             x = column * (BLOCK_SIZE + PADDING)
             y = row * (BLOCK_SIZE + PADDING)
