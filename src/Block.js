@@ -276,17 +276,16 @@ class Block{
             this.movement_status = 0;
             return;
         }
-        this.moving_direction = direction;
-        if (this.moving_direction === 'up') {
+        if (direction === 'up') {
             this.tile_y -= 1;
         }
-        else if (this.moving_direction === 'down') {
+        else if (direction === 'down') {
             this.tile_y += 1;
         }
-        else if (this.moving_direction === 'left') {
+        else if (direction === 'left') {
             this.tile_x -= 1;
         }
-        else if (this.moving_direction === 'right') {
+        else if (direction === 'right') {
             this.tile_x += 1;
         }
         this.movement_status = 1;
@@ -295,7 +294,7 @@ class Block{
     }
     /**
      * Adds a step of movement to the animation path.
-     * If the current last step of the block animation path is 
+     * If the current last step of the block animation path is a movement step, updates that step to move another space instead.
      */
     update_movement_animation() {
         // right now this makes the assumption that a block's movement direction will stay the same throughout movement
@@ -347,8 +346,8 @@ class Block{
         return null;
     }
 
-    check_if_wall_in_direction(direction) {        
-        const tile_in_direction = this.get_tile_in_direction(direction);
+    check_if_wall_in_direction(direction, distance) {        
+        const tile_in_direction = this.get_tile_in_direction(direction, distance);
 
         if (tile_in_direction !== null) {
             if (this.wall_ids.includes(tile_in_direction.layer.data[tile_in_direction.y][tile_in_direction.x].index)) {
@@ -358,23 +357,46 @@ class Block{
         return false;
     }
 
-    get_tile_in_direction(direction) {
+    get_tile_in_direction(direction, distance) {
+        if (distance == null) [
+            distance = 1
+        ]
         let tile_to_check = null;
         
         if (direction === 'up') {
-            tile_to_check = this.scene.map.getTileAt(this.tile_x, this.tile_y - 1);
+            tile_to_check = this.scene.map.getTileAt(this.tile_x, this.tile_y - distance);
         }
         else if (direction === 'down') {
-            tile_to_check = this.scene.map.getTileAt(this.tile_x, this.tile_y + 1);
+            tile_to_check = this.scene.map.getTileAt(this.tile_x, this.tile_y + distance);
         }
         else if (direction === 'left') {
-            tile_to_check = this.scene.map.getTileAt(this.tile_x - 1, this.tile_y);
+            tile_to_check = this.scene.map.getTileAt(this.tile_x - distance, this.tile_y);
         }
         else if (direction === 'right') {
-            tile_to_check = this.scene.map.getTileAt(this.tile_x + 1, this.tile_y);
+            tile_to_check = this.scene.map.getTileAt(this.tile_x + distance, this.tile_y);
         }
 
         return tile_to_check;
+    }
+    
+    /**
+     * Checks if there is an empty space in the given direction between the block and any walls.
+     * @param {*} direction 
+     * @param {*} distance The distance from the block to check. Used for recursion, 1 is the default value.
+     * @param {*} block_list The list of all blocks currently on screen.
+     * @returns True if there is an empty space in the given direction, false if not.
+     */
+    is_any_space_empty(direction, distance, block_list) {
+        if (this.check_if_wall_in_direction(direction, distance)) {
+            return false
+        }
+        let tile = this.get_tile_in_direction(direction, distance)
+        for (let block of block_list) {
+            if (tile.x === block.tile_x && tile.y === block.tile_y) {
+                return this.is_any_space_empty(direction, distance + 1)
+            }
+        }
+        return true         
     }
 
     get_reverse_direction(direction) {

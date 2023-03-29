@@ -58,6 +58,8 @@ class GameScene extends Phaser.Scene {
             this.seed = buffer.readUIntBE(0, 5);
         }
 
+        this.error_log = [];
+
         this.blocks = [];               // all blocks
         this.orange_blocks = [];        // orange blocks            
         this.green_blocks = [];         // green blocks
@@ -399,13 +401,13 @@ class GameScene extends Phaser.Scene {
         
         if (this.movement_started === false) {
             this.movement_started = true;
+            this.error_log = this.log_block_positions(this.all_block_lists, this.green_move, this.orange_move)
             for (let i = 0; i < this.all_block_lists.length; i++) {
                 this.all_block_lists[i].movement_status = 1;
             }
         }
         this.any_block_is_moving = true;
         if (!is_any_block_moving(this.all_block_lists)) {
-            
             check_collisions(this.all_block_lists, this.green_blocks, this.orange_blocks, this.seed + this.total_moves);
             move_blocks(this.green_blocks, this.green_move);
             move_blocks(this.orange_blocks, this.orange_move);
@@ -468,6 +470,14 @@ class GameScene extends Phaser.Scene {
 
     update_all_blocks_list() {
         this.all_block_lists = this.orange_blocks.concat(this.green_blocks);
+    }
+
+    log_block_positions(blocks, green_move, orange_move) {
+        let block_positions = []
+        for (let block of blocks) {
+            block_positions.push([block.value, block.tile_x, block.tile_y, block.color, block])
+        }
+        return (green_move, orange_move, block_positions);
     }
 
     update() {

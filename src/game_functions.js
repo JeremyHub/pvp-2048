@@ -31,6 +31,7 @@ function turn_finished(blocks) {
 function move_blocks(blocks, direction) {
     for (let i = 0; i < blocks.length; i++) {
         if (blocks[i].movement_status === 1) {
+            blocks[i].moving_direction = direction;
             blocks[i].move_space(direction);
         }
     }
@@ -66,7 +67,7 @@ function check_collisions(blocks, green_blocks, orange_blocks, seed) {
         other_block = green_block.passed_block(orange_blocks)
         // TODO currently it only checks for enemy blocks, since all blocks on the same team move the same direction
         if (other_block !== null) {
-            if (!evaluate_collision([green_block, other_block], false, seed)) {
+            if (!evaluate_collision([green_block, other_block], false, seed, blocks)) {
                 should_recheck_collision = true;
             }
         }
@@ -86,7 +87,7 @@ function check_collisions(blocks, green_blocks, orange_blocks, seed) {
     
     for (let tile in blocks_on_each_tile) {
         if (blocks_on_each_tile[tile].length > 1) {
-            if (!evaluate_collision(blocks_on_each_tile[tile], true, seed)) {
+            if (!evaluate_collision(blocks_on_each_tile[tile], true, seed, blocks)) {
                 should_recheck_collision = true;
             }
         }
@@ -103,7 +104,7 @@ function check_collisions(blocks, green_blocks, orange_blocks, seed) {
  * @param {*} colliding_blocks the list of blocks to check collision for
  * @param {*} is_direct whether or not the collision is direct (blocks are on the same tile) or indirect (blocks passes each other)
  */
-function evaluate_collision(colliding_blocks, is_direct, seed) {
+function evaluate_collision(colliding_blocks, is_direct, seed, block_list) {
 
     let tile_colliding_on_coords = {x: colliding_blocks[0].tile_x, y: colliding_blocks[0].tile_y};
 
@@ -114,9 +115,6 @@ function evaluate_collision(colliding_blocks, is_direct, seed) {
             moving_block = colliding_blocks[i];
             break;
         }
-    }
-    if (moving_block === null) {
-        console.error("no blocks are moving");
     }
 
     
@@ -227,6 +225,23 @@ function evaluate_collision(colliding_blocks, is_direct, seed) {
                 block_to_move.movement_status = 1;
                 block_to_move.move_space(opposite_direction);
             }
+        } else {
+            let blocks_able_to_bounce = []
+            for (let block of blocks_still_on_tile) {
+                if (block.is_any_space_empty(get_opposite_direction(block.moving_direction), 1, block_list)) {
+                    blocks_able_to_bounce.push(block)
+                }
+            }
+            let block = null
+            if (blocks_able_to_bounce.length > 1) {
+                block = blocks_able_to_bounce.at(Math.round(Math.random()))
+            }
+            else {
+                block = blocks_able_to_bounce.at(0)
+            }
+            block.movement_status = 1
+            block.move_space(get_opposite_direction(block.moving_direction))
+            block.movement_status = 0
         }
     }
 
