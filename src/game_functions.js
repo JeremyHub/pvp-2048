@@ -233,12 +233,7 @@ function evaluate_collision(colliding_blocks, is_direct, seed, block_list) {
                 }
             }
             let block = null
-            if (blocks_able_to_bounce.length > 1) {
-                block = blocks_able_to_bounce.at(Math.round(Math.random()))
-            }
-            else {
-                block = blocks_able_to_bounce.at(0)
-            }
+            block = blocks_able_to_bounce.at(0)
             block.movement_status = 1
             block.move_space(get_opposite_direction(block.moving_direction))
             block.movement_status = 0
