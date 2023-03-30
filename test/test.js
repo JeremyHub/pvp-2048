@@ -62,11 +62,11 @@ describe('Game', function () {
         ["orange", 2, 2, "green", 5, 5, "right", "down", 2, 18, 100],
         ["orange", 2, 2, "green", 5, 5, "right", "up", 2, 1, 100],
     ])
-        .it(`%s block at (%d,%d) and %s block at (%d,%d), green moving: %s, orange moving: %s, ends at (%d,%d) using %d updates`, function (team, tile_x, tile_y, other_team, other_tile_x, other_tile_y, green_key, orange_key, new_tile_x, new_tile_y, num_updates) {
+        .it(`%s block at (%d,%d) and %s block at (%d,%d), green moving: %s, orange moving: %s, ends at (%d,%d) using %d updates`, function (team, tile_x, tile_y, second_team, second_tile_x, second_tile_y, green_key, orange_key, new_tile_x, new_tile_y, num_updates) {
             let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
-            let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
+            let second_list_of_blocks = second_team === "orange" ? game.orange_blocks : game.green_blocks;
             let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
-            let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team, game_config);
+            let second_block = create_block(game, second_list_of_blocks, second_tile_x, second_tile_y, "color", second_team, game_config);
             
             game.make_green_move(green_key);
             game.make_orange_move(orange_key);
@@ -91,13 +91,13 @@ describe('Game', function () {
         ["orange", 2, 2, 4, "orange", 2, 5, 4, "right", "up", 2, 1, 100, 8],
         ["orange", 2, 2, 2, "orange", 5, 2, 2, "right", "right", 18, 2, 100, 4],
     ])
-        .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, ends at (%d,%d) using %d updates, ended at value of %d`, function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, green_key, orange_key, new_tile_x, new_tile_y, num_updates, expected_value) {
+        .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, ends at (%d,%d) using %d updates, ended at value of %d`, function (team, tile_x, tile_y, first_value, second_team, second_tile_x, second_tile_y, second_value, green_key, orange_key, new_tile_x, new_tile_y, num_updates, expected_value) {
             let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
-            let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
+            let second_list_of_blocks = second_team === "orange" ? game.orange_blocks : game.green_blocks;
             let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
             block.value = first_value;
-            let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team, game_config);
-            other_block.value = second_value;
+            let second_block = create_block(game, second_list_of_blocks, second_tile_x, second_tile_y, "color", second_team, game_config);
+            second_block.value = second_value;
             
             game.make_green_move(green_key);
             game.make_orange_move(orange_key);
@@ -112,7 +112,7 @@ describe('Game', function () {
 
             // second block should be gone
             let has_destroy_animation = false;
-            for (anim of other_block.animations) {
+            for (anim of second_block.animations) {
                 if (anim[0] === "merge" || anim[0] === "destroy") {
                     has_destroy_animation = true;
                 }
@@ -151,23 +151,23 @@ describe('Game', function () {
         ["orange", 2, 2, 2, "green", 2, 5, 2, "up", "up", 2, 1, 2, 2, 100, 2, 2],
         ["orange", 2, 2, 2, "green", 5, 2, 2, "left", "left", 1, 2, 2, 2, 100, 2, 2],
 
-        // diff color same value bouncing tests (diff direction (ie. moving through each other)) (right next to each other)
+        // diff color same value bouncing tests (diff direction (ie. moving through each second)) (right next to each second)
         ["green", 2, 2, 2, "orange", 5, 2, 2, "right", "left", 3, 2, 4, 2, 100, 2, 2],
         ["green", 2, 2, 2, "orange", 2, 5, 2, "down", "up", 2, 3, 2, 4, 100, 2, 2],
         ["green", 5, 2, 2, "orange", 2, 2, 2, "left", "right", 4, 2, 3, 2, 100, 2, 2],
         ["green", 2, 5, 2, "orange", 2, 2, 2, "up", "down", 2, 4, 2, 3, 100, 2, 2],
 
-        // diff color same value bouncing tests (diff direction (ie. moving through each other)) (one space in between)
+        // diff color same value bouncing tests (diff direction (ie. moving through each second)) (one space in between)
         ["green", 2, 2, 4, "orange", 6, 2, 4, "right", "left", 3, 2, 5, 2, 100, 4, 4],
         ["green", 2, 2, 4, "orange", 2, 6, 4, "down", "up", 2, 3, 2, 5, 100, 4, 4],
         ["green", 6, 2, 4, "orange", 2, 2, 4, "left", "right", 5, 2, 3, 2, 100, 4, 4],
         ["green", 2, 6, 4, "orange", 2, 2, 4, "up", "down", 2, 5, 2, 3, 100, 4, 4],
 
-        // diff color same value bouncing when traveling perpendicular to each other and meeting on the same tile
+        // diff color same value bouncing when traveling perpendicular to each second and meeting on the same tile
         ["green", 1, 1, 2, "orange", 2, 2, 2, "down", "left", 1, 1, 2, 2, 100, 2, 2],
         ["green", 1, 1, 2, "orange", 3, 3, 2, "down", "left", 1, 2, 2, 3, 100, 2, 2],
 
-        // diff color same value passes through each other when traveling prependicular to each other and one beats the other
+        // diff color same value passes through each second when traveling prependicular to each second and one beats the second
         ["green", 2, 1, 2, "orange", 3, 3, 2, "down", "left", 2, 18, 1, 3, 100, 2, 2],
 
         // eating at walls tests
@@ -181,38 +181,38 @@ describe('Game', function () {
         ["orange", 2, 5, 4, "green", 2, 2, 2, "up", "up", 2, 1, null, null, 100, 4, null],
 
         // eating mid movement tests
-            // twords each other with even number space in between (end on the smaller number's spot)
+            // twords each second with even number space in between (end on the smaller number's spot)
         ["green", 2, 2, 4, "orange", 5, 2, 2, "right", "left", 4, 2, null, null, 100, 4, null],
         ["orange", 2, 2, 4, "green", 5, 2, 2, "left", "right", 4, 2, null, null, 100, 4, null],
         ["green", 2, 2, 2, "orange", 5, 2, 4, "right", "left", null, null, 3, 2, 100, null, 4],
         ["orange", 2, 2, 2, "green", 5, 2, 4, "left", "right", null, null, 3, 2, 100, null, 4],
         
-            // twords each other with odd number space in between (end in the middle)
+            // twords each second with odd number space in between (end in the middle)
         ["green", 2, 2, 4, "orange", 6, 2, 2, "right", "left", 4, 2, null, null, 100, 4, null],
         ["orange", 2, 2, 4, "green", 6, 2, 2, "left", "right", 4, 2, null, null, 100, 4, null],
         ["green", 2, 2, 2, "orange", 6, 2, 4, "right", "left", null, null, 4, 2, 100, null, 4],
         ["orange", 2, 2, 2, "green", 6, 2, 4, "left", "right", null, null, 4, 2, 100, null, 4],
 
-            // twords each other right next to each other (end on the smaller number's spot)
+            // twords each second right next to each second (end on the smaller number's spot)
         ["green", 2, 2, 4, "orange", 3, 2, 2, "right", "left", 3, 2, null, null, 100, 4, null],
         ["orange", 2, 2, 4, "green", 3, 2, 2, "left", "right", 3, 2, null, null, 100, 4, null],
         ["green", 2, 2, 2, "orange", 3, 2, 4, "right", "left", null, null, 2, 2, 100, null, 4],
         ["orange", 2, 2, 2, "green", 3, 2, 4, "left", "right", null, null, 2, 2, 100, null, 4],
 
-            // perpendicular to each other's movement (end on the intersection spot)
+            // perpendicular to each second's movement (end on the intersection spot)
         ["green", 1, 1, 4, "orange", 2, 2, 2, "down", "left", 1, 2, null, null, 100, 4, null],
         ["orange", 1, 2, 4, "green", 2, 3, 2, "up", "right", 2, 2, null, null, 100, 4, null],
 
 
     ])
         .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d`,
-            function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, num_updates, expected_value, expected_other_value) {
+            function (team, tile_x, tile_y, first_value, second_team, second_tile_x, second_tile_y, second_value, green_key, orange_key, new_tile_x, new_tile_y, new_second_tile_x, new_second_tile_y, num_updates, expected_value, expected_second_value) {
                 let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
-                let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
+                let second_list_of_blocks = second_team === "orange" ? game.orange_blocks : game.green_blocks;
                 let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
                 block.value = first_value;
-                let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team, game_config);
-                other_block.value = second_value;
+                let second_block = create_block(game, second_list_of_blocks, second_tile_x, second_tile_y, "color", second_team, game_config);
+                second_block.value = second_value;
                 
                 game.make_green_move(green_key);
                 game.make_orange_move(orange_key);
@@ -223,7 +223,7 @@ describe('Game', function () {
                     game.handle_moving();
                 }
 
-                for ([block, x, y, value, team] of [[block, new_tile_x, new_tile_y, expected_value, team], [other_block, new_other_tile_x, new_other_tile_y, expected_other_value, other_team]]) {
+                for ([block, x, y, value, team] of [[block, new_tile_x, new_tile_y, expected_value, team], [second_block, new_second_tile_x, new_second_tile_y, expected_second_value, second_team]]) {
                     if (x === null || y === null || value === null) {
                         // block should be gone
                         let has_destroy_animation = false;
@@ -249,24 +249,24 @@ describe('Game', function () {
         ["green", 1, 1, 2, "green", 1, 2, 2, "orange", 2, 1, 4, "up", "left", 1, 1, null, null, 2, 1, 100, 4, null, 4],
         ["orange", 1, 1, 2, "orange", 1, 2, 2, "green", 2, 1, 4, "left", "up", 1, 1, null, null, 2, 1, 100, 4, null, 4],
 
-        // two twos combining, one 4 block moving perpedicular to the others, should combine first then stop the movement of the 4
+        // two twos combining, one 4 block moving perpedicular to the seconds, should combine first then stop the movement of the 4
         ["green", 5, 1, 2, "green", 5, 2, 2, "orange", 4, 1, 4, "up", "right", 5, 1, null, null, 4, 1, 100, 4, null, 4],
         ["orange", 5, 1, 2, "orange", 5, 2, 2, "green", 4, 1, 4, "right", "up", 5, 1, null, null, 4, 1, 100, 4, null, 4],
 
-        // two twos moving into a 4 of the other team, should both be eaten by the 4
+        // two twos moving into a 4 of the second team, should both be eaten by the 4
         ["green", 1, 1, 2, "green", 2, 1, 2, "orange", 4, 1, 4, "right", "up", null, null, null, null, 4, 1, 100, null, null, 4],
         ["orange", 1, 1, 2, "orange", 2, 1, 2, "green", 4, 1, 4, "up", "right", null, null, null, null, 4, 1, 100, null, null, 4],
 
     ])
         .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), third tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d, third tile ended at value of %d`,
-            function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, third_team, third_tile_x, third_tile_y, third_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, new_third_tile_x, new_third_tile_y, num_updates, expected_value, expected_other_value, expected_third_value) {
+            function (team, tile_x, tile_y, first_value, second_team, second_tile_x, second_tile_y, second_value, third_team, third_tile_x, third_tile_y, third_value, green_key, orange_key, new_tile_x, new_tile_y, new_second_tile_x, new_second_tile_y, new_third_tile_x, new_third_tile_y, num_updates, expected_value, expected_second_value, expected_third_value) {
                 let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
-                let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
+                let second_list_of_blocks = second_team === "orange" ? game.orange_blocks : game.green_blocks;
                 let third_list_of_blocks = third_team === "orange" ? game.orange_blocks : game.green_blocks;
                 let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
                 block.value = first_value;
-                let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team, game_config);
-                other_block.value = second_value;
+                let second_block = create_block(game, second_list_of_blocks, second_tile_x, second_tile_y, "color", second_team, game_config);
+                second_block.value = second_value;
                 let third_block = create_block(game, third_list_of_blocks, third_tile_x, third_tile_y, "color", third_team, game_config);
                 third_block.value = third_value;
                 
@@ -278,7 +278,7 @@ describe('Game', function () {
                 for (var i = 0; i < num_updates-1; i++) {
                     game.handle_moving();
                 }
-                for ([block, x, y, value, team] of [[block, new_tile_x, new_tile_y, expected_value, team], [other_block, new_other_tile_x, new_other_tile_y, expected_other_value, other_team], [third_block, new_third_tile_x, new_third_tile_y, expected_third_value, third_team]]) {
+                for ([block, x, y, value, team] of [[block, new_tile_x, new_tile_y, expected_value, team], [second_block, new_second_tile_x, new_second_tile_y, expected_second_value, second_team], [third_block, new_third_tile_x, new_third_tile_y, expected_third_value, third_team]]) {
                     if (x === null || y === null || value === null) {
                         // block should be gone
                         let has_destroy_animation = false;
@@ -312,15 +312,15 @@ describe('Game', function () {
         ["green", 7, 8, 2, "green", 8, 9, 4, "orange", 7, 7, 2, "orange", 8, 8, 2, "up", "right", 7, 1, 8, 1, 18, 7, 18, 8, 100, 2, 4, 2, 2],
     ])
         .it(`%s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, and %s block at (%d,%d) with value of %d, green moving: %s, orange moving: %s, first tile ends at (%d,%d), second tile ends at (%d,%d), third tile ends at (%d,%d), fourth tile ends at (%d,%d), using %d updates, first tile ended at value of %d, second tile ended at value of %d, third tile ended at value of %d, fourth tile ended at value of %d`,
-            function (team, tile_x, tile_y, first_value, other_team, other_tile_x, other_tile_y, second_value, third_team, third_tile_x, third_tile_y, third_value, fourth_team, fourth_tile_x, fourth_tile_y, fourth_value, green_key, orange_key, new_tile_x, new_tile_y, new_other_tile_x, new_other_tile_y, new_third_tile_x, new_third_tile_y, new_fourth_tile_x, new_fourth_tile_y, num_updates, expected_value, expected_other_value, expected_third_value, expected_fourth_value) {
+            function (team, tile_x, tile_y, first_value, second_team, second_tile_x, second_tile_y, second_value, third_team, third_tile_x, third_tile_y, third_value, fourth_team, fourth_tile_x, fourth_tile_y, fourth_value, green_key, orange_key, new_tile_x, new_tile_y, new_second_tile_x, new_second_tile_y, new_third_tile_x, new_third_tile_y, new_fourth_tile_x, new_fourth_tile_y, num_updates, expected_value, expected_second_value, expected_third_value, expected_fourth_value) {
                 let list_of_blocks = team === "orange" ? game.orange_blocks : game.green_blocks;
-                let other_list_of_blocks = other_team === "orange" ? game.orange_blocks : game.green_blocks;
+                let second_list_of_blocks = second_team === "orange" ? game.orange_blocks : game.green_blocks;
                 let third_list_of_blocks = third_team === "orange" ? game.orange_blocks : game.green_blocks;
                 let fourth_list_of_blocks = fourth_team === "orange" ? game.orange_blocks : game.green_blocks;
                 let block = create_block(game, list_of_blocks, tile_x, tile_y, "color", team, game_config);
                 block.value = first_value;
-                let other_block = create_block(game, other_list_of_blocks, other_tile_x, other_tile_y, "color", other_team, game_config);
-                other_block.value = second_value;
+                let second_block = create_block(game, second_list_of_blocks, second_tile_x, second_tile_y, "color", second_team, game_config);
+                second_block.value = second_value;
                 let third_block = create_block(game, third_list_of_blocks, third_tile_x, third_tile_y, "color", third_team, game_config);
                 third_block.value = third_value;
                 let fourth_block = create_block(game, fourth_list_of_blocks, fourth_tile_x, fourth_tile_y, "color", fourth_team, game_config);
@@ -334,7 +334,7 @@ describe('Game', function () {
                 for (var i = 0; i < num_updates-1; i++) {
                     game.handle_moving();
                 }
-                for ([block, x, y, value, team] of [[block, new_tile_x, new_tile_y, expected_value, team], [other_block, new_other_tile_x, new_other_tile_y, expected_other_value, other_team], [third_block, new_third_tile_x, new_third_tile_y, expected_third_value, third_team], [fourth_block, new_fourth_tile_x, new_fourth_tile_y, expected_fourth_value, fourth_team]]) {
+                for ([block, x, y, value, team] of [[block, new_tile_x, new_tile_y, expected_value, team], [second_block, new_second_tile_x, new_second_tile_y, expected_second_value, second_team], [third_block, new_third_tile_x, new_third_tile_y, expected_third_value, third_team], [fourth_block, new_fourth_tile_x, new_fourth_tile_y, expected_fourth_value, fourth_team]]) {
                     // block should be gone
                     let has_destroy_animation = false;
                     for (anim of block.animations) {
