@@ -17,48 +17,7 @@
             left: 50%; 
             transform: translate(-50%, -50%); 
         }
-        #orange-health-bar {
-            display: block;
-            margin: auto; 
-			position: absolute;
-			top: 15%;
-			right: 15%;
-		}
-		#green-health-bar {
-            display: block;
-            margin: auto; 
-			position: absolute;
-			top: 15%;
-			left: 15%;
-		}
-        #orange-wallcount {
-            display: block;
-            margin: auto;
-            position: absolute;
-            top: 20%;
-            right: 15%;
-        }
-        #green-wallcount {
-            display: block;
-            margin: auto;
-            position: absolute;
-            top: 20%;
-            left: 15%;
-        }
-        #orange-moves {
-            display: block;
-            margin: auto;
-            position: absolute;
-            top: 25%;
-            right: 15%;
-        }
-        #green-moves {
-            display: block;
-            margin: auto;
-            position: absolute;
-            top: 25%;
-            left: 15%;
-        }
+       
 
         #all-multiplayer-items {
             visibility: hidden;
@@ -72,37 +31,11 @@
 <body>
     
     <script>
-        document.body.style.backgroundColor = "cyan";
+        document.body.style.backgroundColor = "grey";
     </script>
 
-<div class="health">
-	<div id="orange-health-bar">    
-		orange total value: <span id="orange-total-value"></span>
-	</div>
-        <div id="game"></div>
-	<div id="green-health-bar">
-	    green total value: <span id="green-total-value"></span>
-	</div>
-</div>
-
-<div class = "wallcounts">
-    <div id="orange-wallcount">
-        orange wall count: <span id="orange-walls"></span>
-    </div>
-    <div id="green-wallcount">
-        green wall count: <span id="green-walls"></span>
-    </div>
-</div>
 
 
-<div class = "moves">
-    <div id="orange-moves">
-        orange ready: <span id="orange-lock"></span>
-    </div>
-    <div id="green-moves">
-        green ready: <span id="green-lock"></span>
-    </div>
-</div>
 
 <div id="all-multiplayer-items">
     <div>

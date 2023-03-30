@@ -1,12 +1,13 @@
 class Timer extends Phaser.GameObjects.Container{
 
     
-    constructor(scene, x, y, time){
+    constructor(scene, x, y, time, color){
         super(scene, x, y);
         this.scene = scene;
         this.time = time;
+        this.color = color;
         let text_size = this.scene.game.config.width/20;
-        let style = { font: "bold " + text_size + "px Arial", fill: "#fffff", boundsAlignH: "center", boundsAlignV: "middle" };
+        let style = { font: "bold " + text_size + "px Arial", fill: color, boundsAlignH: "center", boundsAlignV: "middle" };
         this.text = new Phaser.GameObjects.Text(this.scene, 0, 0, "", style);
         this.add(this.text);
         this.create();

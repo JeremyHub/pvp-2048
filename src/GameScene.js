@@ -1,4 +1,6 @@
 var {Timer} = require('./Timer');
+var {UIContainer} = require('./UIContainer');
+
 
 var {block_config} = require('./Block');
 var {
@@ -16,6 +18,10 @@ var {
 } = require('./game_functions');
 
 const game_config = {
+    top_map_offset: 0.1, // percentage of screen height from top that the map is offset
+    bottom_map_offset: 0.1, // percentage of screen height from bottom that the map is offset
+    left_map_offset: 0.1, // percentage of screen width from left that the map is offset
+    right_map_offset: 0.1, // percentage of screen width from right that the map is offset
     num_rows: 14, // reset in create
     num_cols: 14, // reset in create
     tile_size: 32, // reset in create
@@ -136,15 +142,15 @@ class GameScene extends Phaser.Scene {
         game_config.num_cols = this.map.width;
         game_config.num_rows = this.map.height;
         // set the tile size to the smallest of the two dimensions
-        let map_width = this.game.config.width
-        let map_height = this.game.config.height
+        let map_width = this.game.config.width * (1 - game_config.left_map_offset - game_config.right_map_offset);
+        let map_height = this.game.config.height * (1 - game_config.top_map_offset - game_config.bottom_map_offset);
 
         game_config.tile_size = Math.min(map_width / game_config.num_cols,map_height / game_config.num_rows);
         // scale the tilemap to the correct size
         this.map.layers[0].tilemapLayer.setScale(game_config.tile_size / this.map.tileWidth, game_config.tile_size / this.map.tileHeight);
         // center it in the game
-        this.map.layers[0].tilemapLayer.x = Math.max((map_width - (game_config.tile_size*game_config.num_cols)) / 2,0);
-        this.map.layers[0].tilemapLayer.y = Math.max((map_height - (game_config.tile_size*game_config.num_rows)) / 2,0);
+        this.map.layers[0].tilemapLayer.x = Math.max((map_width - (game_config.tile_size*game_config.num_cols)) / 2,0) + this.game.config.width * game_config.left_map_offset;
+        this.map.layers[0].tilemapLayer.y = Math.max((map_height - (game_config.tile_size*game_config.num_rows)) / 2,0) + this.game.config.height * game_config.top_map_offset;
 
         this.bounceSOUND = this.sound.add("bounce_sound");     
         this.bounceSOUND.play();      
@@ -166,25 +172,42 @@ class GameScene extends Phaser.Scene {
             this.green_timer = dummy;
             this.orange_timer = dummy;
         } else {
-            this.green_timer = new Timer(this, this.game.config.width*0.2, this.game.config.height*0.15, 120000);
-            this.orange_timer = new Timer(this, this.game.config.width*0.7, this.game.config.height*0.8, 120000);
+            this.green_timer = new Timer(this, this.game.config.width*0.3, this.game.config.height*0.02, 120000, "#" + game_config.green_color.toString().substring(2,9));
+            this.orange_timer = new Timer(this, 0, this.game.config.height*0.02, 120000, "#" + game_config.orange_color.toString().substring(2,9));
+            this.orange_timer.x = this.game.config.width - this.orange_timer.text.width - this.game.config.width*0.3;
         }
+
+        this.green_score = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.02, "Score: " + this.green_total_value, "#" + game_config.green_color.toString().substring(2,9));
+        this.orange_score = new UIContainer(this, 0, this.game.config.height*0.02, "Score: 00" + this.orange_total_value, "#" + game_config.orange_color.toString().substring(2,9));
+        this.orange_score.x = this.game.config.width - this.orange_score.text.width - this.game.config.width*0.01;
+
+
+        this.green_walls_container = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.93, "Walls: " + this.green_walls_count, "#" + game_config.green_color.toString().substring(2,9));
+        this.orange_walls_container = new UIContainer(this, 0, this.game.config.height*0.93, "Walls: 00" + this.orange_walls_count, "#" + game_config.orange_color.toString().substring(2,9));
+        this.orange_walls_container.x = this.game.config.width - this.orange_walls_container.text.width - this.game.config.width*0.01;
+
+        this.green_player_move = new UIContainer(this, this.game.config.width*0.3, this.game.config.height*0.5, null, "#" + game_config.green_color.toString().substring(2,9));
+        this.orange_player_move = new UIContainer(this, this.game.config.width*0.7, this.game.config.height*0.5, null, "#" + game_config.orange_color.toString().substring(2,9));
+
     }
 
-    update_dom_elements() {
-        
-        document.getElementById("orange-walls").innerHTML = this.orange_walls_count;
-
-        document.getElementById("green-walls").innerHTML = this.green_walls_count;
-    }
-
-    update_total_values() {
-        this.orange_total_value = getTotalValueOfBlocks(this.orange_blocks);
-        document.getElementById("orange-total-value").innerHTML = this.orange_total_value;
+    update_ui_elements(){
 
         this.green_total_value = getTotalValueOfBlocks(this.green_blocks);
-        document.getElementById("green-total-value").innerHTML = this.green_total_value;
+        this.green_score.updateText("Score: " + this.green_total_value);
+        
+        this.orange_total_value = getTotalValueOfBlocks(this.orange_blocks);
+        this.orange_score.updateText("Score: " + this.orange_total_value);
+
+        this.green_walls_container.updateText("Walls: " + this.green_walls_count);
+        this.orange_walls_container.updateText("Walls: " + this.orange_walls_count);
+
+        this.green_player_move.updateText(this.green_move);
+        this.orange_player_move.updateText(this.orange_move);
+
     }
+
+ 
 
     check_win_loss() {
 
@@ -440,10 +463,6 @@ class GameScene extends Phaser.Scene {
                     }
                 }
 
-                if (this.animation_finished()) {
-                    this.update_total_values();
-                }
-
                 
                 this.check_block_spawning();
             }
@@ -482,14 +501,14 @@ class GameScene extends Phaser.Scene {
 
     update() {
 
-        
+        this.update_ui_elements();
+
         this.check_win_loss();
         
         this.update_timers();
         
         this.update_all_blocks_list();
         
-        this.update_dom_elements();
         
         // this is just to spawn blocks in at the start of the game (it shouldnt do anything else)
         if (this.all_block_lists.length === 0) {

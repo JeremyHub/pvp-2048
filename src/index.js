@@ -7,14 +7,14 @@ var {LossScene, WinScene, TieScene} = require('./WinLossScenes');
 const config = {
     type: Phaser.AUTO,
     scale: {
-        min: {
-            width: 500,
-            height: 500
-        },
-        max: {
-            width: 1000,
-            height: 1000
-        },
+        // min: {
+        //     width: 500,
+        //     height: 500
+        // },
+        // max: {
+        //     width: 1000,
+        //     height: 1000
+        // },
         mode: Phaser.Scale.FIT,
         parent: 'game',
     },    
