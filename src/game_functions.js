@@ -318,7 +318,8 @@ function spawnblocks(game, spawnarea, team, list_of_blocks, game_config, seed) {
         return;
     }
 
-    const spawn_tile = spawnable_tiles[Math.floor(spawnable_tiles.length/2)];
+    const random = new Phaser.Math.RandomDataGenerator([seed]);
+    const spawn_tile = spawnable_tiles[random.integerInRange(0, spawnable_tiles.length - 1)];
     create_block(game, list_of_blocks, spawn_tile.x, spawn_tile.y, color, team, game_config);
 
 }
