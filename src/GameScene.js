@@ -269,23 +269,12 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    make_orange_wall([x, y]) {
+    make_wall([x, y], team) {
         this.map.putTileAt(game_config.wall_id[0], x, y);
-        this.orange_walls.push(this.map.getTileAt(x, y));
-        this.orange_walls_count --;
+        this[team + "_walls"].push(this.map.getTileAt(x, y));
+        this[team + "_walls_count"] --;
         if (this.mode === "multiplayer") {
-            if (this.your_color === "orange") {
-                this.manager.update_with_wall(x, y);
-            }
-        }
-    }
-
-    make_green_wall([x, y]) {
-        this.map.putTileAt(game_config.wall_id[0], x, y);
-        this.green_walls.push(this.map.getTileAt(x, y));
-        this.green_walls_count --;
-        if (this.mode === "multiplayer") {
-            if (this.your_color === "green") {
+            if (this.your_color === team) {
                 this.manager.update_with_wall(x, y);
             }
         }
@@ -400,26 +389,21 @@ class GameScene extends Phaser.Scene {
                 
             }
 
-            // this can be condensed
-            if(this.green_wall_bool === true && this.green_walls_count > 0 && (this.map.getTileAtWorldXY(x, y).index !== game_config.wall_id[0] && this.map.getTileAtWorldXY(x, y).index !== game_config.green_id[0] && this.map.getTileAtWorldXY(x, y).index !== game_config.orange_id[0])){
-                if (this.mode === "multiplayer") {
-                    if (this.your_color === "orange") {
-                        return;
+            for (let team of ['orange', 'green']) {
+                if (this[team + '_wall_bool'] === true) {
+                    if (this[team + '_walls_count'] > 0) {
+                        if (this.map.getTileAtWorldXY(x, y).index !== game_config.wall_id[0] && this.map.getTileAtWorldXY(x, y).index !== game_config[team + '_id'][0]) {
+                            if (this.mode === "multiplayer") {
+                                if (this.your_color === team) {
+                                    return;
+                                }
+                            }
+                            let tile = this.map.getTileAtWorldXY(x, y)
+                            this.make_wall([tile.x, tile.y], team);
+                        }
                     }
                 }
-                let tile = this.map.getTileAtWorldXY(x, y)
-                this.make_green_wall([tile.x, tile.y]);
             }
-            if(this.orange_wall_bool === true && this.orange_walls_count > 0 && (this.map.getTileAtWorldXY(x, y).index !== game_config.wall_id[0] && this.map.getTileAtWorldXY(x, y).index !== game_config.green_id[0] && this.map.getTileAtWorldXY(x, y).index !== game_config.orange_id[0])){
-                if (this.mode === "multiplayer") {
-                    if (this.your_color === "green") {
-                        return;
-                    }
-                }
-                let tile = this.map.getTileAtWorldXY(x, y)
-                this.make_orange_wall([tile.x, tile.y]);
-            }
-            
         }
     }
 
