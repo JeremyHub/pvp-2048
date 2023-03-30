@@ -108,13 +108,26 @@ function evaluate_collision(colliding_blocks, is_direct, seed, block_list) {
 
     let tile_colliding_on_coords = {x: colliding_blocks[0].tile_x, y: colliding_blocks[0].tile_y};
 
-    // assert at least one block is moving
-    let moving_block = null;
+    // check if any blocks aren't moving
+    let non_moving_block = null;
     for (let i = 0; i < colliding_blocks.length; i++) {
-        if (colliding_blocks[i].movement_status !== 0) {
-            moving_block = colliding_blocks[i];
-            break;
+        if (colliding_blocks[i].movement_status === 0) {
+            non_moving_block = colliding_blocks[i];
         }
+    }
+
+    let return_value = true;
+    // this will change to false if any blocks bounce
+
+    if (non_moving_block !== null && colliding_blocks.length > 2) {
+        for (let block of colliding_blocks) {
+            if (block !== non_moving_block) {
+                if (!evaluate_collision([block, non_moving_block], is_direct, seed, block_list)) {
+                    return_value = false
+                }
+            }
+        }
+        return return_value
     }
 
     
@@ -140,9 +153,6 @@ function evaluate_collision(colliding_blocks, is_direct, seed, block_list) {
 
     let first_team_blocks = first_team === "green" ? green_colliding_blocks : orange_colliding_blocks;
     let second_team_blocks = first_team === "orange" ? green_colliding_blocks : orange_colliding_blocks;
-
-    let return_value = true;
-    // this will change to false if any blocks bounce
 
     // check for combinations for teams in order
     for (let team_colliding_blocks of [first_team_blocks, second_team_blocks]){
