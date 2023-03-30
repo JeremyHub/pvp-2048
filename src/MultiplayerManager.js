@@ -123,12 +123,12 @@ export class MutliplayerManager {
                 green: {
                     is_active: true,
                     moves: [-1],
-                    walls: [null],
+                    walls: [[-1, -1]],
                 },
                 orange: {
                     is_active: false,
                     moves: [-1],
-                    walls: [null],
+                    walls: [[-1, -1]],
                 }
             },
             map_selection: game_config.selected_map,
@@ -188,10 +188,10 @@ export class MutliplayerManager {
             }
 
             // update the game with the walls
-            // if (game_data.players[opp_color].walls.length > this.current_wall) {
-            //     this.scene["make_" + opp_color + "_wall"](game_data.players[opp_color].walls[this.current_wall]);
-            //     this.current_wall++;
-            // }
+            if (game_data.players[opp_color].walls.length > this.current_wall) {
+                this.scene["make_" + opp_color + "_wall"](game_data.players[opp_color].walls[this.current_wall]);
+                this.current_wall++;
+            }
         }
     }
 
@@ -214,7 +214,7 @@ export class MutliplayerManager {
         if (x != null && y != null && this.joined_game_code != null && this.current_data != null) {
             let players_ref_str = "games/" + this.joined_game_code + "/players/";
             let your_walls = this.current_data.players[this.your_color].walls;
-            yout_walls.push([x, y]);
+            your_walls.push([x, y]);
             set(ref(this.database, players_ref_str + this.your_color + "/walls"), your_walls);
             // console.log("updated with wall: " + x + ", " + y);
         }
