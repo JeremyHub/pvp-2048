@@ -390,10 +390,10 @@ class Block{
         if (this.check_if_wall_in_direction(direction, distance)) {
             return false
         }
-        let tile = this.get_tile_in_direction(direction, distance)
+        let tile = this.get_tile_in_direction(direction, distance);
         for (let block of block_list) {
             if (tile.x === block.tile_x && tile.y === block.tile_y) {
-                return this.is_any_space_empty(direction, distance + 1)
+                return this.is_any_space_empty(direction, distance + 1, block_list)
             }
         }
         return true         
