@@ -29,7 +29,7 @@ const game_config = {
     orange_color: 0xffa500,
     green_color: 0x00ff00,
     wall_id: [6,262,268],
-    green_id: [57, 1, 2, 3, 17, 18, 19, 33, 34, 35],   // spawning area
+    green_id: [57, 1, 2, 3, 17, 18, 19, 33, 34, 35, 321],   // spawning area
     orange_id: [127, 7, 8, 9, 23, 24,25, 39, 40, 41], // spawning area
     empty_space_id: [15,178],
     maps: [
@@ -38,6 +38,7 @@ const game_config = {
         'halls',
         'claust',
         'frfrfr',
+        "Classic2048"
     ],
     selected_map: 0, // default map
 };
@@ -211,7 +212,11 @@ class GameScene extends Phaser.Scene {
 
     check_win_loss() {
 
-        
+        // this is a special case for the map Classic2048
+        if (game_config.maps[game_config.selected_map] === "Classic2048"){
+            return;
+        }
+
         // check tie
         if(this.orange_total_value >= this.win_value && this.green_total_value >= this.win_value || this.green_timer.time <= 0 && this.orange_timer.time <= 0){
             this.scene.start('TieScene');
