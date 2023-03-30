@@ -270,8 +270,8 @@ class GameScene extends Phaser.Scene {
     }
 
     make_orange_wall([x, y]) {
-        this.map.putTileAtWorldXY(game_config.wall_id[0], x, y);
-        this.orange_walls.push(this.map.getTileAtWorldXY(x, y));
+        this.map.putTileAt(game_config.wall_id[0], x, y);
+        this.orange_walls.push(this.map.getTileAt(x, y));
         this.orange_walls_count --;
         if (this.mode === "multiplayer") {
             if (this.your_color === "orange") {
@@ -281,8 +281,8 @@ class GameScene extends Phaser.Scene {
     }
 
     make_green_wall([x, y]) {
-        this.map.putTileAtWorldXY(game_config.wall_id[0], x, y);
-        this.green_walls.push(this.map.getTileAtWorldXY(x, y));
+        this.map.putTileAt(game_config.wall_id[0], x, y);
+        this.green_walls.push(this.map.getTileAt(x, y));
         this.green_walls_count --;
         if (this.mode === "multiplayer") {
             if (this.your_color === "green") {
@@ -407,7 +407,8 @@ class GameScene extends Phaser.Scene {
                         return;
                     }
                 }
-                this.make_green_wall([x, y]);
+                let tile = this.map.getTileAtWorldXY(x, y)
+                this.make_green_wall([tile.x, tile.y]);
             }
             if(this.orange_wall_bool === true && this.orange_walls_count > 0 && (this.map.getTileAtWorldXY(x, y).index !== game_config.wall_id[0] && this.map.getTileAtWorldXY(x, y).index !== game_config.green_id[0] && this.map.getTileAtWorldXY(x, y).index !== game_config.orange_id[0])){
                 if (this.mode === "multiplayer") {
@@ -415,7 +416,8 @@ class GameScene extends Phaser.Scene {
                         return;
                     }
                 }
-                this.make_orange_wall([x, y]);
+                let tile = this.map.getTileAtWorldXY(x, y)
+                this.make_orange_wall([tile.x, tile.y]);
             }
             
         }
