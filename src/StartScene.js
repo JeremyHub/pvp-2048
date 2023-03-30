@@ -18,7 +18,6 @@ class StartScene extends Phaser.Scene {
         this.title_size = this.game.config.width / 5;
         this.button_text_size = this.game.config.width / 15;
 
-        document.getElementById("all-multiplayer-items").style.visibility = "hidden";
         
         this.image = this.add.image(0, 0, "titlescreen").setOrigin(0, 0);
         this.image.displayWidth = this.game.config.width;
@@ -109,15 +108,13 @@ class StartScene extends Phaser.Scene {
     }
     
     multiplayer() {
-        
-        document.getElementById("all-multiplayer-items").style.visibility = "visible";
 
         this.mutliplayer_manager = new MutliplayerManager(this.game.scene.keys.GameScene, this.start_game.bind(this));
         this.mutliplayer_manager.init();
         this.destroy_main_menu_buttons();
 
         // create room button
-        this.create_room_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Create Room", { fontSize: this.button_text_size + "px", fill: "#000" }, this.mutliplayer_manager.create_room.bind(this.mutliplayer_manager));
+        this.create_room_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Create Room", { fontSize: this.button_text_size + "px", fill: "#000" }, this.waiting_for_players.bind(this));
         this.create_room_button.x = this.game.config.width / 2;
         this.create_room_button.y = this.game.config.height / 2;
 
@@ -127,6 +124,26 @@ class StartScene extends Phaser.Scene {
         this.join_room_button.y = this.game.config.height / 1.5;
 
         this.add_back_button();
+    }
+
+    waiting_for_players() {
+        this.mutliplayer_manager.create_room();
+
+        this.create_room_button.destroy();
+        this.join_room_button.destroy();
+        this.add_back_button();
+
+        // waiting for players text
+        this.waiting_for_players_text = this.add.text(this.game.config.width / 2, this.game.config.height / 2, "Waiting for players...", { fontSize: this.button_text_size + "px", fill: "#fff" });
+        this.waiting_for_players_text.setOrigin(0.5, 0.5);
+
+        // room code text
+        this.room_code_text = this.add.text(this.game.config.width / 2, this.game.config.height / 1.5, "Room Code: " + this.mutliplayer_manager.joined_game_code, { fontSize: this.button_text_size*1.4 + "px", fill: "#fff" });
+        this.room_code_text.setOrigin(0.5, 0.5);
+
+        // (copied to clipboard) text
+        this.copied_to_clipboard_text = this.add.text(this.game.config.width / 2, this.game.config.height / 1.3, "(copied to clipboard)", { fontSize: this.button_text_size*0.8 + "px", fill: "#fff" });
+        this.copied_to_clipboard_text.setOrigin(0.5, 0.5);
     }
 
     add_back_button() {

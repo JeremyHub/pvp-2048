@@ -21,7 +21,6 @@ export class InputManager {
         this.touchendY = event.changedTouches[0].screenY
         this.checkDirection()
     }
-
     
     setup() {
         document.addEventListener('touchstart', this.touch_start.bind(this));
@@ -67,21 +66,27 @@ export class InputManager {
         let x = this.touchendX - this.touchstartX
         let y = this.touchendY - this.touchstartY
         
+        // give a 10% margin of error
+        let margin = 0.1 * Math.max(Math.abs(x), Math.abs(y));
         if (Math.abs(x) > Math.abs(y)) {
-            if (x > 0) {
+            if (x > margin) {
                 this.swpie = "right";
-            } else {
+            } else if (x < -margin) {
                 this.swpie = "left";
             }
-        } else {
-            if (y > 0) {
+        } else if (Math.abs(y) > Math.abs(x)) {
+            if (y > margin) {
                 this.swpie = "down";
-            } else {
+            } else if (y < -margin) {
                 this.swpie = "up";
             }
+        } else {
+            this.swpie = "tap";
         }
 
-        if (this.swpie != null) {
+        if (this.swpie == "tap") {
+            return;
+        } else if (this.swpie != null) {
             this.when_swipe(this.swpie);
         }
     }

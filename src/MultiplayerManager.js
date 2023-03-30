@@ -24,6 +24,7 @@ export class MutliplayerManager {
         this.joined_game_code = null;
         this.your_color = null;
         this.current_turn = 1;
+        this.current_wall = 1;
         this.current_data = null;
         this.database = null;
         this.app = null;
@@ -74,7 +75,8 @@ export class MutliplayerManager {
         if (!this.is_signed_in()) {
             return;
         }
-        this.joined_game_code = document.getElementById("room_id").value;
+        // prompt the user for input
+        this.joined_game_code = prompt("Enter room code");
         if (this.joined_game_code == "") {
             alert("Please enter a room code");
             return;
@@ -99,7 +101,6 @@ export class MutliplayerManager {
                     // if orange is not active and your game has not started, join as orange
                     this.game_has_started = true;
                     this.gameRef = temp_ref;
-                    document.getElementById("current-room-name").innerHTML = "Room: " + this.joined_game_code;
                     this.your_color = "orange";
                     game_config.selected_map = snapshot.child("map_selection").val();
                     this.start_game();
@@ -112,8 +113,9 @@ export class MutliplayerManager {
         if (!this.is_signed_in()) {
             return;
         }
+
         this.joined_game_code = Math.random().toString(36).substring(2, 7);
-        document.getElementById("current-room-name").innerHTML = "Room: " + this.joined_game_code;
+        navigator.clipboard.writeText(this.joined_game_code);
         this.your_color = "green";
         this.gameRef = ref(this.database, "games/" + this.joined_game_code);
         let data = {
@@ -121,17 +123,30 @@ export class MutliplayerManager {
                 green: {
                     is_active: true,
                     moves: [-1],
+                    walls: [null],
                 },
                 orange: {
                     is_active: false,
                     moves: [-1],
+                    walls: [null],
                 }
             },
             map_selection: game_config.selected_map,
         }
-        set(this.gameRef, data)
-        this.start_game();
-        onValue(this.gameRef, this.on_dataset_update.bind(this));
+        set(this.gameRef, data);
+
+        onValue(this.gameRef, (snapshot) => {
+            if (snapshot.child("players/orange/is_active").val() && this.game_has_started) {
+                // if orange is active and your game has started, you are green
+                this.on_dataset_update(snapshot);
+            } else if (snapshot.child("players/orange/is_active").val() && !this.game_has_started) {
+                // if orange is not active and your game has not started, orange has joined
+                this.game_has_started = true;
+                this.start_game();
+            } else {
+                // you are waiting for orange to join
+            }
+        });
     }
 
     start_game() {
@@ -149,7 +164,6 @@ export class MutliplayerManager {
         }
         let opp_color = this.your_color == "green" ? "orange" : "green";
         let game_data = this.current_data;
-        document.getElementById("current-player").innerHTML = this.your_color;
         // if both players are active, update the game with the moves
         if (game_data.players.green.is_active && game_data.players.orange.is_active) {
 
@@ -160,25 +174,24 @@ export class MutliplayerManager {
             if (game_data.players[this.your_color].moves.length > this.current_turn) {
                 this.scene["make_" + this.your_color + "_move"](game_data.players[this.your_color].moves[this.current_turn]);
                 this.you_have_moved = true;
-                document.getElementById(this.your_color + "-lock").innerHTML = "true";
-                document.getElementById("current-move").innerHTML = game_data.players[this.your_color].moves[this.current_turn];
             }
             if (game_data.players[opp_color].moves.length > this.current_turn) {
                 this.scene["make_" + opp_color + "_move"](game_data.players[opp_color].moves[this.current_turn]);
-                document.getElementById(opp_color + "-lock").innerHTML = "true";
                 this.opp_has_moved = true;
             }
             
             // if the game has two moves in it
             if (this.you_have_moved && this.opp_has_moved) {
-                // update the dom
-                document.getElementById("current-move").innerHTML = "";
-                document.getElementById(this.your_color + "-lock").innerHTML = "false";
-                document.getElementById(opp_color + "-lock").innerHTML = "false";
                 this.you_have_moved = false;
                 this.opp_has_moved = false;
                 this.current_turn++;
             }
+
+            // update the game with the walls
+            // if (game_data.players[opp_color].walls.length > this.current_wall) {
+            //     this.scene["make_" + opp_color + "_wall"](game_data.players[opp_color].walls[this.current_wall]);
+            //     this.current_wall++;
+            // }
         }
     }
 
@@ -193,6 +206,17 @@ export class MutliplayerManager {
                 set(ref(this.database, players_ref_str + this.your_color + "/moves"), your_moves);
                 // console.log("updated with direction: " + direction);
             }
+        }
+    }
+
+    update_with_wall(x, y) {
+        // update the database with the new wall
+        if (x != null && y != null && this.joined_game_code != null && this.current_data != null) {
+            let players_ref_str = "games/" + this.joined_game_code + "/players/";
+            let your_walls = this.current_data.players[this.your_color].walls;
+            yout_walls.push([x, y]);
+            set(ref(this.database, players_ref_str + this.your_color + "/walls"), your_walls);
+            // console.log("updated with wall: " + x + ", " + y);
         }
     }
 
