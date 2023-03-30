@@ -221,9 +221,8 @@ function evaluate_collision(colliding_blocks, is_direct, seed, block_list) {
                     block_to_move = (blocks_still_on_tile[0].tile_x > blocks_still_on_tile[1].tile_x) ? blocks_still_on_tile[0] : blocks_still_on_tile[1];
                 }
 
-                let opposite_direction = get_opposite_direction(block_to_move.moving_direction);
                 block_to_move.movement_status = 1;
-                block_to_move.move_space(opposite_direction);
+                block_to_move.bounce();
             }
         } else {
             let blocks_able_to_bounce = []
@@ -235,7 +234,7 @@ function evaluate_collision(colliding_blocks, is_direct, seed, block_list) {
             let block = null
             block = blocks_able_to_bounce.at(0)
             block.movement_status = 1
-            block.move_space(get_opposite_direction(block.moving_direction))
+            block.bounce();
             block.movement_status = 0
         }
     }
