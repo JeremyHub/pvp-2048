@@ -392,7 +392,7 @@ class Block{
         }
         let tile = this.get_tile_in_direction(direction, distance);
         for (let block of block_list) {
-            if (tile.x === block.tile_x && tile.y === block.tile_y) {
+            if (tile.x === block.tile_x && tile.y === block.tile_y && block !== this) {
                 return this.is_any_space_empty(direction, distance + 1, block_list)
             }
         }
