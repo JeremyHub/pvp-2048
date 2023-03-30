@@ -339,7 +339,8 @@ class Block{
      */
     passed_block(list_of_blocks) {
         for (let block of list_of_blocks) {
-            if (this.block_at_opposite_tile(block, false) && block.moving_direction === this.get_reverse_direction(this.moving_direction)) {
+            if (this.block_at_opposite_tile(block, false) && block.moving_direction === this.get_reverse_direction(this.moving_direction)
+            && block.movement_status !== 0) {
                 return block
             }
         }
