@@ -246,12 +246,12 @@ describe('Game', function () {
     // triple block tests
     forEach([
         // two twos combining, one 4 moving into them at the same time, should combine first then stop the movement of the 4
-        ["green", 1, 1, 2, "green", 1, 2, 2, "orange", 2, 1, 4, "up", "left", 1, 1, null, null, 2, 1, 100, 4, null, 4],
-        ["orange", 1, 1, 2, "orange", 1, 2, 2, "green", 2, 1, 4, "left", "up", 1, 1, null, null, 2, 1, 100, 4, null, 4],
+        ["green", 1, 1, 2, "green", 1, 2, 2, "orange", 2, 1, 4, "up", "left", null, null, 1, 1, 2, 1, 100, null, 4, 4],
+        ["orange", 1, 1, 2, "orange", 1, 2, 2, "green", 2, 1, 4, "left", "up", null, null, 1, 1, 2, 1, 100, null, 4, 4],
 
         // two twos combining, one 4 block moving perpedicular to the seconds, should combine first then stop the movement of the 4
-        ["green", 5, 1, 2, "green", 5, 2, 2, "orange", 4, 1, 4, "up", "right", 5, 1, null, null, 4, 1, 100, 4, null, 4],
-        ["orange", 5, 1, 2, "orange", 5, 2, 2, "green", 4, 1, 4, "right", "up", 5, 1, null, null, 4, 1, 100, 4, null, 4],
+        ["green", 5, 1, 2, "green", 5, 2, 2, "orange", 4, 1, 4, "up", "right", null, null, 5, 1, 4, 1, 100, null, 4, 4],
+        ["orange", 5, 1, 2, "orange", 5, 2, 2, "green", 4, 1, 4, "right", "up", null, null, 5, 1, 4, 1, 100, null, 4, 4],
 
         // two twos moving into a 4 of the second team, should both be eaten by the 4
         ["green", 1, 1, 2, "green", 2, 1, 2, "orange", 4, 1, 4, "right", "up", null, null, null, null, 4, 1, 100, null, null, 4],

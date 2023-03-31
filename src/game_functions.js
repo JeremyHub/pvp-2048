@@ -108,26 +108,30 @@ function evaluate_collision(colliding_blocks, is_direct, seed, block_list) {
 
     let tile_colliding_on_coords = {x: colliding_blocks[0].tile_x, y: colliding_blocks[0].tile_y};
 
-    // check if any blocks aren't moving
-    let non_moving_block = null;
-    for (let i = 0; i < colliding_blocks.length; i++) {
-        if (colliding_blocks[i].movement_status === 0) {
-            non_moving_block = colliding_blocks[i];
-        }
-    }
-
     let return_value = true;
     // this will change to false if any blocks bounce
 
-    if (non_moving_block !== null && colliding_blocks.length > 2) {
-        for (let block of colliding_blocks) {
-            if (block !== non_moving_block) {
-                if (!evaluate_collision([block, non_moving_block], is_direct, seed, block_list)) {
-                    return_value = false
+    // check if any blocks aren't moving
+    let non_moving_block = null;
+    if (colliding_blocks.length > 2) {
+        for (let i = 0; i < colliding_blocks.length; i++) {
+            if (colliding_blocks[i].movement_status === 0 && colliding_blocks[i].will_be_removed === false) {
+                if (non_moving_block !== null) {
+                    console.error("There are two blocks that aren't moving on the same tile. This shouldn't happen.");
                 }
+                non_moving_block = colliding_blocks[i];
             }
         }
-        return return_value
+        if (non_moving_block !== null) {
+            for (let block of colliding_blocks) {
+                if (block !== non_moving_block) {
+                    if (!evaluate_collision([block, non_moving_block], is_direct, seed, block_list)) {
+                        return_value = false
+                    }
+                }
+            }
+            return return_value
+        }
     }
 
     
