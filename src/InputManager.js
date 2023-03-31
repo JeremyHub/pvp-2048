@@ -67,7 +67,7 @@ export class InputManager {
         let y = this.touchendY - this.touchstartY
         
         // give a 10% margin of error
-        let margin = 0.1 * Math.max(Math.abs(x), Math.abs(y));
+        let margin = 50;
         if (Math.abs(x) > Math.abs(y)) {
             if (x > margin) {
                 this.swpie = "right";
