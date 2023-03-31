@@ -355,7 +355,8 @@ function box_in(game, value, game_config) {
 function getTotalValueOfBlocks(blockList) {             
     let totalValue = 0;                                 
     for (let i = 0; i < blockList.length; i++) {
-      totalValue += blockList[i].value;
+        if (blockList[i].will_be_removed) continue;
+        totalValue += blockList[i].value;
     }
     return totalValue;
 }

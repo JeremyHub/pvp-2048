@@ -194,10 +194,8 @@ class GameScene extends Phaser.Scene {
 
     update_ui_elements(){
 
-        this.green_total_value = getTotalValueOfBlocks(this.green_blocks);
         this.green_score.updateText("Score: " + this.green_total_value);
         
-        this.orange_total_value = getTotalValueOfBlocks(this.orange_blocks);
         this.orange_score.updateText("Score: " + this.orange_total_value);
 
         this.green_walls_container.updateText("Walls: " + this.green_walls_count);
@@ -212,6 +210,9 @@ class GameScene extends Phaser.Scene {
 
     check_win_loss() {
 
+        this.green_total_value = getTotalValueOfBlocks(this.green_blocks);
+        this.orange_total_value = getTotalValueOfBlocks(this.orange_blocks);
+
         // this is a special case for the map Classic2048
         if (game_config.maps[game_config.selected_map] === "Classic2048"){
             return;
@@ -225,7 +226,7 @@ class GameScene extends Phaser.Scene {
             // check orange win
         } else if(this.orange_total_value >= this.win_value || this.green_timer.time <= 0){
             
-            if (this.mode == "single") {
+            if (this.mode == "single") {    
                 this.scene.start('LossScene', {player: "you"});
             } else if (this.mode == "multiplayer") {
                 if (this.your_color == "orange") {
@@ -484,6 +485,8 @@ class GameScene extends Phaser.Scene {
 
                 
                 this.check_block_spawning();
+                
+                this.check_win_loss();
             }
         }
     }
@@ -521,8 +524,6 @@ class GameScene extends Phaser.Scene {
     update() {
 
         this.update_ui_elements();
-
-        this.check_win_loss();
         
         this.update_timers();
         
