@@ -123,14 +123,16 @@ function evaluate_collision(colliding_blocks, is_direct, seed, block_list) {
             }
         }
         if (non_moving_block !== null) {
+            // sort colliding blocks by value
+            colliding_blocks.sort((a, b) => a.value - b.value);
             for (let block of colliding_blocks) {
-                if (block !== non_moving_block) {
+                if (block !== non_moving_block && block.will_be_removed === false) {
                     if (!evaluate_collision([block, non_moving_block], is_direct, seed, block_list)) {
-                        return_value = false
+                        return false;
                     }
                 }
             }
-            return return_value
+            return true;
         }
     }
 
