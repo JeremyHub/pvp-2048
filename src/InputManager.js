@@ -1,9 +1,10 @@
 export class InputManager {
 
-    constructor(when_wasd, when_arrow, when_swipe) {
+    constructor(when_wasd, when_arrow, when_swipe, scene) {
         this.when_wasd = when_wasd;
         this.when_arrow = when_arrow;
         this.when_swipe = when_swipe;
+        this.tap_margin = Math.max(scene.game.config.width/10, scene.game.config.height/10);
         this.touchstartX = 0
         this.touchendX = 0
         this.touchstartY = 0
@@ -67,7 +68,8 @@ export class InputManager {
         let y = this.touchendY - this.touchstartY
         
         // give a 10% margin of error
-        let margin = 50;
+        let margin = 0.1 * Math.max(Math.abs(x), Math.abs(y)) + this.tap_margin;
+        
         if (Math.abs(x) > Math.abs(y)) {
             if (x > margin) {
                 this.swpie = "right";

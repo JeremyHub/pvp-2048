@@ -35,7 +35,7 @@ export class MutliplayerManager {
         this.you_have_moved = false;
         this.opp_has_moved = false;
         this.opponent_is_animating = false;
-        this.input_manager = new InputManager(this.update_with_direction.bind(this), this.update_with_direction.bind(this), this.update_with_direction.bind(this));
+        this.input_manager = new InputManager(this.update_with_direction.bind(this), this.update_with_direction.bind(this), this.update_with_direction.bind(this), scene);
     }
 
     init() {

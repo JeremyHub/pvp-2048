@@ -7,7 +7,7 @@ export class SinglePlayerManager {
         this.scene = scene;
         this.green_move = null;
         this.orange_move = null;
-        this.input_manager = new InputManager(this.wasd.bind(this), this.arrow.bind(this), this.swipe.bind(this));
+        this.input_manager = new InputManager(this.wasd.bind(this), this.arrow.bind(this), this.swipe.bind(this), scene);
     }
 
     init(num_players) {
