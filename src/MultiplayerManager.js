@@ -238,5 +238,6 @@ export class MutliplayerManager {
 
     destroy() {
         this.input_manager.destroy();
+        this.joined_game_code = null;
     }
 }
