@@ -91,4 +91,10 @@ export class InputManager {
         }
     }
 
+    destroy() {
+        document.removeEventListener('touchstart', this.touch_start.bind(this));
+        document.removeEventListener('touchend', this.touch_end.bind(this));
+        document.removeEventListener('keydown', this.handle_key.bind(this));
+    }
+
 }

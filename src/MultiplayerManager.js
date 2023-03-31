@@ -235,4 +235,11 @@ export class MutliplayerManager {
             set(ref(this.database, players_ref_str + this.your_color + "/is_animating"), true);
         }
     }
+
+    destroy() {
+        this.input_manager.destroy();
+        for (let prop in this) {
+            delete this[prop];
+        }
+    }
 }

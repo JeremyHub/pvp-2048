@@ -15,6 +15,15 @@ class StartScene extends Phaser.Scene {
     }
     
     create() {
+        if (this.mutliplayer_manager !== undefined) {
+            console.log("destroying mutliplayer_manager")
+            this.mutliplayer_manager.destroy();
+        }
+        if (this.single_player_manager !== undefined) {
+            console.log("destroying single_player_manager")
+            this.single_player_manager.destroy();
+        }
+
         this.title_size = this.game.config.width / 5;
         this.button_text_size = this.game.config.width / 15;
 

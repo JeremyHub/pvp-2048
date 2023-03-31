@@ -55,4 +55,11 @@ export class SinglePlayerManager {
             }
         }
     }
+
+    destroy() {
+        this.input_manager.destroy();
+        for (let prop in this) {
+            delete this[prop];
+        }
+    }
 }
