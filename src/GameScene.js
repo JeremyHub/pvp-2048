@@ -4,7 +4,6 @@ var {UIContainer} = require('./UIContainer');
 
 var {block_config} = require('./Block');
 var {
-    removePlayerWalls,
     getTotalValueOfBlocks,
     box_in,
     spawnblocks,
@@ -38,7 +37,6 @@ const game_config = {
         'basic',
         'halls',
         'claust',
-        'frfrfr',
         "Classic2048"
     ],
     selected_map: 0, // default map
