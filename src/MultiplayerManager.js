@@ -189,7 +189,8 @@ export class MutliplayerManager {
 
             // update the game with the walls
             if (game_data.players[opp_color].walls.length > this.current_wall) {
-                this.scene["make_" + opp_color + "_wall"](game_data.players[opp_color].walls[this.current_wall]);
+                console.log(game_data.players[opp_color].walls[this.current_wall])
+                this.scene.make_wall([game_data.players[opp_color].walls[this.current_wall][0], game_data.players[opp_color].walls[this.current_wall][1]], opp_color);
                 this.current_wall++;
             }
         }

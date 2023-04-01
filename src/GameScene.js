@@ -346,9 +346,12 @@ class GameScene extends Phaser.Scene {
         this.map.putTileAt(game_config.wall_id[0], x, y);
         this[team + "_walls"].push(this.map.getTileAt(x, y));
         this[team + "_walls_count"] --;
+        console.log(this.mode)
         if (this.mode === "multiplayer") {
+            console.log("sending wall1")
             if (this.your_color === team) {
                 this.manager.update_with_wall(x, y);
+                console.log("sending wall2");
             }
         }
     }
@@ -457,14 +460,15 @@ class GameScene extends Phaser.Scene {
             }
 
             for (let team of ['orange', 'green']) {
-                if (this[team + '_wall_bool'] === true) {
+                if (this[team + '_wall_bool']) {
                     if (this[team + '_walls_count'] > 0) {
                         let tile = this.map.getTileAtWorldXY(x, y);
                         if (tile !== null) {
                             if (this.map.getTileAtWorldXY(x, y).index !== game_config.wall_id[0] && this.map.getTileAtWorldXY(x, y).index !== game_config[team + '_id'][0]) {
                                 if (this.mode === "multiplayer") {
-                                    if (this.your_color === team) {
-                                        return;
+                                    console.log("sending wall3", team, this.your_color)
+                                    if (this.your_color !== team) {
+                                        continue;
                                     }
                                 }
                                 let tile = this.map.getTileAtWorldXY(x, y)
@@ -656,9 +660,6 @@ class GameScene extends Phaser.Scene {
         this.orange_timer.pause();
         this.orange_has_moved = true;
     }
-
-
-
 
 }
 
