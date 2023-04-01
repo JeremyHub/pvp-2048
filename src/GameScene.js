@@ -483,8 +483,14 @@ class GameScene extends Phaser.Scene {
 
     handle_getting_rid_of_player_placed_walls() {
         if (turn_finished(this.all_block_lists)) {
-            this.green_walls_count ++;
-            this.orange_walls_count ++;
+            
+            // cap wall count at 99
+            if (this.green_walls_count < 99) {
+                this.green_walls_count ++;
+            }
+            if (this.orange_walls_count < 99) {
+                this.orange_walls_count ++;
+            }
 
             for( let i = 0; i < this.green_walls.length; i++){
                 if(this.green_walls[i].index === game_config.wall_id[0]){
