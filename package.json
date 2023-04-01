@@ -5,10 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "build": "webpack --config webpack/prod.js ",
+    "copy-assets": "xcopy /s src\\assets dist\\src\\assets\\",
     "start": "webpack-dev-server --config webpack/base.js --open",
     "test": "mocha",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "npm run build && npm run copy-assets && gh-pages -d dist"
   },
   "repository": {
     "type": "git",
