@@ -12,6 +12,8 @@ class StartScene extends Phaser.Scene {
         this.load.image("titlescreen", "src/assets/titlescreen.png");
         this.load.image("button_background", "src/assets/button_background.png");
         this.load.image("button_background_hover", "src/assets/button_background_hover.png");
+        this.load.image("button_background_dark", "src/assets/button_background_dark.png");
+        this.load.image("button_background_hover_dark", "src/assets/button_background_hover_dark.png");
     }
     
     create() {

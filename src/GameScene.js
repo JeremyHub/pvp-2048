@@ -16,6 +16,7 @@ var {
     turn_finished,
     move_blocks,
 } = require('./game_functions');
+const { Button } = require('./Button');
 
 const game_config = {
     top_map_offset: 0.1, // percentage of screen height from top that the map is offset
@@ -26,7 +27,7 @@ const game_config = {
     num_cols: 14, // reset in create
     tile_size: 32, // reset in create
     padding: 3,
-    orange_color: 0xffa500,
+    orange_color: 0xf27507,
     green_color: 0x00ff00,
     wall_id: [6,262,268],
     green_id: [57, 1, 2, 3, 17, 18, 19, 33, 34, 35, 321],   // spawning area
@@ -128,6 +129,14 @@ class GameScene extends Phaser.Scene {
         this.load.audio("bounce_sound", "src/assets/bounceSound.mp3");
         
     }
+
+    convert_hex_to_hex_string(num) {
+        let hex_string = num.toString(16);
+        while (hex_string.length < 6) {
+            hex_string = '0' + hex_string;
+        }
+        return hex_string;
+    }
     
     create() {
         
@@ -173,45 +182,103 @@ class GameScene extends Phaser.Scene {
             this.green_timer = dummy;
             this.orange_timer = dummy;
         } else {
-            this.green_timer = new Timer(this, this.game.config.width*0.3, this.game.config.height*0.02, 120000, "#" + game_config.green_color.toString().substring(2,9));
-            this.orange_timer = new Timer(this, 0, this.game.config.height*0.02, 120000, "#" + game_config.orange_color.toString().substring(2,9));
+            this.green_timer = new Timer(this, this.game.config.width*0.3, this.game.config.height*0.02, 120000, "#" + this.convert_hex_to_hex_string(game_config.green_color));
+            this.orange_timer = new Timer(this, 0, this.game.config.height*0.02, 120000, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
             this.orange_timer.x = this.game.config.width - this.orange_timer.text.width - this.game.config.width*0.3;
         }
 
-        this.green_score = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.02, "Score: " + this.green_total_value, "#" + game_config.green_color.toString().substring(2,9));
-        this.orange_score = new UIContainer(this, 0, this.game.config.height*0.02, "Score: 00" + this.orange_total_value, "#" + game_config.orange_color.toString().substring(2,9));
+        this.green_score = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.02, "Score: " + this.green_total_value, "#" + this.convert_hex_to_hex_string(game_config.green_color));
+        this.orange_score = new UIContainer(this, 0, this.game.config.height*0.02, "Score: 00" + this.orange_total_value, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
         this.orange_score.x = this.game.config.width - this.orange_score.text.width - this.game.config.width*0.01;
 
 
-        this.green_walls_container = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.93, "Walls: " + this.green_walls_count, "#" + game_config.green_color.toString().substring(2,9));
-        this.orange_walls_container = new UIContainer(this, 0, this.game.config.height*0.93, "Walls: 00" + this.orange_walls_count, "#" + game_config.orange_color.toString().substring(2,9));
+        this.green_walls_container = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.93, "Walls: " + this.green_walls_count, "#" + this.convert_hex_to_hex_string(game_config.green_color));
+        this.orange_walls_container = new UIContainer(this, 0, this.game.config.height*0.93, "Walls: 00" + this.orange_walls_count, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
         this.orange_walls_container.x = this.game.config.width - this.orange_walls_container.text.width - this.game.config.width*0.01;
 
-        this.green_player_move = new UIContainer(this, this.game.config.width*0.3, this.game.config.height*0.5, null, "#" + game_config.green_color.toString().substring(2,9));
-        this.orange_player_move = new UIContainer(this, this.game.config.width*0.7, this.game.config.height*0.5, null, "#" + game_config.orange_color.toString().substring(2,9));
+        this.green_player_move = new UIContainer(this, this.game.config.width*0.3, this.game.config.height*0.5, null, "#" + this.convert_hex_to_hex_string(game_config.green_color));
+        this.orange_player_move = new UIContainer(this, this.game.config.width*0.7, this.game.config.height*0.5, null, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
 
+        if (this.mode === "local_multiplayer") {
+            this.create_green_wall_button();
+            this.create_orange_wall_button();     
+        } else if (this.mode === "single") {
+            this.create_green_wall_button();
+        } else if (this.mode === "multiplayer") {
+            if (this.your_color === "green") {
+                this.create_green_wall_button();
+            } else {
+                this.create_orange_wall_button();
+            }
+        }
+    }
+
+    create_green_wall_button() {
+        this.green_wall_button = new Button(this, this.game.config.width*0.35, this.game.config.height*0.96, "button_background_dark", "button_background_hover_dark", "            ", {fontSize: this.game.config.width/30, fill: "#000"}, this.toggle_place_green_wall.bind(this));
+        this.green_wall_button_text = new UIContainer(this, 0, 0, "Place Walls", "#" + this.convert_hex_to_hex_string(game_config.green_color));
+    }
+
+    create_orange_wall_button() {
+        this.orange_wall_button = new Button(this, 0, this.game.config.height*0.96, "button_background_dark", "button_background_hover_dark", "            ", {fontSize: this.game.config.width/30}, this.toggle_place_orange_wall.bind(this));
+        this.orange_wall_button.x = this.game.config.width - this.orange_wall_button.text.width - this.game.config.width*0.14;
+        
+        this.orange_wall_button_text = new UIContainer(this, 0, 0, "Place Walls", "#" + this.convert_hex_to_hex_string(game_config.orange_color));
+    }
+
+    toggle_place_green_wall() {
+        if (this.orange_wall_bool) {
+            this.toggle_place_orange_wall();
+        }
+        this.green_wall_bool = !this.green_wall_bool;
+        if (this.green_wall_bool) {
+            this.green_wall_button_text.updateText("Untoggle");
+        } else {
+            this.green_wall_button_text.updateText("Place Walls");
+        }
+    }
+
+    toggle_place_orange_wall() {
+        if (this.green_wall_bool) {
+            this.toggle_place_green_wall();
+        }
+        this.orange_wall_bool = !this.orange_wall_bool;
+        if (this.orange_wall_bool) {
+            this.orange_wall_button_text.updateText("Untoggle");
+        } else {
+            this.orange_wall_button_text.updateText("Place Walls");
+        }
     }
 
     update_ui_elements(){
 
+        if (this.green_wall_button !== undefined) {
+            this.green_wall_button_text.x = this.green_wall_button.x + this.green_wall_button.width/2 - this.green_wall_button_text.text.width/2;
+            this.green_wall_button_text.y = this.green_wall_button.y + this.green_wall_button.height/2 - this.green_wall_button_text.text.height/2;
+        }
+        if (this.orange_wall_button !== undefined) {
+            this.orange_wall_button_text.x = this.orange_wall_button.x + this.orange_wall_button.width/2 - this.orange_wall_button_text.text.width/2;
+            this.orange_wall_button_text.y = this.orange_wall_button.y + this.orange_wall_button.height/2 - this.orange_wall_button_text.text.height/2;
+        }
+            
         this.green_score.updateText("Score: " + this.green_total_value);
-        
         this.orange_score.updateText("Score: " + this.orange_total_value);
 
         this.green_walls_container.updateText("Walls: " + this.green_walls_count);
         this.orange_walls_container.updateText("Walls: " + this.orange_walls_count);
 
-        this.green_player_move.updateText(this.green_move);
-        this.orange_player_move.updateText(this.orange_move);
+        if ((this.green_move !== null && this.orange_move !== null) || (this.green_move === null && this.orange_move === null)) {
+            this.green_player_move.updateText(this.green_move);
+            this.orange_player_move.updateText(this.orange_move);
+        }
 
     }
 
- 
-
-    check_win_loss() {
-
+    update_block_totals() {
         this.green_total_value = getTotalValueOfBlocks(this.green_blocks);
         this.orange_total_value = getTotalValueOfBlocks(this.orange_blocks);
+    } 
+
+    check_win_loss() {
 
         // this is a special case for the map Classic2048
         if (game_config.maps[game_config.selected_map] === "Classic2048"){
@@ -324,13 +391,7 @@ class GameScene extends Phaser.Scene {
             this.green_bool = false;
             this.barrier_bool = false;
             this.background_bool = false;
-        } if(this.l_key.isDown){
-            this.orange_wall_bool = true;
-            this.green_wall_bool = false;
-        } if(this.k_key.isDown){
-            this.orange_wall_bool = false;
-            this.green_wall_bool = true;
-        } 
+        }
     }
 
     check_pointer_press() {
@@ -398,14 +459,17 @@ class GameScene extends Phaser.Scene {
             for (let team of ['orange', 'green']) {
                 if (this[team + '_wall_bool'] === true) {
                     if (this[team + '_walls_count'] > 0) {
-                        if (this.map.getTileAtWorldXY(x, y).index !== game_config.wall_id[0] && this.map.getTileAtWorldXY(x, y).index !== game_config[team + '_id'][0]) {
-                            if (this.mode === "multiplayer") {
-                                if (this.your_color === team) {
-                                    return;
+                        let tile = this.map.getTileAtWorldXY(x, y);
+                        if (tile !== null) {
+                            if (this.map.getTileAtWorldXY(x, y).index !== game_config.wall_id[0] && this.map.getTileAtWorldXY(x, y).index !== game_config[team + '_id'][0]) {
+                                if (this.mode === "multiplayer") {
+                                    if (this.your_color === team) {
+                                        return;
+                                    }
                                 }
+                                let tile = this.map.getTileAtWorldXY(x, y)
+                                this.make_wall([tile.x, tile.y], team);
                             }
-                            let tile = this.map.getTileAtWorldXY(x, y)
-                            this.make_wall([tile.x, tile.y], team);
                         }
                     }
                 }
@@ -486,7 +550,7 @@ class GameScene extends Phaser.Scene {
                 
                 this.check_block_spawning();
                 
-                this.check_win_loss();
+                this.update_block_totals();
             }
         }
     }
@@ -522,13 +586,14 @@ class GameScene extends Phaser.Scene {
     }
 
     update() {
-
+        
         this.update_ui_elements();
         
         this.update_timers();
         
         this.update_all_blocks_list();
         
+        this.check_win_loss();
         
         // this is just to spawn blocks in at the start of the game (it shouldnt do anything else)
         if (this.all_block_lists.length === 0) {

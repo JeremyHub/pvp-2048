@@ -9,6 +9,7 @@ class Button extends Phaser.GameObjects.Container {
         this.on_over_img = on_over_img; // the image that will appear when the button is hovered over
         this.text = text; // the text of the button
         this.call_when_pressed = call_when_pressed; // the function to be called when the button is pressed
+        this.origin_style_color = text_style.fill;
 
         this.button = this.scene.add.image(0, 0, background_img).setInteractive();
 
@@ -41,7 +42,7 @@ class Button extends Phaser.GameObjects.Container {
 
     on_out() {
         this.button.setTexture(this.background_img);
-        this.text.setStyle({ fill: '#000' });
+        this.text.setStyle({ fill: this.origin_style_color });
     }
 }
 
