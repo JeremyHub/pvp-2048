@@ -32,11 +32,12 @@ class Timer extends Phaser.GameObjects.Container{
     }
 
     update_visuals(){
+        let mili_zero = Math.floor((this.time%1000)/10) < 10 ? "0" : "";
         if (this.time < 60000){
-            this.text.setText(Math.floor(this.time/1000) + "." + Math.floor((this.time%1000)/10));
+            this.text.setText(Math.floor(this.time/1000) + "." + Math.floor((this.time%1000)/10) + mili_zero);
         } else{
-            let zero = Math.floor((this.time%60000)/1000) < 10 ? "0" : "";
-            this.text.setText(Math.floor(this.time/60000) + ":" + zero + Math.floor((this.time%60000)/1000));
+            let sec_zero = Math.floor((this.time%60000)/1000) < 10 ? "0" : "";
+            this.text.setText(Math.floor(this.time/60000) + ":" + sec_zero + Math.floor((this.time%60000)/1000) + "." + Math.floor((this.time%1000)/10) + mili_zero);
         }
     }
 
