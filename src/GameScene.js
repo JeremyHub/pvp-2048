@@ -462,7 +462,8 @@ class GameScene extends Phaser.Scene {
                     if (this[team + '_walls_count'] > 0) {
                         let tile = this.map.getTileAtWorldXY(x, y);
                         if (tile !== null) {
-                            if (this.map.getTileAtWorldXY(x, y).index !== game_config.wall_id[0] && this.map.getTileAtWorldXY(x, y).index !== game_config[team + '_id'][0]) {
+                            let index = this.map.getTileAtWorldXY(x, y).index;
+                            if (!game_config.wall_id.includes(index) && !game_config.green_id.includes(index) && !game_config.orange_id.includes(index)) {
                                 if (this.mode === "multiplayer") {
                                     console.log("sending wall3", team, this.your_color)
                                     if (this.your_color !== team) {
