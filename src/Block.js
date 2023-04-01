@@ -103,6 +103,11 @@ class Block{
             // we want to stop moving if we are at the center of a block and we cant keep moving
             
             if (this.total_moved === this.total_movement_distance) {
+
+                if (this.animations.length === 0) {
+                    this.scene.ididnothitherplay();
+                }
+
                 this.total_moved = 0;
                 this.total_movement_distance = 0;
                 if (this.reverse_movement) {
@@ -149,8 +154,8 @@ class Block{
                     this.visual_tile_x++;
                 }
             }
-            
         }
+
         else if (this.is_moving) {
             if (this.animations.length === 0) {
                 this.is_moving = false;
@@ -160,6 +165,8 @@ class Block{
                 this.evaluate_animations()
             }
         }
+
+        
     }
 
     evaluate_animations() {
@@ -177,9 +184,13 @@ class Block{
             if (!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true)) {
                 this.rect.destroy()
                 this.text.destroy()
+                if (animation_step.at(0) === "destroy") this.scene.andimdyingplay()
+                else if (animation_step.at(0) === "merge") this.scene.letsgoeathuuplay()
             } else if (animation_step.at(2) && this.block_at_same_tile(animation_step.at(1))) {
                 this.rect.destroy()
                 this.text.destroy()
+                if (animation_step.at(0) === "destroy") this.scene.andimdyingplay()
+                else if (animation_step.at(0) === "merge") this.scene.letsgoeathuuplay()
             } else {
                 // if (this.log_count < 50) {
                 //     console.log("block", this, "failed to find", animation_step.at(1), "for step", animation_step)
@@ -203,6 +214,7 @@ class Block{
             }
         } else if (animation_step.at(0) === "bounce") {
             // bounce format: ["bounce"]
+            this.scene.ohhaimarkplay()
             this.total_movement_distance = (this.size+(this.padding*2))
             this.reverse_movement = true
         }

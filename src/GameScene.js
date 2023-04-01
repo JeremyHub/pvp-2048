@@ -124,8 +124,11 @@ class GameScene extends Phaser.Scene {
         }
         this.load.image('combinedmaps', 'src/assets/combinedmaps.png');
         this.load.image('tiles', 'src/assets/tiles.png');
-        this.load.audio("bounce_sound", "src/assets/bounceSound.mp3");
-        
+        this.load.audio("wall_place_sound", "src/assets/wall_place_sound.mp3");
+        this.load.audio("ohhaimark", "src/assets/ohhaimark.mp3");
+        this.load.audio("andimdying", "src/assets/andimdying.mp3");
+        this.load.audio("letsgoeathuu", "src/assets/letsgoeathuu.mp3");
+        this.load.audio("ididnothither", "src/assets/ididnothither.mp3");
     }
 
     convert_hex_to_hex_string(num) {
@@ -159,9 +162,6 @@ class GameScene extends Phaser.Scene {
         // center it in the game
         this.map.layers[0].tilemapLayer.x = Math.max((map_width - (game_config.tile_size*game_config.num_cols)) / 2,0) + this.game.config.width * game_config.left_map_offset;
         this.map.layers[0].tilemapLayer.y = Math.max((map_height - (game_config.tile_size*game_config.num_rows)) / 2,0) + this.game.config.height * game_config.top_map_offset;
-
-        this.bounceSOUND = this.sound.add("bounce_sound");     
-        this.bounceSOUND.play();      
 
         this.pointer = this.input.activePointer;
 
@@ -209,6 +209,31 @@ class GameScene extends Phaser.Scene {
                 this.create_orange_wall_button();
             }
         }
+    }
+
+    ididnothitherplay() {
+        let ididnothither = this.sound.add('ididnothither', {volume: 0.02});
+        ididnothither.play();
+    }
+
+    letsgoeathuuplay() {
+        let letsgoeathuuplay = this.sound.add('letsgoeathuu', {volume: 0.2});
+        letsgoeathuuplay.play();
+    }
+
+    andimdyingplay() {
+        let imdying = this.sound.add('andimdying', {volume: 0.7});
+        imdying.play();
+    }
+
+    wall_place_sound_play() {
+        let wall_place_sound = this.sound.add("wall_place_sound", {volume: 0.2});
+        wall_place_sound.play();
+    }
+
+    ohhaimarkplay() {
+        let ohhaimark = this.sound.add('ohhaimark');
+        ohhaimark.play();
     }
 
     create_green_wall_button() {
@@ -341,6 +366,7 @@ class GameScene extends Phaser.Scene {
     }
 
     make_wall([x, y], team) {
+        this.wall_place_sound_play();
         this.map.putTileAt(game_config.wall_id[0], x, y);
         this[team + "_walls"].push(this.map.getTileAt(x, y));
         this[team + "_walls_count"] --;
