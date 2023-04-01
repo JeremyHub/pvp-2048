@@ -232,7 +232,7 @@ class GameScene extends Phaser.Scene {
     }
 
     ohhaimarkplay() {
-        let ohhaimark = this.sound.add('ohhaimark');
+        let ohhaimark = this.sound.add('ohhaimark', {volume: 0.6});
         ohhaimark.play();
     }
 
