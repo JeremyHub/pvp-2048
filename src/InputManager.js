@@ -67,29 +67,32 @@ export class InputManager {
         let x = this.touchendX - this.touchstartX
         let y = this.touchendY - this.touchstartY
         
-        // give a 10% margin of error
-        let margin = 0.1 * Math.max(Math.abs(x), Math.abs(y)) + this.tap_margin;
-        
         if (Math.abs(x) > Math.abs(y)) {
-            if (x > margin) {
-                this.swpie = "right";
-            } else if (x < -margin) {
-                this.swpie = "left";
-            }
-        } else if (Math.abs(y) > Math.abs(x)) {
-            if (y > margin) {
-                this.swpie = "down";
-            } else if (y < -margin) {
-                this.swpie = "up";
+            if (Math.abs(x) > this.tap_margin) {
+                if (x > 0) {
+                    this.swipe = "right";
+                } else {
+                    this.swipe = "left";
+                }
+            } else {
+                this.swipe = "tap";
             }
         } else {
-            this.swpie = "tap";
+            if (Math.abs(y) > this.tap_margin) {
+                if (y > 0) {
+                    this.swipe = "down";
+                } else {
+                    this.swipe = "up";
+                }
+            } else {
+                this.swipe = "tap";
+            }
         }
 
-        if (this.swpie == "tap") {
+        if (this.swipe == "tap") {
             return;
-        } else if (this.swpie != null) {
-            this.when_swipe(this.swpie);
+        } else if (this.swipe != null) {
+            this.when_swipe(this.swipe);
         }
     }
 
