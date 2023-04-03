@@ -609,6 +609,11 @@ class GameScene extends Phaser.Scene {
         if (calculations_finished(this.all_block_lists)) {
             if (this.animations_started === false) {
                 this.animations_started = true;
+                // first check if any blocks have movement animations
+                for (let i = 0; i < this.all_block_lists.length; i++) {
+                    this.all_block_lists[i].update_has_movement_animations();
+                }
+                // then evaluate the animations
                 for (let i = 0; i < this.all_block_lists.length; i++) {
                     this.all_block_lists[i].is_moving = true;
                     this.all_block_lists[i].evaluate_animations();

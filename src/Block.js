@@ -102,15 +102,28 @@ class Block{
         return {x: x_diff, y: y_diff}
     }
 
+    update_has_movement_animations() {
+        // if there are no movement animations left
+        let has_movement_animations = false;
+        for (let i = 0; i < this.animations.length; i++) {
+            if (this.animations[i].at(0) === "move") {
+                has_movement_animations = true;
+                break;
+            }
+        }
+        this.movement_completed = !has_movement_animations;
+    }
+
     evaluate_animations() {
         if (this.animations.length === 0) {
             this.movement_status = 0;
             this.is_moving = false;
             this.moving_direction = null;
-            this.animations_completed = true;
+            this.movement_completed = true;
             return;
+        } else {
+            this.update_has_movement_animations();
         }
-        this.animations_completed = false;
         let animation_step = this.animations.shift()
         if (animation_step.at(0) === "move") {
             // move format: ["move", number of steps to move]
@@ -129,7 +142,7 @@ class Block{
             // (that shouldn't happen because it would look odd but it's something to consider)
             // would probably want to seperate this later after animations get added
             // destroy/merge format: ["merge" or "destroy", (block that this block is merging into/being destroyed by), is_direct]
-            if (animation_step.at(1).animations_completed) {
+            if (animation_step.at(1).movement_completed) {
                 this.rect.destroy()
                 this.text.destroy()
                 if (animation_step.at(0) === "destroy") this.scene.andimdying_play()
@@ -148,17 +161,28 @@ class Block{
         } else if (animation_step.at(0) === "increase value") {
             // increase value format: ["increase value", (block that this block is merging with), is_direct]
             // is_direct isn't being used at the moment since merges are always direct
-            this.text_value *= 2
-            this.scene.tweens.add({
-                targets: [this.rect],
-                duration: 200,
-                scaleX: 2,
-                scaleY: 2,
-                ease : 'Linear',
-                yoyo : true,
-                repeat : 0,
-                onComplete: this.evaluate_animations.bind(this)
-            })
+            if (animation_step.at(1).movement_completed) {
+                this.text_value *= 2
+                this.scene.tweens.add({
+                    targets: [this.rect],
+                    duration: 200,
+                    scaleX: 2,
+                    scaleY: 2,
+                    ease : 'Linear',
+                    yoyo : true,
+                    repeat : 0,
+                    onComplete: this.evaluate_animations.bind(this)
+                })
+            } else {
+                this.animations.unshift(animation_step)
+                // add tween animation to wait for other block to finsih its animations
+                this.scene.tweens.add({
+                    targets: [this.container],
+                    duration: 10,
+                    ease : 'Linear',
+                    onComplete: this.evaluate_animations.bind(this)
+                })
+            }
         } else if (animation_step.at(0) === "bounce") {
             // bounce format: ["bounce"]
             this.scene.ohhaimark_play()
