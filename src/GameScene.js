@@ -184,6 +184,7 @@ class GameScene extends Phaser.Scene {
                 update: function() {},
                 pause: function() {},
                 unpause: function() {},
+                add_time: function() {},
             }
             this.green_timer = dummy;
             this.orange_timer = dummy;
