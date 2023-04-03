@@ -181,12 +181,7 @@ class Block{
             // (that shouldn't happen because it would look odd but it's something to consider)
             // would probably want to seperate this later after animations get added
             // destroy/merge format: ["merge" or "destroy", (block that this block is merging into/being destroyed by), is_direct]
-            if (!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true)) {
-                this.rect.destroy()
-                this.text.destroy()
-                if (animation_step.at(0) === "destroy") this.scene.andimdying_play()
-                else if (animation_step.at(0) === "merge") this.scene.letsgoeathuu_play()
-            } else if (animation_step.at(2) && this.block_at_same_tile(animation_step.at(1))) {
+            if ((!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true)) || (animation_step.at(2) && this.block_at_same_tile(animation_step.at(1)))) {
                 this.rect.destroy()
                 this.text.destroy()
                 if (animation_step.at(0) === "destroy") this.scene.andimdying_play()
@@ -201,10 +196,17 @@ class Block{
         } else if (animation_step.at(0) === "increase value") {
             // increase value format: ["increase value", (block that this block is merging with), is_direct]
             // is_direct isn't being used at the moment since merges are always direct
-            if (animation_step.at(2) && this.block_at_same_tile(animation_step.at(1))) {
+            if ((animation_step.at(2) && this.block_at_same_tile(animation_step.at(1))) || (!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true))) {
                     this.text_value *= 2
-            } else if (!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true)) {
-                this.text_value *= 2
+                    this.scene.tweens.add({
+                        targets: [this.rect],
+                        duration: 200,
+                        scaleX: 2,
+                        scaleY: 2,
+                        ease : 'Linear',
+                        yoyo : true,
+                        repeat : 0
+                    })
             } else {
                 // if (this.log_count < 50) {
                 //     console.log("block", this, "failed to find", animation_step.at(1))
