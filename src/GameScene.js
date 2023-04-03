@@ -611,6 +611,7 @@ class GameScene extends Phaser.Scene {
                 this.animations_started = true;
                 for (let i = 0; i < this.all_block_lists.length; i++) {
                     this.all_block_lists[i].is_moving = true;
+                    this.all_block_lists[i].evaluate_animations();
                 }
             }
             if (turn_finished(this.all_block_lists)) {

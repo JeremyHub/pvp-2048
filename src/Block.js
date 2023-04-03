@@ -1,6 +1,6 @@
 
 const block_config = {
-    animation_speed: 8,
+    animation_speed: 100,
 }
 
 class Block{
@@ -39,6 +39,7 @@ class Block{
         this.space_size = this.size+(this.padding*2);
         this.rect = null
         this.block_id = block_id
+        this.animations_completed = true;
         // block_id is just a value assigned to every block, I use it to tell blocks apart in console logs
         this.animations = []
         if (drawing) {
@@ -67,158 +68,110 @@ class Block{
             this.text.setFontSize(text_size)
             this.text.setOrigin(0.5)
         }
-
-        if (this.total_movement_distance > 0 && this.is_moving) {
-
-            let to_move = 0;
-            if (this.total_moved + block_config.animation_speed > this.total_movement_distance) {
-                to_move = this.total_movement_distance - this.total_moved;
-            } else {
-                to_move = block_config.animation_speed;
-            }
-
-            if (this.reverse_movement) {
-                to_move *= -1
-            }
-            
-            if (this.moving_direction === 'up') {
-                this.container.y -= to_move;
-            }
-            else if (this.moving_direction === 'down') {
-                this.container.y += to_move;
-            }
-            else if (this.moving_direction === 'left') {
-                this.container.x -= to_move;
-            }
-            else if (this.moving_direction === 'right') {
-                this.container.x += to_move;
-            }
-            
-            if (this.reverse_movement) {
-                this.total_moved -= to_move;
-            } else {
-                this.total_moved += to_move;
-            }
-
-            // we want to stop moving if we are at the center of a block and we cant keep moving
-            
-            if (this.total_moved === this.total_movement_distance) {
-
-                if (this.animations.length === 0) {
-                    this.scene.ididnothither_play();
-                }
-
-                this.total_moved = 0;
-                this.total_movement_distance = 0;
-                if (this.reverse_movement) {
-                    this.reverse_movement = false
-                    if (this.moving_direction === 'up') {
-                        this.visual_tile_y++;
-                    }
-                    else if (this.moving_direction === 'down') {
-                        this.visual_tile_y--;
-                    }
-                    else if (this.moving_direction === 'left') {
-                        this.visual_tile_x++;
-                    }
-                    else if (this.moving_direction === 'right') {
-                        this.visual_tile_x--;
-                    }
-                }
-                else {
-                    if (this.moving_direction === 'up') {
-                        this.visual_tile_y--;
-                    }
-                    else if (this.moving_direction === 'down') {
-                        this.visual_tile_y++;
-                    }
-                    else if (this.moving_direction === 'left') {
-                        this.visual_tile_x--;
-                    }
-                    else if (this.moving_direction === 'right') {
-                        this.visual_tile_x++;
-                    }
-                }
-            } else if (this.total_moved >= this.next_space_distance) {
-                this.next_space_distance += this.size+(this.padding*2);
-                if (this.moving_direction === 'up') {
-                    this.visual_tile_y--;
-                }
-                else if (this.moving_direction === 'down') {
-                    this.visual_tile_y++;
-                }
-                else if (this.moving_direction === 'left') {
-                    this.visual_tile_x--;
-                }
-                else if (this.moving_direction === 'right') {
-                    this.visual_tile_x++;
-                }
-            }
-        }
-
-        else if (this.is_moving) {
-            if (this.animations.length === 0) {
-                this.is_moving = false;
-            }
-            else if (this.total_movement_distance === 0) {
-                // this makes sure other animations don't start mid-movement
-                this.evaluate_animations()
-            }
-        }
-
         
     }
 
+    get_opposite_direction(direction) {
+        if (direction === "up") {
+            return "down";
+        } else if (direction === "down") {
+            return "up";
+        } else if (direction === "left") {
+            return "right";
+        } else if (direction === "right") {
+            return "left";
+        }
+    }
+
+    calculate_movement_diffs(num_tiles_to_move) {
+        let x_diff = 0;
+        let y_diff = 0;
+
+        let diff = (this.size+(this.padding*2)) * num_tiles_to_move
+
+        if (this.moving_direction === "up") {
+            y_diff = -diff;
+        } else if (this.moving_direction === "down") {
+            y_diff = diff;
+        } else if (this.moving_direction === "left") {
+            x_diff = -diff;
+        } else if (this.moving_direction === "right") {
+            x_diff = diff;
+        }
+
+        return {x: x_diff, y: y_diff}
+    }
+
     evaluate_animations() {
+        if (this.animations.length === 0) {
+            this.movement_status = 0;
+            this.is_moving = false;
+            this.moving_direction = null;
+            this.animations_completed = true;
+            return;
+        }
+        this.animations_completed = false;
         let animation_step = this.animations.shift()
         if (animation_step.at(0) === "move") {
             // move format: ["move", number of steps to move]
-            this.total_movement_distance = (this.size+(this.padding*2)) * animation_step.at(1)
-            this.next_space_distance = this.size+(this.padding*2)
+            let movement_diff = this.calculate_movement_diffs(animation_step.at(1))
+            this.scene.tweens.add({
+                targets: [this.container],
+                duration: block_config.animation_speed * animation_step.at(1),
+                x: movement_diff.x + this.container.x,
+                y: movement_diff.y + this.container.y,
+                ease : 'Linear',
+                onComplete: this.evaluate_animations.bind(this)
+            })
         }
         else if (animation_step.at(0) === "merge" || animation_step.at(0) === "destroy") {
             // there might be an issue here, if the two blocks in a destroy event aren't ever visually in the same space
             // (that shouldn't happen because it would look odd but it's something to consider)
             // would probably want to seperate this later after animations get added
             // destroy/merge format: ["merge" or "destroy", (block that this block is merging into/being destroyed by), is_direct]
-            if ((!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true)) || (animation_step.at(2) && this.block_at_same_tile(animation_step.at(1)))) {
+            if (animation_step.at(1).animations_completed) {
                 this.rect.destroy()
                 this.text.destroy()
                 if (animation_step.at(0) === "destroy") this.scene.andimdying_play()
                 else if (animation_step.at(0) === "merge") this.scene.letsgoeathuu_play()
+                this.evaluate_animations()
             } else {
-                // if (this.log_count < 50) {
-                //     console.log("block", this, "failed to find", animation_step.at(1), "for step", animation_step)
-                //     this.log_count++
-                // }
-                this.animations = [animation_step].concat(this.animations)
+                this.animations.unshift(animation_step)
+                // add tween animation to wait for other block to finsih its animations
+                this.scene.tweens.add({
+                    targets: [this.container],
+                    duration: 10,
+                    ease : 'Linear',
+                    onComplete: this.evaluate_animations.bind(this)
+                })
             }
         } else if (animation_step.at(0) === "increase value") {
             // increase value format: ["increase value", (block that this block is merging with), is_direct]
             // is_direct isn't being used at the moment since merges are always direct
-            if ((animation_step.at(2) && this.block_at_same_tile(animation_step.at(1))) || (!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true))) {
-                    this.text_value *= 2
-                    this.scene.tweens.add({
-                        targets: [this.rect],
-                        duration: 200,
-                        scaleX: 2,
-                        scaleY: 2,
-                        ease : 'Linear',
-                        yoyo : true,
-                        repeat : 0
-                    })
-            } else {
-                // if (this.log_count < 50) {
-                //     console.log("block", this, "failed to find", animation_step.at(1))
-                //     this.log_count++
-                // }
-                this.animations = [animation_step].concat(this.animations)
-            }
+            this.text_value *= 2
+            this.scene.tweens.add({
+                targets: [this.rect],
+                duration: 200,
+                scaleX: 2,
+                scaleY: 2,
+                ease : 'Linear',
+                yoyo : true,
+                repeat : 0,
+                onComplete: this.evaluate_animations.bind(this)
+            })
         } else if (animation_step.at(0) === "bounce") {
             // bounce format: ["bounce"]
             this.scene.ohhaimark_play()
-            this.total_movement_distance = (this.size+(this.padding*2))
-            this.reverse_movement = true
+            this.moving_direction = this.get_opposite_direction(this.moving_direction)
+            let movement_diff = this.calculate_movement_diffs(1)
+            this.scene.tweens.add({
+                targets: [this.container],
+                duration: block_config.animation_speed,
+                x: movement_diff.x + this.container.x,
+                y: movement_diff.y + this.container.y,
+                ease : 'Linear',
+                onComplete: this.evaluate_animations.bind(this)
+            })
         }
     }
 
