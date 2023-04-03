@@ -154,7 +154,6 @@ class Block{
                 this.scene.tweens.add({
                     targets: [this.container],
                     duration: 10,
-                    ease : 'Linear',
                     onComplete: this.evaluate_animations.bind(this)
                 })
             }
@@ -164,11 +163,10 @@ class Block{
             if (animation_step.at(1).movement_completed) {
                 this.text_value *= 2
                 this.scene.tweens.add({
-                    targets: [this.rect],
+                    targets: [this.container],
                     duration: 200,
-                    scaleX: 2,
-                    scaleY: 2,
-                    ease : 'Linear',
+                    scale: Math.min(1 + this.text_value/15, 2),
+                    ease : 'Back.easeInOut',
                     yoyo : true,
                     repeat : 0,
                     onComplete: this.evaluate_animations.bind(this)
@@ -179,7 +177,6 @@ class Block{
                 this.scene.tweens.add({
                     targets: [this.container],
                     duration: 10,
-                    ease : 'Linear',
                     onComplete: this.evaluate_animations.bind(this)
                 })
             }
@@ -193,7 +190,7 @@ class Block{
                 duration: block_config.animation_speed,
                 x: movement_diff.x + this.container.x,
                 y: movement_diff.y + this.container.y,
-                ease : 'Linear',
+                ease : 'Circ.easeOut',
                 onComplete: this.evaluate_animations.bind(this)
             })
         }
