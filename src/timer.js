@@ -14,6 +14,7 @@ class Timer extends Phaser.GameObjects.Container{
         this.oldtime = null;
         this.isticking = false;
         this.update_visuals();
+        this.has_been_paused = false;
     }
     
     create(){
@@ -31,6 +32,14 @@ class Timer extends Phaser.GameObjects.Container{
         }
     }
 
+    add_time(time){
+        if (this.has_been_paused) {
+            this.time += time;
+            this.update_visuals();
+            this.has_been_paused = false;
+        }
+    }
+
     update_visuals(){
         let mili_zero = Math.floor((this.time%1000)/10) < 10 ? "0" : "";
         if (this.time < 60000){
@@ -44,6 +53,7 @@ class Timer extends Phaser.GameObjects.Container{
     pause(){
         this.oldtime = null; 
         this.isticking = false; 
+        this.has_been_paused = true;
     }
 
     unpause(){

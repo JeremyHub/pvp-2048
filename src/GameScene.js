@@ -40,6 +40,8 @@ const game_config = {
         "Classic2048"
     ],
     selected_map: 0, // default map
+    starting_time: 120000, // starting time in ms
+    time_increment: 3000, // ms added to timer every turn
 };
 
 class GameScene extends Phaser.Scene {
@@ -186,8 +188,8 @@ class GameScene extends Phaser.Scene {
             this.green_timer = dummy;
             this.orange_timer = dummy;
         } else {
-            this.green_timer = new Timer(this, this.game.config.width*0.3, this.game.config.height*0.02, 120000, "#" + this.convert_hex_to_hex_string(game_config.green_color));
-            this.orange_timer = new Timer(this, 0, this.game.config.height*0.02, 120000, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
+            this.green_timer = new Timer(this, this.game.config.width*0.3, this.game.config.height*0.02, game_config.starting_time, "#" + this.convert_hex_to_hex_string(game_config.green_color));
+            this.orange_timer = new Timer(this, 0, this.game.config.height*0.02, game_config.starting_time, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
             this.orange_timer.x = this.game.config.width - this.orange_timer.text.width - this.game.config.width*0.3;
         }
 
@@ -723,10 +725,12 @@ class GameScene extends Phaser.Scene {
 
         if (this.green_move === null && this.green_has_moved) {
             this.green_timer.unpause();
+            this.green_timer.add_time(game_config.time_increment)
         }
         
         if (this.orange_move === null && this.orange_has_moved)  {
             this.orange_timer.unpause();
+            this.orange_timer.add_time(game_config.time_increment)
         }
     }
 
