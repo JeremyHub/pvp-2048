@@ -314,11 +314,62 @@ class GameScene extends Phaser.Scene {
     update_block_totals() {
         this.green_total_value = getTotalValueOfBlocks(this.green_blocks);
         this.orange_total_value = getTotalValueOfBlocks(this.orange_blocks);
-    } 
+    }
+
+    orange_win() {
+        if (this.mode == "single") {    
+            this.scene.start('LossScene', {player: "you"});
+        } else if (this.mode == "multiplayer") {
+            if (this.your_color == "orange") {
+                this.scene.start('WinScene', {player: "you"});
+            } else {
+                this.scene.start('LossScene', {player: "you"});
+            }
+        } else if (this.mode == "local_multiplayer") {
+            this.scene.start('WinScene', {player: 'Orange'});
+        }
+    }
+
+    green_win() {
+        if (this.mode == "single") {
+            this.scene.start('WinScene', {player: "you"});
+        } else if (this.mode == "multiplayer") {
+            if (this.your_color == "green") {
+                this.scene.start('WinScene', {player: "you"});
+            } else {
+                this.scene.start('LossScene', {player: "you"});
+            }
+        } else if (this.mode == "local_multiplayer") {
+            this.scene.start('WinScene', {player: 'Green'});
+        }
+    }
+
+    tie() {
+        this.scene.start('TieScene');
+    }
+
+    check_timer_wins() {
+        if (this.green_timer.time <= 0 && this.orange_timer.time <= 0) {
+            this.tie();
+            return true;
+        } else if (this.green_timer.time <= 0) {
+            this.orange_win();
+            return true;
+        } else if (this.orange_timer.time <= 0) {
+            this.green_win();
+            return true;
+        }
+        return false;
+    }
 
     new_win_loss(){
-         // this is a special case for the map Classic2048
-         if (game_config.maps[game_config.selected_map] === "Classic2048"){
+
+        // this is a special case for the map Classic2048
+        if (game_config.maps[game_config.selected_map] === "Classic2048"){
+            return;
+        }
+
+        if (this.check_timer_wins()) {
             return;
         }
 
@@ -327,32 +378,14 @@ class GameScene extends Phaser.Scene {
         this.green_percent = this.green_percent * 100;
         this.orange_percent = this.orange_percent * 100;
 
-        if(this.green_percent > this.win_percent){
-            if (this.mode == "single") {
-                this.scene.start('WinScene', {player: "you"});
-            } else if (this.mode == "multiplayer") {
-                if (this.your_color == "green") {
-                    this.scene.start('WinScene', {player: "you"});
-                } else {
-                    this.scene.start('LossScene', {player: "you"});
-                }
-            } else if (this.mode == "local_multiplayer") {
-                this.scene.start('WinScene', {player: 'Green'});
-            }
+        if(this.green_percent > this.win_percent && this.orange_percent > this.win_percent){
+            this.tie();
             return true;
-
+        } else if(this.green_percent > this.win_percent){
+            this.green_win();
+            return true;
         } else if(this.orange_percent > this.win_percent){
-               if (this.mode == "single") {    
-                this.scene.start('LossScene', {player: "you"});
-            } else if (this.mode == "multiplayer") {
-                if (this.your_color == "orange") {
-                    this.scene.start('WinScene', {player: "you"});
-                } else {
-                    this.scene.start('LossScene', {player: "you"});
-                }
-            } else if (this.mode == "local_multiplayer") {
-                this.scene.start('WinScene', {player: 'Orange'});
-            }
+            this.orange_win();
             return true;
         }
 
@@ -365,41 +398,17 @@ class GameScene extends Phaser.Scene {
             return;
         }
 
-        // check tie
-        if(this.orange_total_value >= this.win_value && this.green_total_value >= this.win_value || this.green_timer.time <= 0 && this.orange_timer.time <= 0){
-            this.scene.start('TieScene');
+        if (this.check_timer_wins()) {
             return true;
-            
-            // check orange win
-        } else if(this.orange_total_value >= this.win_value || this.green_timer.time <= 0){
-            
-            if (this.mode == "single") {    
-                this.scene.start('LossScene', {player: "you"});
-            } else if (this.mode == "multiplayer") {
-                if (this.your_color == "orange") {
-                    this.scene.start('WinScene', {player: "you"});
-                } else {
-                    this.scene.start('LossScene', {player: "you"});
-                }
-            } else if (this.mode == "local_multiplayer") {
-                this.scene.start('WinScene', {player: 'Orange'});
-            }
+        }
+        if(this.orange_total_value >= this.win_value && this.green_total_value >= this.win_value){
+            this.tie();
             return true;
-
-        // check green win
-        } else if(this.green_total_value >= this.win_value || this.orange_timer.time <= 0){
-        
-            if (this.mode == "single") {
-                this.scene.start('WinScene', {player: "you"});
-            } else if (this.mode == "multiplayer") {
-                if (this.your_color == "green") {
-                    this.scene.start('WinScene', {player: "you"});
-                } else {
-                    this.scene.start('LossScene', {player: "you"});
-                }
-            } else if (this.mode == "local_multiplayer") {
-                this.scene.start('WinScene', {player: 'Green'});
-            }
+        } else if(this.orange_total_value >= this.win_value){
+            this.orange_win();
+            return true;
+        } else if(this.green_total_value >= this.win_value){
+            this.green_win();
             return true;
         }
 
@@ -691,7 +700,7 @@ class GameScene extends Phaser.Scene {
         
         this.update_all_blocks_list();
         
-        //this.check_win_loss();
+        // this.check_win_loss();
 
         this.new_win_loss();
         
