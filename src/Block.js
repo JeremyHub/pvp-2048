@@ -102,6 +102,18 @@ class Block{
         return {x: x_diff, y: y_diff}
     }
 
+    remove_lone_bounce_animations() {
+        if (this.animations.length < 2) {
+            return;
+        } else if (this.animations.length === 2){
+            if (this.animations[0].at(0) === "move" && this.animations[0].at(1) === 1) {
+                if (this.animations[1].at(0) === "bounce") {
+                    this.animations = [];
+                }
+            }
+        }
+    }
+
     update_has_movement_animations() {
         // if there are no movement animations left
         let has_movement_animations = false;

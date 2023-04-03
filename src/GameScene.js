@@ -626,6 +626,7 @@ class GameScene extends Phaser.Scene {
                 this.animations_started = true;
                 // first check if any blocks have movement animations
                 for (let i = 0; i < this.all_block_lists.length; i++) {
+                    this.all_block_lists[i].remove_lone_bounce_animations();
                     this.all_block_lists[i].update_has_movement_animations();
                 }
                 // then evaluate the animations
