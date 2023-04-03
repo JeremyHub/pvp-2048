@@ -95,7 +95,13 @@ class GameScene extends Phaser.Scene {
         this.orange_total_value = 0;
         this.green_total_value = 0;
         this.win_value = 100;
-        
+
+        this.orange_percent = 0;
+        this.green_percent = 0;
+        this.win_percent = 75;
+
+
+
         // Define a list of the keys
         this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M', 'L', 'K', 'N'];
 
@@ -283,8 +289,8 @@ class GameScene extends Phaser.Scene {
             this.orange_wall_button_text.y = this.orange_wall_button.y + this.orange_wall_button.height/2 - this.orange_wall_button_text.text.height/2;
         }
             
-        this.green_score.updateText("Score: " + this.green_total_value);
-        this.orange_score.updateText("Score: " + this.orange_total_value);
+        this.green_score.updateText("Score: " + this.green_total_value / (this.green_total_value + this.orange_total_value) * 100);
+        this.orange_score.updateText("Score: " + this.orange_total_value / (this.green_total_value + this.orange_total_value) * 100);
 
         this.green_walls_container.updateText("Walls: " + this.green_walls_count);
         this.orange_walls_container.updateText("Walls: " + this.orange_walls_count);
@@ -300,6 +306,48 @@ class GameScene extends Phaser.Scene {
         this.green_total_value = getTotalValueOfBlocks(this.green_blocks);
         this.orange_total_value = getTotalValueOfBlocks(this.orange_blocks);
     } 
+
+    new_win_loss(){
+         // this is a special case for the map Classic2048
+         if (game_config.maps[game_config.selected_map] === "Classic2048"){
+            return;
+        }
+
+        this.green_percent = this.green_total_value / (this.green_total_value + this.orange_total_value);
+        this.orange_percent = this.orange_total_value / (this.green_total_value + this.orange_total_value);
+        this.green_percent = Math.round(this.green_percent * 100);
+        this.orange_percent = Math.round(this.orange_percent * 100);
+
+        if(this.green_percent > this.win_percent){
+            if (this.mode == "single") {
+                this.scene.start('WinScene', {player: "you"});
+            } else if (this.mode == "multiplayer") {
+                if (this.your_color == "green") {
+                    this.scene.start('WinScene', {player: "you"});
+                } else {
+                    this.scene.start('LossScene', {player: "you"});
+                }
+            } else if (this.mode == "local_multiplayer") {
+                this.scene.start('WinScene', {player: 'Green'});
+            }
+            return true;
+
+        } else if(this.orange_percent > this.win_percent){
+               if (this.mode == "single") {    
+                this.scene.start('LossScene', {player: "you"});
+            } else if (this.mode == "multiplayer") {
+                if (this.your_color == "orange") {
+                    this.scene.start('WinScene', {player: "you"});
+                } else {
+                    this.scene.start('LossScene', {player: "you"});
+                }
+            } else if (this.mode == "local_multiplayer") {
+                this.scene.start('WinScene', {player: 'Orange'});
+            }
+            return true;
+        }
+
+    }
 
     check_win_loss() {
 
@@ -628,7 +676,9 @@ class GameScene extends Phaser.Scene {
         
         this.update_all_blocks_list();
         
-        this.check_win_loss();
+        //this.check_win_loss();
+
+        this.new_win_loss();
         
         // this is just to spawn blocks in at the start of the game (it shouldnt do anything else)
         if (this.all_block_lists.length === 0) {
