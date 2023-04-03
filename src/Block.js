@@ -105,7 +105,7 @@ class Block{
             if (this.total_moved === this.total_movement_distance) {
 
                 if (this.animations.length === 0) {
-                    this.scene.ididnothitherplay();
+                    this.scene.ididnothither_play();
                 }
 
                 this.total_moved = 0;
@@ -184,13 +184,13 @@ class Block{
             if (!animation_step.at(2) && this.block_at_opposite_tile(animation_step.at(1), true)) {
                 this.rect.destroy()
                 this.text.destroy()
-                if (animation_step.at(0) === "destroy") this.scene.andimdyingplay()
-                else if (animation_step.at(0) === "merge") this.scene.letsgoeathuuplay()
+                if (animation_step.at(0) === "destroy") this.scene.andimdying_play()
+                else if (animation_step.at(0) === "merge") this.scene.letsgoeathuu_play()
             } else if (animation_step.at(2) && this.block_at_same_tile(animation_step.at(1))) {
                 this.rect.destroy()
                 this.text.destroy()
-                if (animation_step.at(0) === "destroy") this.scene.andimdyingplay()
-                else if (animation_step.at(0) === "merge") this.scene.letsgoeathuuplay()
+                if (animation_step.at(0) === "destroy") this.scene.andimdying_play()
+                else if (animation_step.at(0) === "merge") this.scene.letsgoeathuu_play()
             } else {
                 // if (this.log_count < 50) {
                 //     console.log("block", this, "failed to find", animation_step.at(1), "for step", animation_step)
@@ -214,7 +214,7 @@ class Block{
             }
         } else if (animation_step.at(0) === "bounce") {
             // bounce format: ["bounce"]
-            this.scene.ohhaimarkplay()
+            this.scene.ohhaimark_play()
             this.total_movement_distance = (this.size+(this.padding*2))
             this.reverse_movement = true
         }

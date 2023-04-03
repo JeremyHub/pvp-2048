@@ -211,17 +211,17 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    ididnothitherplay() {
+    ididnothither_play() {
         let ididnothither = this.sound.add('ididnothither', {volume: 0.02});
         ididnothither.play();
     }
 
-    letsgoeathuuplay() {
+    letsgoeathuu_play() {
         let letsgoeathuuplay = this.sound.add('letsgoeathuu', {volume: 0.2});
         letsgoeathuuplay.play();
     }
 
-    andimdyingplay() {
+    andimdying_play() {
         let imdying = this.sound.add('andimdying', {volume: 0.7});
         imdying.play();
     }
@@ -231,7 +231,7 @@ class GameScene extends Phaser.Scene {
         wall_place_sound.play();
     }
 
-    ohhaimarkplay() {
+    ohhaimark_play() {
         let ohhaimark = this.sound.add('ohhaimark', {volume: 0.6});
         ohhaimark.play();
     }
