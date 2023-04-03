@@ -10,16 +10,11 @@ class Button extends Phaser.GameObjects.Container {
         this.text = text; // the text of the button
         this.call_when_pressed = call_when_pressed; // the function to be called when the button is pressed
         this.origin_style_color = text_style.fill;
+        this.text_style = text_style;
 
         this.button = this.scene.add.image(0, 0, background_img).setInteractive();
 
-        this.text = this.scene.add.text(0, 0, text, text_style);
-        this.text.setOrigin(0.5, 0.5);
-        this.text.setResolution(3);
-
-        // stretch the button so that it fits the text
-        this.button.displayWidth = this.text.width + 20;
-        this.button.displayHeight = this.text.height + 20;
+        this.update_text(text);
 
         this.add(this.button);
         this.add(this.text);
@@ -28,11 +23,21 @@ class Button extends Phaser.GameObjects.Container {
 
         this.button.on('pointerout', this.on_out.bind(this));
 
-        this.button.on('pointerdown', function() {
+        this.button.on('pointerup', function() {
             call_when_pressed();
         });
 
         this.scene.add.existing(this);
+    }
+
+    update_text(text) {
+        this.text = this.scene.add.text(0, 0, text, this.text_style);
+        this.text.setOrigin(0.5, 0.5);
+        this.text.setResolution(3);
+
+        // stretch the button so that it fits the text
+        this.button.displayWidth = this.text.width + 20;
+        this.button.displayHeight = this.text.height + 20;
     }
 
     on_hover() {

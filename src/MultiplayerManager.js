@@ -102,7 +102,9 @@ export class MutliplayerManager {
                     this.game_has_started = true;
                     this.gameRef = temp_ref;
                     this.your_color = "orange";
-                    game_config.selected_map = snapshot.child("map_selection").val();
+                    for (let prop in game_config) {
+                        game_config[prop] = snapshot.child("game_config/" + prop).val();
+                    }
                     this.start_game();
                 }
             }
@@ -131,7 +133,7 @@ export class MutliplayerManager {
                     walls: [[-1, -1]],
                 }
             },
-            map_selection: game_config.selected_map,
+            game_config: game_config,
         }
         set(this.gameRef, data);
 

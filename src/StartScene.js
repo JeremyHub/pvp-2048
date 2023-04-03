@@ -51,12 +51,61 @@ class StartScene extends Phaser.Scene {
         this.map_selection_button.x = this.game.config.width - this.map_selection_button.button.displayWidth/2;
         this.map_selection_button.y = this.game.config.height - this.map_selection_button.button.displayHeight/2;
 
+        this.options_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Options", { fontSize: this.button_text_size/2 + "px", fill: "#000" }, this.options.bind(this));
+        this.options_button.x = this.map_selection_button.x;
+        this.options_button.y = this.map_selection_button.y - this.map_selection_button.button.displayHeight - this.options_button.button.displayHeight/2;
+    }
+
+    options() {
+        this.destroy_main_menu_buttons();
+        this.add_back_button();
+
+        // timer options
+        // increment
+        this.change_increment_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Change Increment", { fontSize: this.button_text_size/2 + "px", fill: "#000" }, this.change_increment.bind(this));
+        this.change_increment_button.x = this.game.config.width / 2;
+        this.change_increment_button.y = this.game.config.height / 2;
+        this.current_increment = this.add.text(0, 0, "Timer Increment (seconds): " + game_config.time_increment/1000, { fontSize: this.button_text_size/2 + "px", fill: "#fff" });
+        this.current_increment.setOrigin(0.5, 0.5);
+        this.current_increment.x = this.game.config.width / 2;
+        this.current_increment.y = this.change_increment_button.y - this.change_increment_button.button.displayHeight/2 - this.current_increment.displayHeight/2;
+        // starting time
+        this.starting_time_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Change Starting Time", { fontSize: this.button_text_size/2 + "px", fill: "#000" }, this.change_starting_time.bind(this));
+        this.starting_time_button.x = this.game.config.width / 2;
+        this.starting_time_button.y = this.game.config.height / 1.5;
+        this.current_starting_time = this.add.text(0, 0, "Starting Time (seconds): " + game_config.starting_time/1000, { fontSize: this.button_text_size/2 + "px", fill: "#fff" });
+        this.current_starting_time.setOrigin(0.5, 0.5);
+        this.current_starting_time.x = this.game.config.width / 2;
+        this.current_starting_time.y = this.starting_time_button.y - this.starting_time_button.button.displayHeight/2 - this.current_starting_time.displayHeight/2;
+
+        // win condition
+    }
+
+    change_starting_time() {
+        let new_starting_time = parseInt(window.prompt("Enter new starting time"));
+        if (new_starting_time !== NaN) {
+            game_config.starting_time = new_starting_time*1000;
+            this.current_starting_time.setText("Starting Time (seconds): " + game_config.starting_time/1000);
+        } else {
+            window.alert("Not a Number!");
+        }
+    }
+
+    change_increment() {
+        let new_increment = parseInt(window.prompt("Enter new increment"));
+        if (new_increment !== NaN) {
+            game_config.time_increment = new_increment*1000;
+            this.current_increment.setText("Increment (seconds): " + game_config.time_increment/1000);
+        } else {
+            window.alert("Not a Number!");
+        }
     }
 
     destroy_main_menu_buttons() {
         this.single_player_button.destroy();
         this.multiplayer_buton.destroy();
         this.map_selection_button.destroy();
+        this.options_button.destroy();
     }
 
     map_selection() {
