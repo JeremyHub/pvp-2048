@@ -622,7 +622,7 @@ class GameScene extends Phaser.Scene {
             
         }    
         if (calculations_finished(this.all_block_lists)) {
-            if (this.animations_started === false) {
+            if (this.animations_started === false && this.is_drawing) {
                 this.animations_started = true;
                 // first check if any blocks have movement animations
                 for (let i = 0; i < this.all_block_lists.length; i++) {
