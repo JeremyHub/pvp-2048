@@ -114,7 +114,7 @@ export class MutliplayerManager {
 
     create_room() {
         if (!this.is_signed_in()) {
-            return;
+            return false;
         }
 
         this.joined_game_code = Math.random().toString(36).substring(2, 7);
@@ -150,6 +150,8 @@ export class MutliplayerManager {
                 // you are waiting for orange to join
             }
         });
+
+        return true;
     }
 
     start_game() {

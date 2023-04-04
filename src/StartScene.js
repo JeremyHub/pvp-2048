@@ -187,7 +187,10 @@ class StartScene extends Phaser.Scene {
     }
 
     waiting_for_players() {
-        this.mutliplayer_manager.create_room();
+        // return if not connected with the database
+        if (!this.mutliplayer_manager.create_room()) {
+            return;
+        }
 
         this.create_room_button.destroy();
         this.join_room_button.destroy();
