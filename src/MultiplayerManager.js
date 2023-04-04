@@ -102,6 +102,7 @@ export class MutliplayerManager {
                     this.game_has_started = true;
                     this.gameRef = temp_ref;
                     this.your_color = "orange";
+                    // game_config = snapshot.child("game_config").val();
                     for (let prop in game_config) {
                         game_config[prop] = snapshot.child("game_config/" + prop).val();
                     }
@@ -171,6 +172,7 @@ export class MutliplayerManager {
 
             // update if opp is animating
             this.opponent_is_animating = game_data.players[opp_color].is_animating;
+            this.scene[opp_color + "_timer"].time = game_data.players[opp_color].time_remaining;
 
             // update the game with the moves
             if (game_data.players[this.your_color].moves.length > this.current_turn) {
@@ -226,16 +228,18 @@ export class MutliplayerManager {
     done_animating() {
         // update the database with the fact that you are done animating
         if (this.joined_game_code != null && this.current_data != null) {
-            let players_ref_str = "games/" + this.joined_game_code + "/players/";
-            set(ref(this.database, players_ref_str + this.your_color + "/is_animating"), false);
+            let players_ref_str = "games/" + this.joined_game_code + "/players/" + this.your_color;
+            set(ref(this.database, players_ref_str + "/is_animating"), false);
+            set(ref(this.database, players_ref_str + "/time_remaining"), this.scene[this.your_color + "_timer"].time);
         }
     }
 
     animating_started() {
         // update the database with the fact that you are done animating
         if (this.joined_game_code != null && this.current_data != null) {
-            let players_ref_str = "games/" + this.joined_game_code + "/players/";
-            set(ref(this.database, players_ref_str + this.your_color + "/is_animating"), true);
+            let players_ref_str = "games/" + this.joined_game_code + "/players/"+ this.your_color;
+            set(ref(this.database, players_ref_str + "/is_animating"), true);
+            set(ref(this.database, players_ref_str + "/time_remaining"), this.scene[this.your_color + "_timer"].time);
         }
     }
 
