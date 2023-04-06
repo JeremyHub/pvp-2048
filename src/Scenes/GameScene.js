@@ -193,9 +193,9 @@ class GameScene extends Phaser.Scene {
         }
         
         // I did something a little strange with orange_score.x
-        this.green_score = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.02, "Score: " + this.green_total_value, "#" + this.convert_hex_to_hex_string(game_config.green_color));
-        this.orange_score = new UIContainer(this, 0, this.game.config.height*0.02, "Score: 00" + this.orange_total_value, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
-        this.orange_score.x = this.game.config.width - this.orange_score.text.width - this.game.config.width*0.02;
+        this.green_score = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.02, "Score:   " + this.green_total_value, "#" + this.convert_hex_to_hex_string(game_config.green_color));
+        this.orange_score = new UIContainer(this, 0, this.game.config.height*0.02, "Score:   " + this.orange_total_value, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
+        this.orange_score.x = this.game.config.width - this.orange_score.text.width - this.game.config.width*0.04;
 
         
         this.green_walls_container = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.93, "Walls: " + this.green_walls_count, "#" + this.convert_hex_to_hex_string(game_config.green_color));
@@ -292,14 +292,15 @@ class GameScene extends Phaser.Scene {
             this.orange_wall_button_text.x = this.orange_wall_button.x + this.orange_wall_button.width/2 - this.orange_wall_button_text.text.width/2;
             this.orange_wall_button_text.y = this.orange_wall_button.y + this.orange_wall_button.height/2 - this.orange_wall_button_text.text.height/2;
         }
-            
+        
         let green_score_short = this.green_total_value / (this.green_total_value + this.orange_total_value) * 100;
         let orange_score_short = this.orange_total_value / (this.green_total_value + this.orange_total_value) * 100;
 
-        // round to 2 decimal places
-        this.green_score.updateText("Score: " + green_score_short.toFixed(1));
-        this.orange_score.updateText("Score: " + orange_score_short.toFixed(1));
-
+        if (green_score_short > 0 && orange_score_short > 0) {
+            // round to 2 decimal places
+            this.green_score.updateText("Score: " + green_score_short.toFixed(0) + "%");
+            this.orange_score.updateText("Score: " + orange_score_short.toFixed(0) + "%");
+        }
         
         this.green_walls_container.updateText("Walls: " + this.green_walls_count);
         this.orange_walls_container.updateText("Walls: " + this.orange_walls_count);

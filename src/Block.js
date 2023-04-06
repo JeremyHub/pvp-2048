@@ -117,13 +117,16 @@ class Block{
     update_has_movement_animations() {
         // if there are no movement animations left
         let has_movement_animations = false;
+        let total_spaces_moving = 0;
         for (let i = 0; i < this.animations.length; i++) {
             if (this.animations[i].at(0) === "move") {
                 has_movement_animations = true;
+                total_spaces_moving += this.animations[i].at(1);
                 break;
             }
         }
         this.movement_completed = !has_movement_animations;
+        this.total_movement_distance = total_spaces_moving;
     }
 
     evaluate_animations() {
@@ -154,21 +157,15 @@ class Block{
             // (that shouldn't happen because it would look odd but it's something to consider)
             // would probably want to seperate this later after animations get added
             // destroy/merge format: ["merge" or "destroy", (block that this block is merging into/being destroyed by), is_direct]
-            if (animation_step.at(1).movement_completed) {
-                this.rect.destroy()
-                this.text.destroy()
-                if (animation_step.at(0) === "destroy") this.scene.andimdying_play()
-                else if (animation_step.at(0) === "merge") this.scene.letsgoeathuu_play()
-                this.evaluate_animations()
-            } else {
-                this.animations.unshift(animation_step)
-                // add tween animation to wait for other block to finsih its animations
-                this.scene.tweens.add({
-                    targets: [this.container],
-                    duration: 10,
-                    onComplete: this.evaluate_animations.bind(this)
-                })
-            }
+            // fade out animation
+            let duration = Math.max(0, animation_step.at(1).total_movement_distance - this.total_movement_distance) * block_config.animation_speed
+            this.scene.tweens.add({
+                targets: [this.container],
+                duration: duration,
+                scale: 0,
+                ease : 'Quint.easeIn',
+                onComplete: this.evaluate_animations.bind(this)
+            })
         } else if (animation_step.at(0) === "increase value") {
             // increase value format: ["increase value", (block that this block is merging with), is_direct]
             // is_direct isn't being used at the moment since merges are always direct
