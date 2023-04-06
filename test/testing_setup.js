@@ -33,7 +33,7 @@ for (const C of [Array, String, TypedArray]) {
                             configurable: true });
 }
 
-var {GameScene, game_config, block_config, create_block} = require('../src/GameScene.js');
+var {GameScene, game_config, block_config, create_block} = require('../src/Scenes/GameScene.js');
 
 function make_scene() { // make a mock scene object
     let scene = new GameScene();
