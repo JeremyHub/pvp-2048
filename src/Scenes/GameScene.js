@@ -1,8 +1,8 @@
-var {Timer} = require('./Timer');
-var {UIContainer} = require('./UIContainer');
+var {Timer} = require('../Timer');
+var {UIContainer} = require('../UIContainer');
 
 
-var {block_config} = require('./Block');
+var {block_config} = require('../Block');
 var {
     getTotalValueOfBlocks,
     box_in,
@@ -14,8 +14,8 @@ var {
     calculations_finished,
     turn_finished,
     move_blocks,
-} = require('./game_functions');
-const { Button } = require('./Button');
+} = require('../game_functions');
+const { Button } = require('../Button');
 
 const game_config = {
     top_map_offset: 0.1, // percentage of screen height from top that the map is offset
@@ -149,8 +149,6 @@ class GameScene extends Phaser.Scene {
     
     create() {
         
-        this.is_drawing = true;
-        
         this.map = this.make.tilemap({ key: game_config.maps[game_config.selected_map] });
         let tileset_name = this.map.tilesets[0].name;
         this.tileset = this.map.addTilesetImage(tileset_name, tileset_name);
@@ -163,7 +161,7 @@ class GameScene extends Phaser.Scene {
         // set the tile size to the smallest of the two dimensions
         let map_width = this.game.config.width * (1 - game_config.left_map_offset - game_config.right_map_offset);
         let map_height = this.game.config.height * (1 - game_config.top_map_offset - game_config.bottom_map_offset);
-
+        
         game_config.tile_size = Math.min(map_width / game_config.num_cols,map_height / game_config.num_rows);
         // scale the tilemap to the correct size
         this.map.layers[0].tilemapLayer.setScale(game_config.tile_size / this.map.tileWidth, game_config.tile_size / this.map.tileHeight);
@@ -172,7 +170,7 @@ class GameScene extends Phaser.Scene {
         this.map.layers[0].tilemapLayer.y = Math.max((map_height - (game_config.tile_size*game_config.num_rows)) / 2,0) + this.game.config.height * game_config.top_map_offset;
 
         this.pointer = this.input.activePointer;
-
+        
         // Loop through the keyList and add each key to the input.keyboard using a template literal
         for (let key of this.keyList) {
         this[`${key.toLowerCase()}_key`] = this.input.keyboard.addKey(key);
@@ -193,20 +191,20 @@ class GameScene extends Phaser.Scene {
             this.orange_timer = new Timer(this, 0, this.game.config.height*0.02, game_config.starting_time, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
             this.orange_timer.x = this.game.config.width - this.orange_timer.text.width - this.game.config.width*0.3;
         }
-
+        
         // I did something a little strange with orange_score.x
         this.green_score = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.02, "Score: " + this.green_total_value, "#" + this.convert_hex_to_hex_string(game_config.green_color));
         this.orange_score = new UIContainer(this, 0, this.game.config.height*0.02, "Score: 00" + this.orange_total_value, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
         this.orange_score.x = this.game.config.width - this.orange_score.text.width - this.game.config.width*0.02;
 
-
+        
         this.green_walls_container = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.93, "Walls: " + this.green_walls_count, "#" + this.convert_hex_to_hex_string(game_config.green_color));
         this.orange_walls_container = new UIContainer(this, 0, this.game.config.height*0.93, "Walls: 00" + this.orange_walls_count, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
         this.orange_walls_container.x = this.game.config.width - this.orange_walls_container.text.width - this.game.config.width*0.01;
-
+        
         this.green_player_move = new UIContainer(this, this.game.config.width*0.3, this.game.config.height*0.5, null, "#" + this.convert_hex_to_hex_string(game_config.green_color));
         this.orange_player_move = new UIContainer(this, this.game.config.width*0.7, this.game.config.height*0.5, null, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
-
+        
         if (this.mode === "local_multiplayer") {
             this.create_green_wall_button();
             this.create_orange_wall_button();     
@@ -219,6 +217,8 @@ class GameScene extends Phaser.Scene {
                 this.create_orange_wall_button();
             }
         }
+
+        this.is_drawing = true;
     }
 
     ididnothither_play() {

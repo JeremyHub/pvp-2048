@@ -1,4 +1,4 @@
-import { game_config } from "./GameScene";
+import { game_config } from "./Scenes/GameScene";
 
 var { initializeApp } = require("firebase/app");
 var { getDatabase, ref, set, onValue, off } = require("firebase/database");
@@ -112,7 +112,10 @@ export class MutliplayerManager {
         });
     }
 
-    create_room() {
+    create_room(start_game_callback) {
+
+        this.start_game_callback = start_game_callback;
+
         if (!this.is_signed_in()) {
             return false;
         }
@@ -153,7 +156,7 @@ export class MutliplayerManager {
 
         return true;
     }
-
+    
     start_game() {
         this.start_game_callback({mode: "multiplayer", your_color: this.your_color, seed: this.joined_game_code, manager: this});
         set(ref(this.database, "games/" + this.joined_game_code + "/players/" + this.your_color + "/is_active"), true);
@@ -165,6 +168,9 @@ export class MutliplayerManager {
             return;
         }
         if (this.current_data == null) {
+            return;
+        }
+        if (!this.scene.is_drawing) {
             return;
         }
         let opp_color = this.your_color == "green" ? "orange" : "green";
@@ -195,7 +201,7 @@ export class MutliplayerManager {
 
             // update the game with the walls
             if (game_data.players[opp_color].walls.length > this.current_wall) {
-                console.log(game_data.players[opp_color].walls[this.current_wall])
+                // console.log(game_data.players[opp_color].walls[this.current_wall])
                 this.scene.make_wall([game_data.players[opp_color].walls[this.current_wall][0], game_data.players[opp_color].walls[this.current_wall][1]], opp_color);
                 this.current_wall++;
             }

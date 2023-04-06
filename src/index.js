@@ -1,7 +1,12 @@
 var Phaser = require('phaser');
-var {GameScene, game_config} = require('./GameScene');
-var {StartScene} = require('./StartScene');
-var {LossScene, WinScene, TieScene} = require('./WinLossScenes');
+var {GameScene} = require('./Scenes/GameScene');
+var {StartScene} = require('./Scenes/StartScene');
+var {LossScene, WinScene, TieScene} = require('./Scenes/WinLossScenes');
+var {SinglePlayerMenuScene} = require('./Scenes/SinglePlayerMenuScene');
+var {MultiplayerMenuScene} = require('./Scenes/MultiplayerMenuScene');
+var {MapSelectionScene} = require('./Scenes/MapSelectionScene');
+var {WaitingForPlayersScene} = require('./Scenes/WaitingForPlayersScene');
+var {OptionsScene} = require('./Scenes/OptionsScene');
 
 
 const config = {
@@ -28,4 +33,9 @@ game.scene.add('StartScene', StartScene)
 game.scene.add('WinScene', WinScene);
 game.scene.add('LossScene', LossScene);
 game.scene.add('TieScene', TieScene)
+game.scene.add('SinglePlayerMenuScene', SinglePlayerMenuScene)
+game.scene.add('MultiplayerMenuScene', MultiplayerMenuScene)
+game.scene.add('MapSelectionScene', MapSelectionScene)
+game.scene.add('WaitingForPlayersScene', WaitingForPlayersScene)
+game.scene.add('OptionsScene', OptionsScene)
 game.scene.start('StartScene');
