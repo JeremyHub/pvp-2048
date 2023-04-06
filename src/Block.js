@@ -158,7 +158,7 @@ class Block{
             // would probably want to seperate this later after animations get added
             // destroy/merge format: ["merge" or "destroy", (block that this block is merging into/being destroyed by), is_direct]
             // fade out animation
-            let duration = Math.max(0, animation_step.at(1).total_movement_distance - this.total_movement_distance) * block_config.animation_speed
+            let duration = Math.max(1, animation_step.at(1).total_movement_distance - this.total_movement_distance) * block_config.animation_speed
             this.scene.tweens.add({
                 targets: [this.container],
                 duration: duration,
