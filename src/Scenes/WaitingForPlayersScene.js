@@ -17,7 +17,7 @@ export class WaitingForPlayersScene extends StartScene {
 
         // return if not connected with the database
         if (!this.multiplayer_manager.create_room((args) => { this.scene.start("GameScene", args) })) {
-            this.scene.start("MultiplayerScene");
+            this.scene.start("MultiplayerMenuScene");
         }
 
         this.add_back_button("MultiplayerMenuScene");
