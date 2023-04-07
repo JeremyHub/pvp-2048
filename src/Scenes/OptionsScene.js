@@ -53,7 +53,7 @@ export class OptionsScene extends StartScene {
         let new_increment = parseInt(window.prompt("Enter new increment"));
         if (new_increment !== NaN) {
             game_config.time_increment = new_increment*1000;
-            this.current_increment.setText("Increment (seconds): " + game_config.time_increment/1000);
+            this.current_increment.setText("Timer Increment (seconds): " + game_config.time_increment/1000);
         } else {
             window.alert("Not a Number!");
         }
