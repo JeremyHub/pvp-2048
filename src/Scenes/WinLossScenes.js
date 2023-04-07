@@ -48,7 +48,7 @@ class WinLossScene extends Phaser.Scene {
         this.instruction_text.y = this.game.config.height / 1.5;
         this.instruction_text.setResolution(2);
 
-        this.input.on("pointerdown", () => {
+        this.input.on("pointerup", () => {
             this.scene.start("StartScene");
         });
     }
