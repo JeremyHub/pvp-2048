@@ -22,15 +22,15 @@ class StartScene extends Phaser.Scene {
 
         this.single_player_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Local", { fontSize: this.button_text_size + "px", fill: "#000" }, () => { this.scene.start("SinglePlayerMenuScene") });
         this.single_player_button.x = this.game.config.width / 2;
-        this.single_player_button.y = this.game.config.height / 2;
+        this.single_player_button.y = this.game.config.height / 1.5;
 
         this.multiplayer_buton = new Button(this, 0, 0, "button_background", "button_background_hover", "Online", { fontSize: this.button_text_size + "px", fill: "#000" }, () => { this.scene.start("MultiplayerMenuScene") });
         this.multiplayer_buton.x = this.game.config.width / 2;
-        this.multiplayer_buton.y = this.game.config.height / 1.5;
+        this.multiplayer_buton.y = this.game.config.height / 1.2;
 
-        this.tutorial_button = new Button(this, 0, 0, "button_background", "button_background_hover", "How to Play", { fontSize: this.button_text_size/2 + "px", fill: "#000" }, this.how_to_play.bind(this));
-        this.tutorial_button.x = this.tutorial_button.button.displayWidth / 2;
-        this.tutorial_button.y = this.game.config.height - this.tutorial_button.button.displayHeight/2;
+        this.tutorial_button = new Button(this, 0, 0, "button_background", "button_background_hover", "How to Play", { fontSize: this.button_text_size + "px", fill: "#000" }, this.how_to_play.bind(this));
+        this.tutorial_button.x = this.game.config.width / 2;
+        this.tutorial_button.y = this.game.config.height / 2;
 
     }
 
