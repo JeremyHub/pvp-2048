@@ -22,7 +22,7 @@ class StartScene extends Phaser.Scene {
 
         this.single_player_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Local", { fontSize: this.button_text_size + "px", fill: "#000" }, () => { this.scene.start("SinglePlayerMenuScene") });
         this.single_player_button.x = this.game.config.width / 2;
-        this.single_player_button.y = this.game.config.height / 1.5;
+        this.single_player_button.y = this.game.config.height / 1.4;
 
         this.multiplayer_buton = new Button(this, 0, 0, "button_background", "button_background_hover", "Online", { fontSize: this.button_text_size + "px", fill: "#000" }, () => { this.scene.start("MultiplayerMenuScene") });
         this.multiplayer_buton.x = this.game.config.width / 2;
