@@ -29,6 +29,16 @@ class UIContainer extends Phaser.GameObjects.Container{
 
     }
 
+    /**
+     * Changes the text size of the UIContainer.
+     * @param {*} size The new text size. Note that the size of the text is scaled off of the default value, which is scaled based on the size
+     * of the window (i.e. updateTextSize(1) will set the size to the default value, updateTextSize(0.5) will set the size to half of the
+     * default value, etc.).
+     */
+    updateTextSize(size){
+        this.text.setFontSize(this.scene.game.config.width/22 * size);
+    }
+
 }
 
 module.exports = {
