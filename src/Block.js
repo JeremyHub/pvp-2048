@@ -172,9 +172,8 @@ class Block{
                 this.scene.tweens.add({
                     targets: [this.container],
                     duration: duration,
-                    scale: 0,
-                    ease : 'Quint.easeIn',
-                    onComplete: this.evaluate_animations.bind(this)
+                    asdfasdf: 0,
+                    onComplete: this.come_together_animation.bind(this)
                 })
             }
         } else if (animation_step.at(0) === "increase value") {
@@ -202,7 +201,6 @@ class Block{
             }
         } else if (animation_step.at(0) === "bounce") {
             // bounce format: ["bounce"]
-            this.scene.ohhaimark_play()
             this.moving_direction = this.get_opposite_direction(this.moving_direction)
             let movement_diff = this.calculate_movement_diffs(1)
             this.scene.tweens.add({
@@ -220,12 +218,35 @@ class Block{
         let particle_config = new Function('return ' + this.scene.cache.text.get('block-particle'))()[0];
         particle_config.x = this.container.x;
         particle_config.y = this.container.y;
-        particle_config.maxParticles = 10;
+        particle_config.maxParticles = Math.min(20, this.text_value*1.5);
         particle_config.frequency = 200;
         particle_config.deathCallback = this.evaluate_animations.bind(this)
         particle_config.tint = this.color;
         particle_config.scale = { start: 0.7, end: 0 };
         particle_config.depth = 20;
+        this.scene.add.particles('shapes',  particle_config);
+        this.container.destroy();
+    }
+
+    come_together_animation() {
+        let rect_scale = 3;
+        let emitter_rect = new Phaser.Geom.Rectangle(this.container.x - this.size*(rect_scale/2), this.container.y - this.size*(rect_scale/2), this.size*rect_scale, this.size*rect_scale)
+        let particle_config = new Function('return ' + this.scene.cache.text.get('block-particle'))()[0];
+        particle_config.x = 0;
+        particle_config.y = 0;
+        particle_config.maxParticles = Math.min(20, this.text_value*1.5);
+        particle_config.frequency = 200;
+        particle_config.deathCallback = this.evaluate_animations.bind(this)
+        particle_config.tint = this.color;
+        particle_config.scale = { start: 0.7, end: 0 };
+        particle_config.depth = 20;
+        particle_config.emitZone= { source: emitter_rect}
+        particle_config.moveToX = this.container.x;
+        particle_config.moveToY = this.container.y;
+        particle_config.angle = {};
+        particle_config.accelerationY = 0;
+        particle_config.accelerationX = 0;
+        particle_config.gravityY = 0;
         this.scene.add.particles('shapes',  particle_config);
         this.container.destroy();
     }
