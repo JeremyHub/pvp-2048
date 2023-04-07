@@ -158,8 +158,10 @@ class GameScene extends Phaser.Scene {
             this.tileset = this.map.addTilesetImage(tileset_name, tileset_name);
             this.is_tutorial = true
             this.tutorial_step = 0;
-            this.tutorial_text = new UIContainer(this, this.game.config.width*0.1, 
-            this.game.config.height*0.05, "WASD to move. (Arrow keys for orange.)", "#ffffff");
+            this.tutorial_text = new UIContainer(this, this.game.config.width*0.1,
+                this.game.config.height*0.05,
+                "WASD (or swipe on mobile) to move.\n(Arrow keys for orange in local 2 player.)",
+                "#ffffff");
             this.has_bounced = false
         }
         else {
