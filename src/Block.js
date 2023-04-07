@@ -1,3 +1,4 @@
+var {game_config} = require('./Scenes/GameScene');
 
 const block_config = {
     animation_speed: 100,
@@ -222,7 +223,7 @@ class Block{
         particle_config.frequency = 200;
         particle_config.deathCallback = this.evaluate_animations.bind(this)
         particle_config.tint = this.color;
-        particle_config.scale = { start: 0.7, end: 0 };
+        particle_config.scale = { start: this.size/30, end: 0 };
         particle_config.depth = 20;
         this.scene.add.particles('shapes',  particle_config);
         this.container.destroy();
@@ -238,7 +239,7 @@ class Block{
         particle_config.frequency = 200;
         particle_config.deathCallback = this.evaluate_animations.bind(this)
         particle_config.tint = this.color;
-        particle_config.scale = { start: 0.7, end: 0 };
+        particle_config.scale = { start: this.size/30, end: 0 };
         particle_config.depth = 20;
         particle_config.emitZone= { source: emitter_rect}
         particle_config.moveToX = this.container.x;
