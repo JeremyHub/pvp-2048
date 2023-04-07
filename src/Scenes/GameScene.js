@@ -449,7 +449,6 @@ class GameScene extends Phaser.Scene {
         } else if(this.green_percent > this.win_percent){
             this.green_win();
             if (this.is_tutorial) {
-                console.log("map was hopefully changed")
                 game_config.selected_map = 0
             }
             return true;
@@ -988,7 +987,7 @@ class GameScene extends Phaser.Scene {
             this.update_block_totals()
             this.tutorial_step++
         } else if (this.tutorial_step === 21) {
-            this.tutorial_text.updateText("Reach 75% to win!\n(You can also win by having a total value of 100.)")
+            this.tutorial_text.updateText("Reach 75% to win!")
             this.tutorial_step++
         }
     }
