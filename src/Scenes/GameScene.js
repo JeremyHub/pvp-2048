@@ -133,13 +133,18 @@ class GameScene extends Phaser.Scene {
             this.load.tilemapTiledJSON(map, `src/assets/${map}.json`);
         }
         this.load.tilemapTiledJSON('tutorial', `src/assets/tutorial.json`);
+
         this.load.image('combinedmaps', 'src/assets/combinedmaps.png');
         this.load.image('tiles', 'src/assets/tiles.png');
+
         this.load.audio("wall_place_sound", "src/assets/wall_place_sound.mp3");
         this.load.audio("ohhaimark", "src/assets/ohhaimark.mp3");
         this.load.audio("andimdying", "src/assets/andimdying.mp3");
         this.load.audio("letsgoeathuu", "src/assets/letsgoeathuu.mp3");
         this.load.audio("ididnothither", "src/assets/ididnothither.mp3");
+
+        this.load.atlas('shapes', 'src/assets/shapes.png', 'src/assets/shapes.json');
+        this.load.text('block-particle', 'src/assets/block-particle.json');
     }
 
     convert_hex_to_hex_string(num) {

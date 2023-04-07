@@ -50,6 +50,7 @@ class Block{
     create() {
         this.rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.size, this.size, this.color);
         this.container.add(this.rect);
+        this.container.depth = 10;
         let style = { font: "bold 1px Arial", fill: "#fffff", boundsAlignH: "center", boundsAlignV: "middle" };
 
         this.text = new Phaser.GameObjects.Text(this.scene, 0, 0, this.value, style);
@@ -158,14 +159,24 @@ class Block{
             // would probably want to seperate this later after animations get added
             // destroy/merge format: ["merge" or "destroy", (block that this block is merging into/being destroyed by), is_direct]
             // fade out animation
-            let duration = Math.max(1, animation_step.at(1).total_movement_distance - this.total_movement_distance) * block_config.animation_speed
-            this.scene.tweens.add({
-                targets: [this.container],
-                duration: duration,
-                scale: 0,
-                ease : 'Quint.easeIn',
-                onComplete: this.evaluate_animations.bind(this)
-            })
+            let duration = (Math.max(animation_step.at(1).total_movement_distance, this.total_movement_distance) - this.total_movement_distance - 1) * block_config.animation_speed
+            this.container.depth = 0;
+            if (animation_step.at(0) === "destroy") {
+                this.scene.tweens.add({
+                    targets: [this.container],
+                    duration: duration,
+                    asdfasdf: 0, // this is a dummy property that is used to make the tween run for the duration
+                    onComplete: this.break_apart_animation.bind(this)
+                })
+            } else if (animation_step.at(0) === "merge") {
+                this.scene.tweens.add({
+                    targets: [this.container],
+                    duration: duration,
+                    scale: 0,
+                    ease : 'Quint.easeIn',
+                    onComplete: this.evaluate_animations.bind(this)
+                })
+            }
         } else if (animation_step.at(0) === "increase value") {
             // increase value format: ["increase value", (block that this block is merging with), is_direct]
             // is_direct isn't being used at the moment since merges are always direct
@@ -203,6 +214,20 @@ class Block{
                 onComplete: this.evaluate_animations.bind(this)
             })
         }
+    }
+
+    break_apart_animation() {
+        let particle_config = new Function('return ' + this.scene.cache.text.get('block-particle'))()[0];
+        particle_config.x = this.container.x;
+        particle_config.y = this.container.y;
+        particle_config.maxParticles = 10;
+        particle_config.frequency = 200;
+        particle_config.deathCallback = this.evaluate_animations.bind(this)
+        particle_config.tint = this.color;
+        particle_config.scale = { start: 0.7, end: 0 };
+        particle_config.depth = 20;
+        this.scene.add.particles('shapes',  particle_config);
+        this.container.destroy();
     }
 
     /**
