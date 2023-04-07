@@ -32,6 +32,10 @@ class StartScene extends Phaser.Scene {
         this.tutorial_button.x = this.game.config.width / 2;
         this.tutorial_button.y = this.game.config.height / 2;
 
+        if (this.single_player_manager !== undefined) {
+            this.single_player_manager.destroy()
+        }
+
     }
 
     add_bg_img_and_title() {
