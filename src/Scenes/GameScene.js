@@ -898,7 +898,6 @@ class GameScene extends Phaser.Scene {
     }
 
     tutorial() {
-        console.log("tutorial called for step", this.tutorial_step)
         if (this.tutorial_step === 0) {
             create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 2)
             this.tutorial_step++
