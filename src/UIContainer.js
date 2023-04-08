@@ -39,6 +39,17 @@ class UIContainer extends Phaser.GameObjects.Container{
         this.text.setFontSize(this.scene.game.config.width/22 * size);
     }
 
+    emphasize() {
+        this.scene.tweens.add({
+            targets: [this],
+            duration: 150,
+            scale: 1.25,
+            ease : 'Back.easeInOut',
+            yoyo : true,
+            repeat : 0
+        })
+    }
+
 }
 
 module.exports = {

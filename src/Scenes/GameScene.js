@@ -124,6 +124,7 @@ class GameScene extends Phaser.Scene {
         this.orange_moves = [];
 
         this.is_tutorial = false;
+        this.tutorial_move = null;
 
         return this;
     }
@@ -303,12 +304,12 @@ class GameScene extends Phaser.Scene {
         this.green_wall_bool = !this.green_wall_bool;
         if (this.green_wall_bool) {
             this.green_wall_button_text.updateText("Untoggle");
-            if (this.is_tutorial) {
+            if (this.is_tutorial && this.tutorial_step === 15) {
                 this.tutorial_text.updateText("...and clicking on spaces.")
             }
         } else {
             this.green_wall_button_text.updateText("Place Walls");
-            if (this.is_tutorial) {
+            if (this.is_tutorial && this.tutorial_step === 15) {
                 this.tutorial_text.updateText("Place walls by clicking on the \"place walls\"\nbutton below...")
             }
         }
@@ -827,6 +828,10 @@ class GameScene extends Phaser.Scene {
                     if (this.tutorial_step === 12) {
                         this.orange_move = "right"
                     } else if (this.tutorial_step === 18) {
+                        let seen_moves = (this.tutorial_move !== null)
+                        if (seen_moves) {
+                            this.green_move = this.tutorial_move
+                        }
                         if (this.green_move === 'up') {
                             this.orange_move = "left"
                         }
@@ -839,7 +844,17 @@ class GameScene extends Phaser.Scene {
                         else if (this.green_move === 'right') {
                             this.orange_move = "down"
                         }
-                        this.tutorial()
+                        if (!seen_moves) {
+                            this.move_info = new UIContainer(this, this.game.config.width*0.3, this.game.config.height*0.82, 
+                            ("Your move: " + this.green_move + "\nOrange's move: " + this.orange_move), "#ffffff");
+                            this.move_info.updateTextSize(0.9)
+                            this.tutorial_move = this.green_move
+                            this.green_move = null
+                            return
+                        } else {
+                            this.tutorial()
+                            this.move_info.destroy()
+                        }
                     } else if (this.tutorial_step === 21) {
                         if (this.green_move === 'up') {
                             this.orange_move = "right"
@@ -930,7 +945,7 @@ class GameScene extends Phaser.Scene {
             for (let block of this.all_block_lists) {
                 if (block.value === 8) {
                     this.tutorial_text.updateTextSize(0.8)
-                    this.tutorial_text.updateText("When two of your blocks with different\nvalues collide, they bounce off each other.")
+                    this.tutorial_text.updateText("When two of your blocks with different\nvalues collide, they stop each other from moving.")
                     if (block.tile_x === 1 && block.tile_y === 1) {
                         create_block(this, this.green_blocks, 2, 2, game_config.green_color, 'green', game_config, 4)
                     } else {
@@ -943,7 +958,7 @@ class GameScene extends Phaser.Scene {
             this.tutorial_step++
             if (this.tutorial_step === 12) {
                 this.tutorial_text.updateText("When two blocks from different teams collide,\nthe block with the lower number is destroyed.\n",
-                "(same value blocks from different teams also bounce off each other)")
+                "(same value blocks from different teams also stop each other from moving.)")
                 this.remove_all_blocks()
                 create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 4)
                 create_block(this, this.orange_blocks, 3, 3, game_config.orange_color, 'orange', game_config, 2)
@@ -952,19 +967,22 @@ class GameScene extends Phaser.Scene {
             if (this.all_block_lists.length === 1) {
                 this.tutorial_text.updateText("Every turn, you gain a wall to place.")
                 this.green_walls_count = 0
+                this.update_ui_elements()
                 this.green_walls_container.x = this.game.config.width*0.01
+                this.green_walls_container.pulse()
                 this.tutorial_step++
             }
         } else if (this.tutorial_step < 15) {
             this.tutorial_step++
             if (this.tutorial_step === 15) {
-                this.tutorial_text.updateText("Place walls by clicking on the \"place walls\"\nbutton below...")
+                this.tutorial_text.updateText("Place temporary walls by clicking on the \"place walls\"\nbutton below...")
                 this.green_wall_button.x = this.game.config.width*0.35
             }
         } else if (this.tutorial_step === 16) {
-            this.tutorial_text.updateText("Placed walls are removed after each turn.") 
+            this.tutorial_text.updateText("Temporary walls are removed after each turn.") 
             this.green_walls_container.x = 1000000
             this.green_wall_button.x = 1000000
+            this.green_wall_bool = false
             this.tutorial_step++
         } else if (this.tutorial_step === 17) {
             this.tutorial_text.updateText("Each turn, both players choose\na direction to move...")
