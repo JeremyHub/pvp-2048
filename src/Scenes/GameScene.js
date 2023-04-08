@@ -100,7 +100,7 @@ class GameScene extends Phaser.Scene {
 
         this.orange_percent = 0;
         this.green_percent = 0;
-        this.win_percent = 75;
+        this.win_percent = 80;
 
 
 
@@ -125,6 +125,9 @@ class GameScene extends Phaser.Scene {
 
         this.is_tutorial = false;
         this.tutorial_move = null;
+
+        this.game_has_started = false;
+        this.ending_animation_playing = false;
 
         return this;
     }
@@ -363,36 +366,123 @@ class GameScene extends Phaser.Scene {
     }
 
     orange_win() {
-        if (this.mode == "single") {    
-            this.scene.start('LossScene', {player: "you"});
-        } else if (this.mode == "multiplayer") {
-            if (this.your_color == "orange") {
-                this.scene.start('WinScene', {player: "you"});
-            } else {
-                this.scene.start('LossScene', {player: "you"});
-            }
-        } else if (this.mode == "local_multiplayer") {
-            this.scene.start('WinScene', {player: 'Orange'});
-        }
+        if (!this.ending_animation_playing) this.ending_animation_part_1(this.orange_blocks, this.green_blocks, "orange");
     }
 
     green_win() {
-        if (this.mode == "single") {
-            this.scene.start('WinScene', {player: "you"});
-        } else if (this.mode == "multiplayer") {
-            if (this.your_color == "green") {
+        if (!this.ending_animation_playing) this.ending_animation_part_1(this.green_blocks, this.orange_blocks, "green");
+    }
+
+    start_win_loss_scene(winner) {
+        if (winner == "green") {
+            if (this.mode == "single") {
                 this.scene.start('WinScene', {player: "you"});
-            } else {
-                this.scene.start('LossScene', {player: "you"});
+            } else if (this.mode == "multiplayer") {
+                if (this.your_color == "green") {
+                    this.scene.start('WinScene', {player: "you"});
+                } else {
+                    this.scene.start('LossScene', {player: "you"});
+                }
+            } else if (this.mode == "local_multiplayer") {
+                this.scene.start('WinScene', {player: 'Green'});
             }
-        } else if (this.mode == "local_multiplayer") {
-            this.scene.start('WinScene', {player: 'Green'});
+        } else if (winner == "orange") {
+            if (this.mode == "single") {    
+                this.scene.start('LossScene', {player: "you"});
+            } else if (this.mode == "multiplayer") {
+                if (this.your_color == "orange") {
+                    this.scene.start('WinScene', {player: "you"});
+                } else {
+                    this.scene.start('LossScene', {player: "you"});
+                }
+            } else if (this.mode == "local_multiplayer") {
+                this.scene.start('WinScene', {player: 'Orange'});
+            }
         }
     }
 
     tie() {
         this.scene.start('TieScene');
     }
+
+    ending_animation_part_1(winner_blocks, loser_blocks, winner) {
+        this.ending_animation_playing = true;
+
+        this.green_blocks = [];
+        this.orange_blocks = [];
+        
+        let duration = 1000;
+
+        for (let i = 0; i < winner_blocks.length; i++) {
+            this.tweens.add({
+                targets: [winner_blocks[i].container],
+                duration: duration,
+                angle: 720,
+                ease : 'Linear',
+            })
+        }
+
+        for (let i = 0; i < loser_blocks.length; i++) {
+            loser_blocks[i].break_apart_animation();
+        }
+
+        this.time.addEvent({
+            delay: duration,
+            callback: this.ending_animation_part_2.bind(this, winner_blocks, winner),
+            args: [winner],
+            loop: false
+        });
+    }
+
+    ending_animation_part_2(winner_blocks, winner) {
+        let duration = 2000;
+
+        // all go twords the center of the screen
+        for (let i = 0; i < winner_blocks.length; i++) {
+            this.tweens.add({
+                targets: [winner_blocks[i].container],
+                duration: duration,
+                x: this.cameras.main.centerX,
+                y: this.cameras.main.centerY,
+                ease : 'Back.easeIn',
+            })
+        }
+        
+        this.time.addEvent({
+            delay: duration,
+            callback: this.ending_animation_part_3.bind(this, winner_blocks, winner),
+            args: [winner],
+            loop: false
+        });
+    }
+
+    ending_animation_part_3(winner_blocks, winner) {
+        let duration = 1500;
+
+        // total the blocks, delete all of them, and then create a new block with the total value which grows in size
+        let total_value = 0;
+        for (let i = 0; i < winner_blocks.length; i++) {
+            total_value += winner_blocks[i].value;
+            winner_blocks[i].container.destroy();
+        }
+
+        let new_block = create_block(this, [], 0, 0, game_config[winner + "_color"], winner, game_config, total_value)
+        new_block.container.x = this.cameras.main.centerX;
+        new_block.container.y = this.cameras.main.centerY;
+        new_block.update();
+        new_block.container.setScale(0.1);
+        new_block.container.setDepth(1);
+        this.tweens.add({
+            targets: [new_block.container],
+            duration: duration,
+            scaleX: 10,
+            scaleY: 10,
+            angle: 360,
+            ease : 'Linear',
+            onComplete: this.start_win_loss_scene.bind(this, winner)
+        })
+    }
+
 
     check_timer_wins() {
         if (this.green_timer.time <= 0 && this.orange_timer.time <= 0) {
@@ -516,12 +606,9 @@ class GameScene extends Phaser.Scene {
         this.map.putTileAt(game_config.wall_id[0], x, y);
         this[team + "_walls"].push(this.map.getTileAt(x, y));
         this[team + "_walls_count"] --;
-        console.log(this.mode)
         if (this.mode === "multiplayer") {
-            console.log("sending wall1")
             if (this.your_color === team) {
                 this.manager.update_with_wall(x, y);
-                console.log("sending wall2");
             }
         }
         if (this.is_tutorial) {
@@ -641,7 +728,6 @@ class GameScene extends Phaser.Scene {
                             let index = this.map.getTileAtWorldXY(x, y).index;
                             if (!game_config.wall_id.includes(index) && !game_config.green_id.includes(index) && !game_config.orange_id.includes(index)) {
                                 if (this.mode === "multiplayer") {
-                                    console.log("sending wall3", team, this.your_color)
                                     if (this.your_color !== team) {
                                         continue;
                                     }
@@ -681,7 +767,7 @@ class GameScene extends Phaser.Scene {
     }
 
     check_block_spawning() {
-        if (this.is_drawing) {
+        if (this.is_drawing && !this.ending_animation_playing) {
             spawnblocks(this, game_config.green_id, 'green', this.green_blocks, game_config, this.seed + this.total_moves);
             spawnblocks(this, game_config.orange_id, 'orange', this.orange_blocks, game_config, this.seed + this.total_moves);
         }
@@ -800,16 +886,15 @@ class GameScene extends Phaser.Scene {
         
         this.update_all_blocks_list();
         
-        // this.check_win_loss();
-
-        this.new_win_loss();
-        
-        // this is just to spawn blocks in at the start of the game (it shouldnt do anything else)
-        if (this.all_block_lists.length === 0) {
+        // this is just to spawn blocks in at the start of the game
+        if (!this.game_has_started) {
             this.check_block_spawning();
+            this.game_has_started = true;
         }
         
         this.update_all_blocks();
+
+        this.new_win_loss();
         
         this.update_is_any_block_moving();
         
@@ -879,11 +964,11 @@ class GameScene extends Phaser.Scene {
                 this.handle_getting_rid_of_player_placed_walls();
                 
             }
-
+            
             this.check_unpause_timers();
         }
     }
-
+    
     check_unpause_timers() {
         if (this.mode === 'multiplayer') {
             if (this.green_move === null && this.orange_move === null) {
