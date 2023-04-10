@@ -28,9 +28,11 @@ const game_config = {
     padding: 3,
     orange_color: 0xf27507,
     green_color: 0x00ff00,
-    wall_id: [6,262,268],
+    wall_id: [6,262,268, 62, 132],
     green_id: [57, 1, 2, 3, 17, 18, 19, 33, 34, 35, 321],   // spawning area
     orange_id: [127, 7, 8, 9, 23, 24,25, 39, 40, 41], // spawning area
+    green_wall: 62,
+    orange_wall: 132,
     empty_space_id: [15,178],
     maps: [
         'libraryfire',
@@ -603,7 +605,12 @@ class GameScene extends Phaser.Scene {
 
     make_wall([x, y], team) {
         this.wall_place_sound_play();
-        this.map.putTileAt(game_config.wall_id[0], x, y);
+        if(team === "green"){
+            this.map.putTileAt(game_config.green_wall, x, y);
+        } else if(team === "orange"){
+            this.map.putTileAt(game_config.orange_wall, x, y);
+        }
+        
         this[team + "_walls"].push(this.map.getTileAt(x, y));
         this[team + "_walls_count"] --;
         if (this.mode === "multiplayer") {
@@ -754,12 +761,12 @@ class GameScene extends Phaser.Scene {
             }
 
             for( let i = 0; i < this.green_walls.length; i++){
-                if(this.green_walls[i].index === game_config.wall_id[0]){
+                if(this.green_walls[i].index === game_config.green_wall){
                     this.green_walls[i].index = game_config.empty_space_id[0];
                 }
             }
             for( let i = 0; i < this.orange_walls.length; i++){
-                if(this.orange_walls[i].index === game_config.wall_id[0]){
+                if(this.orange_walls[i].index === game_config.orange_wall){
                     this.orange_walls[i].index = game_config.empty_space_id[0];
                 }
             }
