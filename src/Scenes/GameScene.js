@@ -524,12 +524,14 @@ class GameScene extends Phaser.Scene {
             this.tie();
             return true;
         } else if(this.green_percent > this.win_percent){
+            this.update_ui_elements()
             this.green_win();
             if (this.is_tutorial) {
                 game_config.selected_map = 0
             }
             return true;
         } else if(this.orange_percent > this.win_percent){
+            this.update_ui_elements()
             this.orange_win();
             return true;
         }
@@ -596,8 +598,12 @@ class GameScene extends Phaser.Scene {
             }
         }
         if (this.is_tutorial && this.tutorial_step === 12) {
-            this.tutorial_step++
-            this.tutorial_text.updateText("You can place multiple walls in one turn.") 
+            if (this.tutorial_step === 12) {
+                this.tutorial_step++
+                this.tutorial_text.updateText("You can place multiple walls in one turn.") 
+            } else if (this.tutorial_step === 19) {
+                this.tutorial_step++
+            }
         }
     }
 
@@ -1042,7 +1048,9 @@ class GameScene extends Phaser.Scene {
             this.tutorial_text.updateText("Temporary walls are removed after each turn.") 
             this.tutorial_step++
         } else if (this.tutorial_step < 20) {
-            this.tutorial_step++
+            if (this.tutorial_step < 19) {
+                this.tutorial_step++
+            }
             if (this.tutorial_step === 15) {
                 this.tutorial_text.updateText("You have a limited number of walls to place.\nYou gain one wall every turn.")
                 this.green_walls_count = 0
