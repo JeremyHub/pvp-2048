@@ -160,6 +160,7 @@ class Block{
             // would probably want to seperate this later after animations get added
             // destroy/merge format: ["merge" or "destroy", (block that this block is merging into/being destroyed by), is_direct]
             // fade out animation
+            this.movement_completed = true;
             let duration = (Math.max(animation_step.at(1).total_movement_distance, this.total_movement_distance) - this.total_movement_distance - 1) * block_config.animation_speed
             this.container.depth = 0;
             if (animation_step.at(0) === "destroy") {
@@ -180,11 +181,12 @@ class Block{
         } else if (animation_step.at(0) === "increase value") {
             // increase value format: ["increase value", (block that this block is merging with), is_direct]
             // is_direct isn't being used at the moment since merges are always direct
+            this.movement_completed = true;
             if (animation_step.at(1).movement_completed) {
                 this.text_value *= 2
                 this.scene.tweens.add({
                     targets: [this.container],
-                    duration: 200,
+                    duration: 400,
                     scale: Math.min(1 + this.text_value/15, 2),
                     ease : 'Back.easeInOut',
                     yoyo : true,
@@ -201,6 +203,7 @@ class Block{
                 })
             }
         } else if (animation_step.at(0) === "bounce") {
+            this.movement_completed = true;
             // bounce format: ["bounce"]
             this.moving_direction = this.get_opposite_direction(this.moving_direction)
             let movement_diff = this.calculate_movement_diffs(1)
