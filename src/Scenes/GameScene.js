@@ -427,17 +427,15 @@ class GameScene extends Phaser.Scene {
             this.tweens.add({
                 targets: [winner_blocks[i].container],
                 duration: duration,
-                angle: 720,
+                angle: 1200,
                 ease : 'Linear',
             })
         }
 
-        this.ending_animation_breaking_blocks(winner_blocks, loser_blocks, winner);
+        this.ending_animation_breaking_blocks(winner_blocks, loser_blocks, winner, duration / loser_blocks.length);
     }
 
-    ending_animation_breaking_blocks(winner_blocks, loser_blocks, winner) {
-
-        let duration = 1000;
+    ending_animation_breaking_blocks(winner_blocks, loser_blocks, winner, duration) {
 
         if (loser_blocks.length == 0) {
             this.ending_animation_part_2(winner_blocks, winner);
@@ -449,7 +447,7 @@ class GameScene extends Phaser.Scene {
 
         this.time.addEvent({
             delay: duration,
-            callback: this.ending_animation_breaking_blocks.bind(this, winner_blocks, loser_blocks, winner),
+            callback: this.ending_animation_breaking_blocks.bind(this, winner_blocks, loser_blocks, winner, duration * 0.8),
             loop: false
         });
     }
