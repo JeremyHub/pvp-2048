@@ -366,15 +366,19 @@ class GameScene extends Phaser.Scene {
         this.green_total_value = getTotalValueOfBlocks(this.green_blocks);
         this.orange_total_value = getTotalValueOfBlocks(this.orange_blocks);
     }
-
+    
     orange_win() {
         if (!this.ending_animation_playing) this.ending_animation_part_1(this.orange_blocks, this.green_blocks, "orange");
     }
-
+    
     green_win() {
         if (!this.ending_animation_playing) this.ending_animation_part_1(this.green_blocks, this.orange_blocks, "green");
     }
-
+    
+    tie() {
+        if (!this.ending_animation_playing) this.scene.start('TieScene');
+    }
+    
     start_win_loss_scene(winner) {
         if (winner == "green") {
             if (this.mode == "single") {
@@ -401,10 +405,6 @@ class GameScene extends Phaser.Scene {
                 this.scene.start('WinScene', {player: 'Orange'});
             }
         }
-    }
-
-    tie() {
-        this.scene.start('TieScene');
     }
 
     ending_animation_part_1(winner_blocks, loser_blocks, winner) {
@@ -494,29 +494,6 @@ class GameScene extends Phaser.Scene {
             this.orange_win();
             return true;
         } else if (this.orange_timer.time <= 0) {
-            this.green_win();
-            return true;
-        }
-        return false;
-    }
-
-    check_win_loss() {
-
-        // this is a special case for the map Classic2048
-        if (game_config.maps[game_config.selected_map] === "Classic2048"){
-            return;
-        }
-
-        if (this.check_timer_wins()) {
-            return true;
-        }
-        if(this.orange_total_value >= this.win_value && this.green_total_value >= this.win_value){
-            this.tie();
-            return true;
-        } else if(this.orange_total_value >= this.win_value){
-            this.orange_win();
-            return true;
-        } else if(this.green_total_value >= this.win_value){
             this.green_win();
             return true;
         }
