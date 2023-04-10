@@ -8,6 +8,7 @@ class UIContainer extends Phaser.GameObjects.Container{
         let text_size = (textSize == null) ? this.scene.game.config.width/22 : textSize;
         let style = { font: "bold " + text_size + "px Arial", fill: color, boundsAlignH: "center", boundsAlignV: "middle" };
         this.text = new Phaser.GameObjects.Text(this.scene, 0, 0, score, style);
+        this.previous_emphasis = null;
         this.add(this.text);
         this.create();
 
@@ -40,14 +41,16 @@ class UIContainer extends Phaser.GameObjects.Container{
     }
 
     emphasize() {
-        this.scene.tweens.add({
-            targets: [this],
-            duration: 150,
-            scale: 1.25,
-            ease : 'Back.easeInOut',
-            yoyo : true,
-            repeat : 0
-        })
+        if (this.previous_emphasis === null || (this.previous_emphasis.duration < this.previous_emphasis.elapsed)) {
+            this.previous_emphasis = this.scene.tweens.add({
+                targets: [this],
+                duration: 150,
+                scale: 1.25,
+                ease : 'Back.easeInOut',
+                yoyo : true,
+                repeat : 0
+            })
+        }
     }
 
 }
