@@ -1,5 +1,6 @@
 var {Timer} = require('../Timer');
 var {UIContainer} = require('../UIContainer');
+var {ScoreBar} = require('../ScoreBar');
 
 
 var {block_config} = require('../Block');
@@ -259,6 +260,8 @@ class GameScene extends Phaser.Scene {
             }
         }
 
+
+        this.scorebar = new ScoreBar(this, this.game.config.width*0.05, this.game.config.height*0.2); 
         this.is_drawing = true;
     }
 
@@ -360,7 +363,12 @@ class GameScene extends Phaser.Scene {
             this.orange_player_move.updateText(this.orange_move);
         }
 
+        this.scorebar.update(this.green_percent);
+
+
     }
+
+   
 
     update_block_totals() {
         this.green_total_value = getTotalValueOfBlocks(this.green_blocks);
