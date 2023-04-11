@@ -12,10 +12,11 @@ class ScoreBar extends Phaser.GameObjects.Container{
       
 
     create(){
-        this.green_rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.scene.game.config.width * 0.04, 0, 0x00ff00);
-        this.orange_rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.scene.game.config.width * 0.04, 0, 0xf27507);
+        this.green_rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.scene.game.config.width * 0.06, 0, 0x00ff00);
+        this.orange_rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.scene.game.config.width * 0.06, 0, 0xf27507);
                 
     
+        
         this.add(this.orange_rect);
         this.add(this.green_rect);
         
