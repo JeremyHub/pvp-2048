@@ -24,17 +24,12 @@ class ScoreBar extends Phaser.GameObjects.Container{
 
     
     update(greenscore) {
+        if (isNaN(greenscore)) greenscore = 50;
         this.green_rect.height = (greenscore/100) * this.maxScoreHeight;
         this.orange_rect.height = this.maxScoreHeight;
         this.orange_rect.y = 0;
         this.green_rect.y = 0;
     }
-
-
-   
-
-
-
     
 }
 
