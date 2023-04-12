@@ -1009,6 +1009,7 @@ class GameScene extends Phaser.Scene {
 
     tutorial() {
         if (this.tutorial_step === 0) {
+            this.scorebar.destroy()
             create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 2)
             this.tutorial_step++
         } else if (this.tutorial_step < 5) {
@@ -1063,7 +1064,7 @@ class GameScene extends Phaser.Scene {
             this.tutorial_text.updateText("Temporary walls are removed after each turn.") 
             this.tutorial_step++
         } else if (this.tutorial_step < 20) {
-            if (this.tutorial_step < 19) {
+            if (this.tutorial_step < 20) {
                 this.tutorial_step++
             }
             if (this.tutorial_step === 15) {
@@ -1103,7 +1104,8 @@ class GameScene extends Phaser.Scene {
             this.update_block_totals()
             this.tutorial_step++
         } else if (this.tutorial_step === 24) {
-            this.tutorial_text.updateText("Reach more than 80% to win!")
+            this.scorebar = new ScoreBar(this, this.game.config.width*0.07, this.game.config.height*0.2);
+            this.tutorial_text.updateText("Reach more than 80% to win!\n(represented by the bar to the left)")
             this.tutorial_step++
         }
     }
