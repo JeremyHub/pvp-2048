@@ -103,7 +103,7 @@ class GameScene extends Phaser.Scene {
 
         this.orange_percent = 0;
         this.green_percent = 0;
-        this.win_percent = 80;
+        this.win_percent = 75;
 
 
 
@@ -544,7 +544,7 @@ class GameScene extends Phaser.Scene {
         this.green_percent = this.green_percent * 100;
         this.orange_percent = this.orange_percent * 100;
 
-        if(this.green_percent > this.win_percent && this.orange_percent > this.win_percent){
+        if(this.green_percent >= this.win_percent && this.orange_percent >= this.win_percent){
             this.tie();
             return true;
         } else if(this.green_percent > this.win_percent){
