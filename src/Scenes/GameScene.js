@@ -191,8 +191,6 @@ class GameScene extends Phaser.Scene {
         // set the tile size to the smallest of the two dimensions
         let map_width = this.game.config.width * (1 - game_config.left_map_offset - game_config.right_map_offset);
         let map_height = this.game.config.height * (1 - game_config.top_map_offset - game_config.bottom_map_offset);
-        console.log(game_config.left_map_offset, game_config.right_map_offset)
-        console.log(map_width, map_height, game_config.num_cols, game_config.num_rows)
         
         game_config.tile_size = Math.min(map_width / game_config.num_cols,map_height / game_config.num_rows);
         // scale the tilemap to the correct size

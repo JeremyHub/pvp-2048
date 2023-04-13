@@ -54,10 +54,16 @@ class Timer extends Phaser.GameObjects.Container{
         this.oldtime = null; 
         this.isticking = false; 
         this.has_been_paused = true;
+        if (this.color === "#00ff00") {
+            this.text.setColor("#006f02");
+        } else {
+            this.text.setColor("#954600");
+        }        
     }
 
     unpause(){
         this.isticking = true;
+        this.text.setColor(this.color);
     }
 
 
