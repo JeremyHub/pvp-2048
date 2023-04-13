@@ -191,6 +191,8 @@ class GameScene extends Phaser.Scene {
         // set the tile size to the smallest of the two dimensions
         let map_width = this.game.config.width * (1 - game_config.left_map_offset - game_config.right_map_offset);
         let map_height = this.game.config.height * (1 - game_config.top_map_offset - game_config.bottom_map_offset);
+        console.log(game_config.left_map_offset, game_config.right_map_offset)
+        console.log(map_width, map_height, game_config.num_cols, game_config.num_rows)
         
         game_config.tile_size = Math.min(map_width / game_config.num_cols,map_height / game_config.num_rows);
         // scale the tilemap to the correct size
@@ -356,6 +358,13 @@ class GameScene extends Phaser.Scene {
         }
         
         this.green_walls_container.updateText("Walls: " + this.green_walls_count);
+        if (this.is_tutorial && this.green_walls_count === 99 
+            && this.tutorial_step > 14 && this.tutorial_step < 20 && this.max_wall_tutorial == undefined) {
+            this.max_wall_tutorial = new UIContainer(this, this.game.config.width*0.02, this.game.config.height*0.85, 
+            "You can't have more\nthan 99 walls!", "#ffffff")
+            this.max_wall_tutorial.updateTextSize(0.5)
+            this.max_wall_tutorial.emphasize()
+        }
         this.orange_walls_container.updateText("Walls: " + this.orange_walls_count);
 
         if ((this.green_move !== null && this.orange_move !== null) || (this.green_move === null && this.orange_move === null)) {
@@ -543,6 +552,10 @@ class GameScene extends Phaser.Scene {
             this.green_win();
             if (this.is_tutorial) {
                 game_config.selected_map = 0
+                game_config.top_map_offset = 0.1
+                game_config.bottom_map_offset = 0.1
+                game_config.left_map_offset = 0.1
+                game_config.right_map_offset = 0.1
             }
             return true;
         } else if(this.orange_percent > this.win_percent){
@@ -612,7 +625,7 @@ class GameScene extends Phaser.Scene {
                 this.manager.update_with_wall(x, y);
             }
         }
-        if (this.is_tutorial && this.tutorial_step === 12) {
+        if (this.is_tutorial) {
             if (this.tutorial_step === 12) {
                 this.tutorial_step++
                 this.tutorial_text.updateText("You can place multiple walls in one turn.") 
@@ -1080,6 +1093,9 @@ class GameScene extends Phaser.Scene {
             this.green_wall_button.x = 1000000
             this.green_wall_bool = false
             this.remove_all_blocks()
+            if (this.max_wall_tutorial !== undefined) {
+                this.max_wall_tutorial.destroy()
+            }
             create_block(this, this.green_blocks, 2, 2, game_config.green_color, 'green', game_config, 4)
             create_block(this, this.orange_blocks, 2, 1, game_config.orange_color, 'orange', game_config, 2)
             create_block(this, this.orange_blocks, 1, 2, game_config.orange_color, 'orange', game_config, 2)
