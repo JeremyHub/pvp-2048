@@ -263,7 +263,7 @@ class GameScene extends Phaser.Scene {
         }
 
 
-        this.scorebar = new ScoreBar(this, this.game.config.width*0.07, this.game.config.height*0.2); 
+        this.scorebar = new ScoreBar(this, this.game.config.width*0.27, this.game.config.height*0.053); 
         this.is_drawing = true;
     }
 
