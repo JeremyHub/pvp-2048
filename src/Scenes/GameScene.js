@@ -318,7 +318,7 @@ class GameScene extends Phaser.Scene {
         } else {
             this.green_wall_button_text.updateText("Place Walls");
             if (this.is_tutorial && this.tutorial_step === 12) {
-                this.tutorial_text.updateText("Place walls by clicking on the \"place walls\"\nbutton below...")
+                this.tutorial_text.updateText("Place temporary walls by clicking on the \"place walls\"\nbutton below...")
             }
         }
     }
@@ -1020,7 +1020,7 @@ class GameScene extends Phaser.Scene {
 
     tutorial() {
         if (this.tutorial_step === 0) {
-            this.scorebar.destroy()
+            this.scorebar.x = 1000000
             create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 2)
             this.tutorial_step++
         } else if (this.tutorial_step < 5) {
@@ -1106,11 +1106,12 @@ class GameScene extends Phaser.Scene {
         } else if (this.tutorial_step === 22) {
             this.tutorial_step++
         } else if (this.tutorial_step === 23) {
+            this.scorebar.x = this.game.config.width*0.27
             this.tutorial_text.updateText("Each player's score is based on the combined value\nof their blocks compared to their opponent.")
             this.tutorial_text.y = this.game.config.height * 0.8
             this.tutorial_text.x = this.game.config.width * 0.05
-            this.orange_score.x = this.game.config.width - this.orange_score.text.width - this.game.config.width*0.04
-            this.green_score.x = this.game.config.width*0.01
+            this.orange_score.x = this.game.config.width - this.orange_score.text.width - this.game.config.width*0.02
+            this.green_score.x = this.game.config.width*0.005
             this.remove_all_blocks()
             create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 64)
             create_block(this, this.orange_blocks, 3, 2, game_config.orange_color, 'orange', game_config, 32)
@@ -1118,8 +1119,7 @@ class GameScene extends Phaser.Scene {
             this.update_block_totals()
             this.tutorial_step++
         } else if (this.tutorial_step === 24) {
-            this.scorebar = new ScoreBar(this, this.game.config.width*0.07, this.game.config.height*0.2);
-            this.tutorial_text.updateText("Reach more than 80% to win!\n(represented by the bar to the left)")
+            this.tutorial_text.updateText("Reach " + this.win_percent + "% to win!")
             this.tutorial_step++
         }
     }
