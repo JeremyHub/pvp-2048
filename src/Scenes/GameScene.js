@@ -37,9 +37,11 @@ const game_config = {
     empty_space_id: [15,178],
     maps: [
         'libraryfire',
+        'Classic2048',
         'basic',
         'claust',
-        "Classic2048"
+        'clover'
+        
     ],
     selected_map: 0, // default map
     starting_time: 120000, // starting time in ms
