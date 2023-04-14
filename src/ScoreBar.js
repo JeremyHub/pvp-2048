@@ -31,7 +31,7 @@ class ScoreBar extends Phaser.GameObjects.Container{
             this.scene.game.config.width * 0.003, this.scene.game.config.width * 0.04, 0xb9ff9f)
         this.orange_win_percent_line = new Phaser.GameObjects.Rectangle(this.scene, this.maxScoreHeight - this.near_win_rect.width, 0, 
             this.scene.game.config.width * 0.003, this.scene.game.config.width * 0.04, 0xffd180)
-        this.win_percentage_text = new UIContainer(this.scene, this.maxScoreHeight * 0.25, this.scene.game.config.width * -0.02, 
+        this.win_percentage_text = new UIContainer(this.scene, this.maxScoreHeight * 0.2, this.scene.game.config.width * -0.02, 
             "Reach " + this.win_percentage + "% to win!", "#000000")
         this.win_percentage_text.updateTextSize(0.7)
         
@@ -55,7 +55,6 @@ class ScoreBar extends Phaser.GameObjects.Container{
     }
 
     update_near_win(greenscore) {
-        console.log(this.near_win_rect.alpha, this.near_win_animation_speed, greenscore)
         if (!this.win_percentage_text_destroyed && greenscore !== 50 && greenscore !== 0) {
             this.win_percentage_text.destroy()
             this.win_percentage_text_destroyed = true
@@ -65,13 +64,15 @@ class ScoreBar extends Phaser.GameObjects.Container{
             return
         }
         if (greenscore >= this.win_percentage - 10) {
-            this.near_win_rect.x = this.maxScoreHeight - this.near_win_rect.width
+            this.near_win_rect.width = (this.maxScoreHeight *  ((this.win_percentage - greenscore) / 100));
+            this.near_win_rect.x = this.orange_win_percent_line.x - this.near_win_rect.width
             this.near_win_rect.alpha += this.near_win_animation_speed
             if (this.near_win_rect.alpha === 0 || this.near_win_rect.alpha >= 0.8) {
                 this.near_win_animation_speed *= -1
             }
         } else if (greenscore <= (100 - this.win_percentage) + 10) {
-            this.near_win_rect.x = 0
+            this.near_win_rect.width = (this.maxScoreHeight *  ((this.win_percentage - (100 - greenscore)) / 100));
+            this.near_win_rect.x = this.green_win_percent_line.x
             this.near_win_rect.alpha += this.near_win_animation_speed
             if (this.near_win_rect.alpha === 0 || this.near_win_rect.alpha >= 0.8) {
                 this.near_win_animation_speed *= -1
