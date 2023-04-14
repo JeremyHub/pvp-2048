@@ -38,7 +38,6 @@ const game_config = {
     maps: [
         'libraryfire',
         'basic',
-        'halls',
         'claust',
         "Classic2048"
     ],
