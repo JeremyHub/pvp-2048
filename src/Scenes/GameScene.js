@@ -217,9 +217,9 @@ class GameScene extends Phaser.Scene {
             this.green_timer = dummy;
             this.orange_timer = dummy;
         } else {
-            this.green_timer = new Timer(this, this.game.config.width*0.3, this.game.config.height*0.02, game_config.starting_time, "#" + this.convert_hex_to_hex_string(game_config.green_color));
-            this.orange_timer = new Timer(this, 0, this.game.config.height*0.02, game_config.starting_time, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
-            this.orange_timer.x = this.game.config.width - this.orange_timer.text.width - this.game.config.width*0.3;
+            this.green_timer = new Timer(this, this.game.config.width*0.01, this.game.config.height*0.5, game_config.starting_time, "#" + this.convert_hex_to_hex_string(game_config.green_color));
+            this.orange_timer = new Timer(this, 0, this.game.config.height*0.5, game_config.starting_time, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
+            this.orange_timer.x = this.game.config.width - this.orange_timer.text.width - 5;
         }
         
         // I did something a little strange with orange_score.x
@@ -240,8 +240,8 @@ class GameScene extends Phaser.Scene {
             this.green_walls_container.x = 1000000
         }
 
-        this.green_player_move = new UIContainer(this, this.game.config.width*0.3, this.game.config.height*0.5, null, "#" + this.convert_hex_to_hex_string(game_config.green_color));
-        this.orange_player_move = new UIContainer(this, this.game.config.width*0.7, this.game.config.height*0.5, null, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
+        this.green_player_move = new UIContainer(this, this.game.config.width*0.04, this.game.config.height*0.6, null, "#" + this.convert_hex_to_hex_string(game_config.green_color));
+        this.orange_player_move = new UIContainer(this, this.orange_timer.x + 30, this.game.config.height*0.6, null, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
         if (this.is_tutorial) {
             this.green_player_move.x = 1000000
             this.orange_player_move.x = 1000000
