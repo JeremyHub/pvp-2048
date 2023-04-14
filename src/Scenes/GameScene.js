@@ -1118,7 +1118,6 @@ class GameScene extends Phaser.Scene {
             create_block(this, this.orange_blocks, 3, 2, game_config.orange_color, 'orange', game_config, 32)
             create_block(this, this.orange_blocks, 2, 3, game_config.orange_color, 'orange', game_config, 4)
             this.update_block_totals()
-            this.update_ui_elements()
             this.tutorial_step++
         } else if (this.tutorial_step === 24) {
             this.tutorial_text.updateText("Reach " + this.win_percent + "% to win!")
