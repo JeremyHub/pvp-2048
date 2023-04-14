@@ -103,7 +103,7 @@ class GameScene extends Phaser.Scene {
 
         this.orange_percent = 0;
         this.green_percent = 0;
-        this.win_percent = 75;
+        this.win_percent = 70;
 
 
 
@@ -261,7 +261,7 @@ class GameScene extends Phaser.Scene {
         }
 
 
-        this.scorebar = new ScoreBar(this, this.game.config.width*0.27, this.game.config.height*0.053); 
+        this.scorebar = new ScoreBar(this, this.game.config.width*0.27, this.game.config.height*0.053, this.win_percent); 
         this.is_drawing = true;
     }
 
@@ -545,7 +545,7 @@ class GameScene extends Phaser.Scene {
         if(this.green_percent >= this.win_percent && this.orange_percent >= this.win_percent){
             this.tie();
             return true;
-        } else if(this.green_percent > this.win_percent){
+        } else if(this.green_percent >= this.win_percent){
             this.update_ui_elements()
             this.green_win();
             if (this.is_tutorial) {
@@ -556,7 +556,7 @@ class GameScene extends Phaser.Scene {
                 game_config.right_map_offset = 0.1
             }
             return true;
-        } else if(this.orange_percent > this.win_percent){
+        } else if(this.orange_percent >= this.win_percent){
             this.update_ui_elements()
             this.orange_win();
             return true;
