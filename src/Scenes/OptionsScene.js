@@ -37,6 +37,15 @@ export class OptionsScene extends StartScene {
         this.current_starting_time.y = this.starting_time_button.y - this.starting_time_button.button.displayHeight/2 - this.current_starting_time.displayHeight/2;
 
         // win condition
+
+        // wall increment
+        this.wall_increment_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Change Wall Increment", { fontSize: this.button_text_size/2 + "px", fill: "#000" }, this.change_wall_increment.bind(this));
+        this.wall_increment_button.x = this.game.config.width / 2;
+        this.wall_increment_button.y = this.game.config.height / 1.2;
+        this.current_wall_increment = this.add.text(0, 0, "Walls gained per turn: " + game_config.wall_increment, { fontSize: this.button_text_size/2 + "px", fill: "#fff" });
+        this.current_wall_increment.setOrigin(0.5, 0.5);
+        this.current_wall_increment.x = this.game.config.width / 2;
+        this.current_wall_increment.y = this.wall_increment_button.y - this.wall_increment_button.button.displayHeight/2 - this.current_wall_increment.displayHeight/2;
     }
 
     change_starting_time() {
@@ -54,6 +63,16 @@ export class OptionsScene extends StartScene {
         if (new_increment !== NaN) {
             game_config.time_increment = new_increment*1000;
             this.current_increment.setText("Timer Increment (seconds): " + game_config.time_increment/1000);
+        } else {
+            window.alert("Not a Number!");
+        }
+    }
+
+    change_wall_increment() {
+        let new_wall_increment = parseFloat(window.prompt("Enter new wall increment"));
+        if (new_wall_increment > 0) {
+            game_config.wall_increment = new_wall_increment;
+            this.current_wall_increment.setText("Walls gained per turn: " + game_config.wall_increment);
         } else {
             window.alert("Not a Number!");
         }

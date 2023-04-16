@@ -46,6 +46,7 @@ const game_config = {
     selected_map: 0, // default map
     starting_time: 120000, // starting time in ms
     time_increment: 3000, // ms added to timer every turn
+    wall_increment: 1, // number of walls added to each player every turn
 };
 
 class GameScene extends Phaser.Scene {
@@ -355,8 +356,8 @@ class GameScene extends Phaser.Scene {
             this.green_score.updateText("Score: " + green_score_short.toFixed(0) + "%");
             this.orange_score.updateText("Score: " + orange_score_short.toFixed(0) + "%");
         }
-        
-        this.green_walls_container.updateText("Walls: " + this.green_walls_count);
+
+        this.green_walls_container.updateText("Walls: " + this.green_walls_count.toFixed(2));
         if (this.is_tutorial && this.green_walls_count === 99 
             && this.tutorial_step > 14 && this.tutorial_step < 20 && this.max_wall_tutorial == undefined) {
             this.max_wall_tutorial = new UIContainer(this, this.game.config.width*0.02, this.game.config.height*0.85, 
@@ -364,7 +365,7 @@ class GameScene extends Phaser.Scene {
             this.max_wall_tutorial.updateTextSize(0.5)
             this.max_wall_tutorial.emphasize()
         }
-        this.orange_walls_container.updateText("Walls: " + this.orange_walls_count);
+        this.orange_walls_container.updateText("Walls: " + this.orange_walls_count.toFixed(2));
 
         if ((this.green_move !== null && this.orange_move !== null) || (this.green_move === null && this.orange_move === null)) {
             this.green_player_move.updateText(this.green_move);
@@ -739,7 +740,7 @@ class GameScene extends Phaser.Scene {
 
             for (let team of ['orange', 'green']) {
                 if (this[team + '_wall_bool']) {
-                    if (this[team + '_walls_count'] > 0) {
+                    if (this[team + '_walls_count'] >= 1) {
                         let tile = this.map.getTileAtWorldXY(x, y);
                         if (tile !== null) {
                             let index = this.map.getTileAtWorldXY(x, y).index;
@@ -764,10 +765,10 @@ class GameScene extends Phaser.Scene {
             
             // cap wall count at 99
             if (this.green_walls_count < 99) {
-                this.green_walls_count ++;
+                this.green_walls_count += game_config.wall_increment;
             }
             if (this.orange_walls_count < 99) {
-                this.orange_walls_count ++;
+                this.orange_walls_count += game_config.wall_increment;
             }
 
             for( let i = 0; i < this.green_walls.length; i++){
