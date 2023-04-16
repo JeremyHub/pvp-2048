@@ -47,6 +47,7 @@ const game_config = {
     starting_time: 120000, // starting time in ms
     time_increment: 3000, // ms added to timer every turn
     wall_increment: 1, // number of walls added to each player every turn
+    win_percentage: 70,
 };
 
 class GameScene extends Phaser.Scene {
@@ -105,7 +106,6 @@ class GameScene extends Phaser.Scene {
 
         this.orange_percent = 0;
         this.green_percent = 0;
-        this.win_percent = 70;
 
 
 
@@ -263,7 +263,7 @@ class GameScene extends Phaser.Scene {
         }
 
 
-        this.scorebar = new ScoreBar(this, this.game.config.width*0.27, this.game.config.height*0.053, this.win_percent); 
+        this.scorebar = new ScoreBar(this, this.game.config.width*0.27, this.game.config.height*0.053, game_config.win_percentage); 
         this.is_drawing = true;
     }
 
@@ -544,10 +544,10 @@ class GameScene extends Phaser.Scene {
             return
         }
 
-        if(this.green_percent >= this.win_percent && this.orange_percent >= this.win_percent){
+        if(this.green_percent >= game_config.win_percentage && this.orange_percent >= game_config.win_percentage){
             this.tie();
             return true;
-        } else if(this.green_percent >= this.win_percent){
+        } else if(this.green_percent >= game_config.win_percentage){
             this.update_ui_elements()
             this.green_win();
             if (this.is_tutorial) {
@@ -558,7 +558,7 @@ class GameScene extends Phaser.Scene {
                 game_config.right_map_offset = 0.1
             }
             return true;
-        } else if(this.orange_percent >= this.win_percent){
+        } else if(this.orange_percent >= game_config.win_percentage){
             this.update_ui_elements()
             this.orange_win();
             return true;
@@ -1121,7 +1121,7 @@ class GameScene extends Phaser.Scene {
             this.update_block_totals()
             this.tutorial_step++
         } else if (this.tutorial_step === 24) {
-            this.tutorial_text.updateText("Reach " + this.win_percent + "% to win!")
+            this.tutorial_text.updateText("Reach " + game_config.win_percentage + "% to win!")
             this.tutorial_step++
         }
     }
