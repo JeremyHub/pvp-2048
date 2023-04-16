@@ -174,8 +174,7 @@ class GameScene extends Phaser.Scene {
             this.tutorial_step = 0;
             this.tutorial_text = new UIContainer(this, this.game.config.width*0.1,
                 this.game.config.height*0.05,
-                "WASD (or swipe on mobile) to move.\n(Arrow keys for orange in local 2 player.)",
-                "#ffffff");
+                "WASD (or swipe on mobile) to move.", "#ffffff");
             this.has_bounced = false
         }
         else {
@@ -252,6 +251,12 @@ class GameScene extends Phaser.Scene {
         if (this.mode === "local_multiplayer") {
             this.create_green_wall_button();
             this.create_orange_wall_button();     
+            this.green_control_info = new UIContainer(this, this.game.config.width*0.015, this.game.config.height*0.7, "    [W]\n[A][S][D]",
+            "#" + this.convert_hex_to_hex_string(game_config.green_color))
+            this.green_control_info.updateTextSize(0.9)
+            this.orange_control_info = new UIContainer(this, this.game.config.width*0.81, this.game.config.height*0.7, "      [↑]\n[←][↓][→]",
+            "#" + this.convert_hex_to_hex_string(game_config.orange_color))
+            this.orange_control_info.updateTextSize(0.9)
         } else if (this.mode === "single") {
             this.create_green_wall_button();
         } else if (this.mode === "multiplayer") {
@@ -1012,12 +1017,20 @@ class GameScene extends Phaser.Scene {
         this.green_move = move;
         this.green_timer.pause();
         this.green_has_moved = true;
+        if (this.green_control_info !== undefined && this.green_control_info !== null) {
+            this.green_control_info.destroy()
+            this.green_control_info = null
+        }
     }
 
     make_orange_move(move) {
         this.orange_move = move;
         this.orange_timer.pause();
         this.orange_has_moved = true;
+        if (this.orange_control_info !== undefined && this.orange_control_info !== null) {
+            this.orange_control_info.destroy()
+            this.orange_control_info = null
+        }
     }
 
     tutorial() {
