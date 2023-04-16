@@ -7,6 +7,10 @@ class ScoreBar extends Phaser.GameObjects.Container{
         this.scene.add.existing(this);
         this.scene = scene;
         this.win_percentage = win_percentage;
+        this.near_win_percentage = 10;
+        if (win_percentage < 70) {
+            this.near_win_percentage = (win_percentage - 50) / 2
+        }
         this.win_percentage_text_destroyed = false;
         this.near_win_animation_speed = 0.015;
         this.maxScoreHeight = this.scene.game.config.height * 0.6;
@@ -63,14 +67,14 @@ class ScoreBar extends Phaser.GameObjects.Container{
             this.near_win_rect.x = 1000000
             return
         }
-        if (greenscore >= this.win_percentage - 10) {
+        if (greenscore >= this.win_percentage - this.near_win_percentage) {
             this.near_win_rect.width = (this.maxScoreHeight *  ((this.win_percentage - greenscore) / 100));
             this.near_win_rect.x = this.orange_win_percent_line.x - this.near_win_rect.width
             this.near_win_rect.alpha += this.near_win_animation_speed
             if (this.near_win_rect.alpha === 0 || this.near_win_rect.alpha >= 0.8) {
                 this.near_win_animation_speed *= -1
             }
-        } else if (greenscore <= (100 - this.win_percentage) + 10) {
+        } else if (greenscore <= (100 - this.win_percentage) + this.near_win_percentage) {
             this.near_win_rect.width = (this.maxScoreHeight *  ((this.win_percentage - (100 - greenscore)) / 100));
             this.near_win_rect.x = this.green_win_percent_line.x
             this.near_win_rect.alpha += this.near_win_animation_speed
