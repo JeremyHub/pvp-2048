@@ -20,7 +20,11 @@ export class SinglePlayerManager {
     }
 
     arrow(move) {
-        this.orange_move = move;
+        if (this.num_players === 1) {
+            this.green_move = move;
+        } else {
+            this.orange_move = move;
+        }
         this.single_player_update();
     }
 

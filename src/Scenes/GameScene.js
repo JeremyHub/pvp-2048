@@ -174,7 +174,7 @@ class GameScene extends Phaser.Scene {
             this.tutorial_step = 0;
             this.tutorial_text = new UIContainer(this, this.game.config.width*0.1,
                 this.game.config.height*0.05,
-                "WASD (or swipe on mobile) to move.", "#ffffff");
+                "WASD or arrow keys\n(or swipe on mobile) to move.", "#ffffff");
             this.has_bounced = false
         }
         else {
