@@ -83,6 +83,8 @@ export class OptionsScene extends StartScene {
         if (new_wall_increment > 0) {
             game_config.wall_increment = new_wall_increment;
             this.current_wall_increment.setText("Walls gained per turn: " + game_config.wall_increment);
+        } else if (new_wall_increment <= 0) {
+            window.alert("Wall increment must be greater than 0.")
         } else {
             window.alert("Not a Number!");
         }
