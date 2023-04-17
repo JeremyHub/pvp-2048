@@ -60,33 +60,31 @@ export class OptionsScene extends StartScene {
 
     change_starting_time() {
         let new_starting_time = parseInt(window.prompt("Enter new starting time"));
-        if (new_starting_time !== NaN) {
+        if (new_starting_time >= 1) {
             game_config.starting_time = new_starting_time*1000;
             this.current_starting_time.setText("Starting Time (seconds): " + game_config.starting_time/1000);
         } else {
-            window.alert("Not a Number!");
+            window.alert("Must be an integer greater than or equal to one!");
         }
     }
 
     change_increment() {
         let new_increment = parseInt(window.prompt("Enter new increment"));
-        if (new_increment !== NaN) {
+        if (new_increment >= 0) {
             game_config.time_increment = new_increment*1000;
             this.current_increment.setText("Timer Increment (seconds): " + game_config.time_increment/1000);
         } else {
-            window.alert("Not a Number!");
+            window.alert("Must be an integer greater than or equal to zero!");
         }
     }
 
     change_wall_increment() {
         let new_wall_increment = parseFloat(window.prompt("Enter new wall increment"));
-        if (new_wall_increment > 0) {
+        if (new_wall_increment >= 0) {
             game_config.wall_increment = new_wall_increment;
             this.current_wall_increment.setText("Walls gained per turn: " + game_config.wall_increment);
-        } else if (new_wall_increment <= 0) {
-            window.alert("Wall increment must be greater than 0.")
         } else {
-            window.alert("Not a Number!");
+            window.alert("Must be a value greater than or equal to zero!");
         }
     }
 
@@ -96,9 +94,9 @@ export class OptionsScene extends StartScene {
             game_config.win_percentage = new_win_percentage;
             this.current_win_percentage.setText("Win Percentage: " + game_config.win_percentage);
         } else if (new_win_percentage <= 50 || new_win_percentage >= 100) {
-            window.alert("Win percentage must be greater than 50% and less than 100%.")
+            window.alert("Win percentage must be greater than 50% and less than 100%!")
         } else {
-            window.alert("Not a Number!");
+            window.alert("Win percentage must be greater than 50% and less than 100%!");
         }
     }
 
