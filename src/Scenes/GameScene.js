@@ -431,6 +431,19 @@ class GameScene extends Phaser.Scene {
 
     ending_animation_part_1(winner_blocks, loser_blocks, winner) {
         this.ending_animation_playing = true;
+        if (this.mode !== "single") {
+            this.green_timer.pause()
+            this.orange_timer.pause()
+            if (winner === "green" && this.orange_timer.time <= 0) {
+                this.orange_timer.time = 0
+                this.orange_timer.update_visuals()
+            } else if (winner === "orange" && this.green_timer.time <= 0) {
+                this.green_timer.time = 0
+                this.green_timer.update_visuals()
+            }
+            
+            
+        }
 
         this.green_blocks = [];
         this.orange_blocks = [];
@@ -1000,6 +1013,10 @@ class GameScene extends Phaser.Scene {
             if (this.manager.opponent_is_animating) {
                 return;
             }
+        }
+
+        if (this.ending_animation_playing) {
+            return;
         }
 
         if (this.green_move === null && this.green_has_moved) {

@@ -93,6 +93,8 @@ export class OptionsScene extends StartScene {
         if (new_win_percentage > 50 && new_win_percentage < 100) {
             game_config.win_percentage = new_win_percentage;
             this.current_win_percentage.setText("Win Percentage: " + game_config.win_percentage);
+        } else if (new_win_percentage <= 50 || new_win_percentage >= 100) {
+            window.alert("Win percentage must be greater than 50% and less than 100%.")
         } else {
             window.alert("Not a Number!");
         }
