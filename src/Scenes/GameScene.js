@@ -318,14 +318,12 @@ class GameScene extends Phaser.Scene {
         }
         this.green_wall_bool = !this.green_wall_bool;
         if (this.green_wall_bool) {
-            this.green_wall_button_text.updateText("Stop Placing");
-            this.green_wall_button_text.updateTextSize(0.9)
+            this.green_wall_button_text.updateText("Untoggle");
             if (this.is_tutorial && this.tutorial_step === 12) {
                 this.tutorial_text.updateText("...and clicking on spaces.")
             }
         } else {
             this.green_wall_button_text.updateText("Place Walls");
-            this.green_wall_button_text.updateTextSize(1)
             if (this.is_tutorial && this.tutorial_step === 12) {
                 this.tutorial_text.updateText("Place temporary walls by clicking on the \"place walls\"\nbutton below...")
             }
@@ -338,11 +336,9 @@ class GameScene extends Phaser.Scene {
         }
         this.orange_wall_bool = !this.orange_wall_bool;
         if (this.orange_wall_bool) {
-            this.orange_wall_button_text.updateText("Stop Placing");
-            this.orange_wall_button_text.updateTextSize(0.9)
+            this.orange_wall_button_text.updateText("Untoggle");
         } else {
             this.orange_wall_button_text.updateText("Place Walls");
-            this.green_wall_button_text.updateTextSize(1)
         }
     }
 
