@@ -356,6 +356,7 @@ class GameScene extends Phaser.Scene {
         let green_score_short = this.green_total_value / (this.green_total_value + this.orange_total_value) * 100;
         let orange_score_short = this.orange_total_value / (this.green_total_value + this.orange_total_value) * 100;
 
+
         if (green_score_short > 0 && orange_score_short > 0) {
             // round to 2 decimal places
             this.green_score.updateText("Score: " + green_score_short.toFixed(0) + "%");
