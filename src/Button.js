@@ -30,14 +30,23 @@ class Button extends Phaser.GameObjects.Container {
         this.scene.add.existing(this);
     }
 
-    update_text(text) {
+    update_text(text, scale_text = false) {
+        console.log(scale_text)
+        let text_width = this.text.width
         this.text = this.scene.add.text(0, 0, text, this.text_style);
         this.text.setOrigin(0.5, 0.5);
         this.text.setResolution(3);
 
         // stretch the button so that it fits the text
-        this.button.displayWidth = this.text.width + 20;
-        this.button.displayHeight = this.text.height + 20;
+        if (scale_text) {
+            let text_scale = text_width / this.text.width
+            console.log(text_scale * this.text_style.fontSize)
+            console.log(this.text_style.fontSize)
+            this.text.setFontSize(text_scale * this.text_style.fontSize)
+        } else {
+            this.button.displayWidth = this.text.width + 20;
+            this.button.displayHeight = this.text.height + 20;
+        }
     }
 
     on_hover() {
