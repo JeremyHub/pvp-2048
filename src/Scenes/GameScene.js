@@ -247,6 +247,16 @@ class GameScene extends Phaser.Scene {
             this.green_player_move.x = 1000000
             this.orange_player_move.x = 1000000
         }
+        if (this.mode !== "single") {
+            this.waiting_for_move_green = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.35,
+            "Waiting\nfor move", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+            this.waiting_for_move_orange = new UIContainer(this, this.game.config.width*0.81, this.game.config.height*0.35,
+            "Waiting\nfor move", "#" + this.convert_hex_to_hex_string(game_config.orange_color))
+            this.waiting_for_move_green.updateTextSize(0.8)
+            this.waiting_for_move_orange.updateTextSize(0.8)
+            this.waiting_for_move_animation_step = 50
+        }
+        
 
         if (this.mode === "local_multiplayer") {
             this.create_green_wall_button();
@@ -259,12 +269,20 @@ class GameScene extends Phaser.Scene {
             this.orange_control_info.updateTextSize(0.9)
         } else if (this.mode === "single") {
             this.create_green_wall_button();
+            this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
+            "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+            this.team_indicator.updateTextSize(0.7)
         } else if (this.mode === "multiplayer") {
             if (this.your_color === "green") {
                 this.create_green_wall_button();
+                this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
+                "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
             } else {
                 this.create_orange_wall_button();
+                this.team_indicator = new UIContainer(this, this.game.config.width*0.25, this.game.config.height*0.9, 
+                "You are playing\nas orange.", "#" + this.convert_hex_to_hex_string(game_config.orange_color))
             }
+            this.team_indicator.updateTextSize(0.7)
         }
 
 
@@ -384,10 +402,29 @@ class GameScene extends Phaser.Scene {
 
         this.scorebar.update(this.green_percent);
 
+        if (this.mode !== "single") {
+            this.animate_waiting_for_move()
+        }
 
     }
 
-   
+    animate_waiting_for_move() {
+        this.waiting_for_move_animation_step++
+        if (this.waiting_for_move_animation_step === 50) {
+            this.waiting_for_move_green.updateText("Waiting\nfor move")
+            this.waiting_for_move_orange.updateText("Waiting\nfor move")
+        } else if (this.waiting_for_move_animation_step === 100) {
+            this.waiting_for_move_green.updateText("Waiting\nfor move.")
+            this.waiting_for_move_orange.updateText("Waiting\nfor move.")
+        } else if (this.waiting_for_move_animation_step === 150) {
+            this.waiting_for_move_green.updateText("Waiting\nfor move..")
+            this.waiting_for_move_orange.updateText("Waiting\nfor move..")
+        } else if (this.waiting_for_move_animation_step === 200) {
+            this.waiting_for_move_green.updateText("Waiting\nfor move...")
+            this.waiting_for_move_orange.updateText("Waiting\nfor move...")
+            this.waiting_for_move_animation_step = 0
+        }
+    }
 
     update_block_totals() {
         this.green_total_value = getTotalValueOfBlocks(this.green_blocks);
@@ -1027,17 +1064,26 @@ class GameScene extends Phaser.Scene {
         if (this.green_move === null && this.green_has_moved) {
             this.green_timer.unpause();
             this.green_timer.add_time(game_config.time_increment)
+            if (this.mode !== "single") {
+                this.waiting_for_move_green.x = this.game.config.width*0.01
+            }
         }
         
         if (this.orange_move === null && this.orange_has_moved)  {
             this.orange_timer.unpause();
             this.orange_timer.add_time(game_config.time_increment)
+            if (this.mode !== "single") {
+                this.waiting_for_move_orange.x = this.game.config.width*0.81
+            }
         }
     }
 
     make_green_move(move) {
         this.green_move = move;
         this.green_timer.pause();
+        if (this.mode !== "single") {
+            this.waiting_for_move_green.x = 1000000
+        }
         this.green_has_moved = true;
         if (this.green_control_info !== undefined && this.green_control_info !== null) {
             this.green_control_info.destroy()
@@ -1048,6 +1094,9 @@ class GameScene extends Phaser.Scene {
     make_orange_move(move) {
         this.orange_move = move;
         this.orange_timer.pause();
+        if (this.mode !== "single") {
+            this.waiting_for_move_orange.x = 1000000
+        }
         this.orange_has_moved = true;
         if (this.orange_control_info !== undefined && this.orange_control_info !== null) {
             this.orange_control_info.destroy()

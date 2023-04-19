@@ -31,7 +31,6 @@ class Button extends Phaser.GameObjects.Container {
     }
 
     update_text(text, scale_text = false) {
-        console.log(scale_text)
         let text_width = this.text.width
         this.text = this.scene.add.text(0, 0, text, this.text_style);
         this.text.setOrigin(0.5, 0.5);

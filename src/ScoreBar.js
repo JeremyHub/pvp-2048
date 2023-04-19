@@ -11,7 +11,6 @@ class ScoreBar extends Phaser.GameObjects.Container{
         if (win_percentage < 70) {
             this.near_win_percentage = (win_percentage - 50) / 2
         }
-        this.win_percentage_text_destroyed = false;
         this.near_win_animation_speed = 0.015;
         this.maxScoreHeight = this.scene.game.config.height * 0.6;
 
@@ -59,10 +58,6 @@ class ScoreBar extends Phaser.GameObjects.Container{
     }
 
     update_near_win(greenscore) {
-        if (!this.win_percentage_text_destroyed && greenscore !== 50 && greenscore !== 0) {
-            this.win_percentage_text.destroy()
-            this.win_percentage_text_destroyed = true
-        }
         if (greenscore >= this.win_percentage || greenscore <= (100 - this.win_percentage)) {
             this.near_win_rect.x = 1000000
             return
