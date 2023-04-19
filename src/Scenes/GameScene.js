@@ -444,6 +444,7 @@ class GameScene extends Phaser.Scene {
     }
     
     start_win_loss_scene(winner) {
+        this.manager.destroy();
         if (winner == "green") {
             if (this.mode == "single") {
                 this.scene.start('WinScene', {player: "you"});

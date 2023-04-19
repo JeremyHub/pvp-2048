@@ -253,6 +253,8 @@ export class MutliplayerManager {
 
     destroy() {
         this.input_manager.destroy();
+        off(this.gameRef, "value");
         this.joined_game_code = null;
+        this.scene = null;
     }
 }
