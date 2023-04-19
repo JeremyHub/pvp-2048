@@ -21,8 +21,8 @@ const { Button } = require('../Button');
 const game_config = {
     top_map_offset: 0.1, // percentage of screen height from top that the map is offset
     bottom_map_offset: 0.1, // percentage of screen height from bottom that the map is offset
-    left_map_offset: 0.1, // percentage of screen width from left that the map is offset
-    right_map_offset: 0.1, // percentage of screen width from right that the map is offset
+    left_map_offset: 0.2, // percentage of screen width from left that the map is offset
+    right_map_offset: 0.2, // percentage of screen width from right that the map is offset
     num_rows: 14, // reset in create
     num_cols: 14, // reset in create
     tile_size: 32, // reset in create
