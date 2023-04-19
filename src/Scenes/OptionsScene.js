@@ -60,27 +60,27 @@ export class OptionsScene extends StartScene {
 
     change_starting_time() {
         let new_starting_time = parseInt(window.prompt("Enter new starting time"));
-        if (new_starting_time >= 1) {
+        if (new_starting_time >= 1 && new_starting_time <= 600) {
             game_config.starting_time = new_starting_time*1000;
             this.current_starting_time.setText("Starting Time (seconds): " + game_config.starting_time/1000);
         } else {
-            window.alert("Must be an integer greater than or equal to one!");
+            window.alert("Must be an integer greater than or equal to one and less than or equal to 600!");
         }
     }
 
     change_increment() {
         let new_increment = parseInt(window.prompt("Enter new increment"));
-        if (new_increment >= 0) {
+        if (new_increment >= 0 && new_increment <= 1000) {
             game_config.time_increment = new_increment*1000;
             this.current_increment.setText("Timer Increment (seconds): " + game_config.time_increment/1000);
         } else {
-            window.alert("Must be an integer greater than or equal to zero!");
+            window.alert("Must be an integer greater than or equal to zero and less than or equal to 100!");
         }
     }
 
     change_wall_increment() {
         let new_wall_increment = parseFloat(window.prompt("Enter new wall increment"));
-        if (new_wall_increment >= 0) {
+        if (new_wall_increment >= 0 && new_wall_increment <= 25) {
             game_config.wall_increment = new_wall_increment;
             this.current_wall_increment.setText("Walls gained per turn: " + game_config.wall_increment);
         } else {
@@ -90,13 +90,13 @@ export class OptionsScene extends StartScene {
 
     change_win_percentage() {
         let new_win_percentage = parseFloat(window.prompt("Enter new win percentage"));
-        if (new_win_percentage > 50 && new_win_percentage < 100) {
+        if (new_win_percentage > 50 && new_win_percentage <= 100) {
             game_config.win_percentage = new_win_percentage;
             this.current_win_percentage.setText("Win Percentage: " + game_config.win_percentage);
-        } else if (new_win_percentage <= 50 || new_win_percentage >= 100) {
-            window.alert("Win percentage must be greater than 50% and less than 100%!")
+        } else if (new_win_percentage <= 50 || new_win_percentage > 100) {
+            window.alert("Win percentage must be greater than 50% and less than or equal to 100%!")
         } else {
-            window.alert("Win percentage must be greater than 50% and less than 100%!");
+            window.alert("Win percentage must be greater than 50% and less than or equal to 100%!");
         }
     }
 
