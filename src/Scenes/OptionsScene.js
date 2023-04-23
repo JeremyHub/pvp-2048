@@ -64,7 +64,7 @@ export class OptionsScene extends StartScene {
             game_config.starting_time = new_starting_time*1000;
             this.current_starting_time.setText("Starting Time (seconds): " + game_config.starting_time/1000);
         } else {
-            window.alert("Must be an integer greater than or equal to one and less than or equal to 600!");
+            window.alert("Must be an integer value from 1-600!");
         }
     }
 
@@ -74,7 +74,7 @@ export class OptionsScene extends StartScene {
             game_config.time_increment = new_increment*1000;
             this.current_increment.setText("Timer Increment (seconds): " + game_config.time_increment/1000);
         } else {
-            window.alert("Must be an integer greater than or equal to zero and less than or equal to 100!");
+            window.alert("Must be an integer value from 0-100!");
         }
     }
 
