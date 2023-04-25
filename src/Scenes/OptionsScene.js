@@ -14,7 +14,7 @@ export class OptionsScene extends StartScene {
 
     create() {
 
-        this.add_bg_img_and_title();
+        this.add_dark_bg_img();
 
         this.add_back_button(this.before_scene);
 

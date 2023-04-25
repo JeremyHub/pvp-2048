@@ -10,6 +10,7 @@ class StartScene extends Phaser.Scene {
     preload() {
         this.button_text_size = this.game.config.width / 15;
         this.load.image("titlescreen", "src/assets/titlescreen.png");
+        this.load.image("titlescreen_dark", "src/assets/titlescreen_dark.png");
         this.load.image("button_background", "src/assets/button_background.png");
         this.load.image("button_background_hover", "src/assets/button_background_hover.png");
         this.load.image("button_background_dark", "src/assets/button_background_dark.png");
@@ -48,6 +49,12 @@ class StartScene extends Phaser.Scene {
         this.title.setOrigin(0.5, 0.5);
         this.title.x = this.game.config.width / 2;
         this.title.y = this.game.config.height / 6;
+    }
+
+    add_dark_bg_img() {
+        this.image = this.add.image(0, 0, "titlescreen_dark").setOrigin(0, 0);
+        this.image.displayWidth = this.game.config.width;
+        this.image.displayHeight = this.game.config.height;
     }
 
     add_options_buttons(before_scene) {
