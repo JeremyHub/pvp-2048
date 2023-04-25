@@ -58,8 +58,8 @@ class StartScene extends Phaser.Scene {
     }
 
     add_options_buttons(before_scene) {
-        var x_padding = this.game.config.width*0.01;
-        var y_padding = this.game.config.height*0.01;
+        var x_padding = this.game.config.width*0.005;
+        var y_padding = this.game.config.height*0.005;
 
         this.map_selection_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Map Selection", { fontSize: this.button_text_size/2 + "px", fill: "#000" }, () => { this.scene.start("MapSelectionScene", {back: before_scene}) });
         this.map_selection_button.x = this.game.config.width - this.map_selection_button.button.displayWidth/2 - x_padding;
@@ -84,10 +84,10 @@ class StartScene extends Phaser.Scene {
 
     add_back_button(scene) {
         // TODO change this to be a back icon
-        var x_padding = this.game.config.width*0.01;
-        var y_padding = this.game.config.height*0.01;
+        var x_padding = this.game.config.width*0.005;
+        var y_padding = this.game.config.height*0.005;
 
-        this.back_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Back", { fontSize: this.button_text_size/2 + "px", fill: "#fff"}, () => { this.scene.start(scene) });
+        this.back_button = new Button(this, 0, 0, "button_background", "button_background_hover", "Back", { fontSize: this.button_text_size/2 + "px", fill: "#000"}, () => { this.scene.start(scene) });
         this.back_button.x = this.back_button.getBounds().width / 2 + 1 + x_padding;
         this.back_button.y = this.game.config.height - this.back_button.getBounds().height / 2 - y_padding;
     }
