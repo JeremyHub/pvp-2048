@@ -34,12 +34,12 @@ export class SinglePlayerMenuScene extends StartScene {
 
     one_player() {
         this.single_player_manager.init(1);
-        this.start_game({ mode: "single"});
+        this.start_game({ mode: "single", manager: this.single_player_manager});
     }
 
     two_player() {
         this.single_player_manager.init(2);
-        this.start_game({ mode: "local_multiplayer"});
+        this.start_game({ mode: "local_multiplayer", manager: this.single_player_manager});
     }
 
 }

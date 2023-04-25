@@ -176,8 +176,7 @@ class GameScene extends Phaser.Scene {
                 this.game.config.height*0.05,
                 "WASD or arrow keys\n(or swipe on mobile) to move.", "#ffffff");
             this.has_bounced = false
-        }
-        else {
+        } else {
             this.map = this.make.tilemap({ key: game_config.maps[game_config.selected_map] });
             let tileset_name = this.map.tilesets[0].name;
             this.tileset = this.map.addTilesetImage(tileset_name, tileset_name);
@@ -380,9 +379,20 @@ class GameScene extends Phaser.Scene {
 
 
         if (green_score_short > 0 && orange_score_short > 0) {
-            // round to 2 decimal places
-            this.green_score.updateText("Score: " + green_score_short.toFixed(0) + "%");
-            this.orange_score.updateText("Score: " + orange_score_short.toFixed(0) + "%");
+
+            var green_score_rounded;
+            var orange_score_rounded;
+            
+            if (green_score_short >= orange_score_short) {
+                green_score_rounded = Math.floor(green_score_short);
+                orange_score_rounded = Math.ceil(orange_score_short);
+            } else {
+                green_score_rounded = Math.ceil(green_score_short);
+                orange_score_rounded = Math.floor(orange_score_short);
+            }
+            
+            this.green_score.updateText("Score: " + green_score_rounded + "%");
+            this.orange_score.updateText("Score: " + orange_score_rounded + "%");
         }
 
         this.green_walls_container.updateText("Walls: " + this.green_walls_count.toFixed(2));
