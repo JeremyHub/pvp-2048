@@ -29,7 +29,7 @@ const game_config = {
     padding: 3,
     orange_color: 0xf27507,
     green_color: 0x00ff00,
-    colorblind_mode: true,
+    colorblind_mode: false,
     wall_id: [6,262,268, 62, 132, 34],
     green_id: [57, 1, 2, 3, 17, 18, 19, 33, 34, 35, 321, 29],   // spawning area
     orange_id: [127, 7, 8, 9, 23, 24,25, 39, 40, 41], // spawning area
