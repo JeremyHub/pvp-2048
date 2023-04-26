@@ -87,7 +87,7 @@ class StartScene extends Phaser.Scene {
         game_config.right_map_offset = 0.2
         this.single_player_manager = new SinglePlayerManager(this.game.scene.keys.GameScene);
 
-        this.start_game({ mode: "single"});
+        this.start_game({ mode: "single", manager: this.single_player_manager });
         this.single_player_manager.init(1);
     }
 

@@ -22,6 +22,8 @@ export class MapSelectionScene extends StartScene {
 
     create() {
 
+        this.button_text_size = Math.min(this.game.config.height / 15, this.game.config.width / 15);
+
         this.add_bg_img_and_title();
 
         let num_buttons = game_config.maps.length;
@@ -47,11 +49,19 @@ export class MapSelectionScene extends StartScene {
                 let image = this.add.image(0, 0, filename);
                 image.x = this.input.mousePointer.x;
                 image.y = this.input.mousePointer.y;
-        
+
+                // if the y of the image plus its hiegh its larger than the screen highet, move it up
+                if (image.y + image.height/2 > this.game.config.height) {
+                    image.y = this.game.config.height - image.height/2;
+                }
+
+                
+                        
                 // Remove the image when the mouse leaves the button
                 map_button.button.on('pointerout', () => {
                     image.destroy();
                 });
+                
             }
         
             let map_button = new Button(
