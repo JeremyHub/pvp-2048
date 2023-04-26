@@ -37,6 +37,15 @@ class StartScene extends Phaser.Scene {
             this.single_player_manager.destroy()
         }
 
+        this.tweens.add({
+            targets: this.tutorial_button,
+            scale: { from: 1, to: 1.05 },
+            ease: 'Linear',
+            duration: 250,
+            yoyo: true,
+            repeat: -1
+        });
+
     }
 
     add_bg_img_and_title() {
