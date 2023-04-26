@@ -29,8 +29,9 @@ const game_config = {
     padding: 3,
     orange_color: 0xf27507,
     green_color: 0x00ff00,
-    wall_id: [6,262,268, 62, 132],
-    green_id: [57, 1, 2, 3, 17, 18, 19, 33, 34, 35, 321],   // spawning area
+    colorblind_mode: true,
+    wall_id: [6,262,268, 62, 132, 34],
+    green_id: [57, 1, 2, 3, 17, 18, 19, 33, 34, 35, 321, 29],   // spawning area
     orange_id: [127, 7, 8, 9, 23, 24,25, 39, 40, 41], // spawning area
     green_wall: 62,
     orange_wall: 132,
@@ -198,6 +199,20 @@ class GameScene extends Phaser.Scene {
         // center it in the game
         this.map.layers[0].tilemapLayer.x = Math.max((map_width - (game_config.tile_size*game_config.num_cols)) / 2,0) + this.game.config.width * game_config.left_map_offset;
         this.map.layers[0].tilemapLayer.y = Math.max((map_height - (game_config.tile_size*game_config.num_rows)) / 2,0) + this.game.config.height * game_config.top_map_offset;
+        if (game_config.colorblind_mode) {
+            for (let x = 0; x < game_config.num_cols; x++) {
+                for (let y = 0; y < game_config.num_rows; y++) {
+                    if (this.map.getTileAt(x, y).index === 57) {
+                        this.map.getTileAt(x, y).index = 29
+                    }
+                }
+            }
+            game_config.green_color = 0x0d6cff
+            game_config.green_wall = 34
+        } else {
+            game_config.green_color = 0x00ff00
+            game_config.green_wall = 62
+        }
 
         this.pointer = this.input.activePointer;
         
@@ -268,14 +283,24 @@ class GameScene extends Phaser.Scene {
             this.orange_control_info.updateTextSize(0.9)
         } else if (this.mode === "single") {
             this.create_green_wall_button();
-            this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
-            "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+            if (game_config.colorblind_mode) {
+                this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
+                "You are playing\nas blue.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+            } else {
+                this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
+                "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+            }
             this.team_indicator.updateTextSize(0.7)
         } else if (this.mode === "multiplayer") {
             if (this.your_color === "green") {
                 this.create_green_wall_button();
-                this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
-                "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+                if (game_config.colorblind_mode) {
+                    this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
+                    "You are playing\nas blue.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+                } else {
+                    this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
+                    "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+                }
             } else {
                 this.create_orange_wall_button();
                 this.team_indicator = new UIContainer(this, this.game.config.width*0.25, this.game.config.height*0.9, 
@@ -285,7 +310,8 @@ class GameScene extends Phaser.Scene {
         }
 
 
-        this.scorebar = new ScoreBar(this, this.game.config.width*0.27, this.game.config.height*0.053, game_config.win_percentage); 
+        this.scorebar = new ScoreBar(this, this.game.config.width*0.27, this.game.config.height*0.053, game_config.win_percentage,
+        game_config.green_color, game_config.orange_color); 
         this.is_drawing = true;
     }
 
@@ -465,7 +491,11 @@ class GameScene extends Phaser.Scene {
                     this.scene.start('LossScene', {player: "you"});
                 }
             } else if (this.mode == "local_multiplayer") {
-                this.scene.start('WinScene', {player: 'Green'});
+                if (game_config.colorblind_mode) {
+                    this.scene.start('WinScene', {player: 'Blue'});
+                } else {
+                    this.scene.start('WinScene', {player: 'Green'});
+                }
             }
         } else if (winner == "orange") {
             if (this.mode == "single") {    
