@@ -1,6 +1,6 @@
 
 class Button extends Phaser.GameObjects.Container {
-    constructor(scene, x, y, background_img, on_over_img, text, text_style, call_when_pressed) {
+    constructor(scene, x, y, background_img, on_over_img, text, text_style, call_when_pressed, call_on_hover = undefined) {
         super(scene, x, y);
         this.scene = scene; // the scene this container will be added to
         this.x = x; // the x position of the container
@@ -11,6 +11,7 @@ class Button extends Phaser.GameObjects.Container {
         this.call_when_pressed = call_when_pressed; // the function to be called when the button is pressed
         this.origin_style_color = text_style.fill;
         this.text_style = text_style;
+        this.call_on_hover = call_on_hover;
 
         this.button = this.scene.add.image(0, 0, background_img).setInteractive();
 
@@ -51,12 +52,16 @@ class Button extends Phaser.GameObjects.Container {
     on_hover() {
         this.button.setTexture(this.on_over_img);
         this.text.setStyle({ fill: '#fff' });
+        if (this.call_on_hover != undefined) {
+            this.call_on_hover();
+        }
     }
 
     on_out() {
         this.button.setTexture(this.background_img);
         this.text.setStyle({ fill: this.origin_style_color });
     }
+
 }
 
 module.exports = {
