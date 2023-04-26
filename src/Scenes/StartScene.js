@@ -41,7 +41,7 @@ class StartScene extends Phaser.Scene {
             targets: this.tutorial_button,
             scale: { from: 1, to: 1.05 },
             ease: 'Linear',
-            duration: 250,
+            duration: 500,
             yoyo: true,
             repeat: -1
         });
