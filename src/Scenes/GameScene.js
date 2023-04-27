@@ -715,7 +715,26 @@ class GameScene extends Phaser.Scene {
     }
 
     make_wall([x, y], team) {
-        this.wall_place_sound_play();
+
+        let tile = this.map.getTileAt(x, y);
+        if (tile === null) {
+            return false;
+        }
+        let index = this.map.getTileAt(x, y).index;
+        if (game_config.wall_id.includes(index) || game_config.green_id.includes(index) || game_config.orange_id.includes(index)) {
+            return false;
+        }
+        if (this[team + "_walls_count"] <= 0) {
+            return false;
+        }
+        this.update_all_blocks_list();
+        for (let i = 0; i < this.all_block_lists.length; i++) {
+            console.log(this.all_block_lists[i].tile_x, x, this.all_block_lists[i].tile_y, y)
+            if (this.all_block_lists[i].tile_x === x && this.all_block_lists[i].tile_y === y) {
+                return false;
+            }
+        }
+
         if(team === "green"){
             this.map.putTileAt(game_config.green_wall, x, y);
         } else if(team === "orange"){
@@ -737,6 +756,8 @@ class GameScene extends Phaser.Scene {
                 this.tutorial_step++
             }
         }
+
+        return true;
     }
 
     check_key_presses() {
@@ -844,21 +865,13 @@ class GameScene extends Phaser.Scene {
 
             for (let team of ['orange', 'green']) {
                 if (this[team + '_wall_bool']) {
-                    if (this[team + '_walls_count'] >= 1) {
-                        let tile = this.map.getTileAtWorldXY(x, y);
-                        if (tile !== null) {
-                            let index = this.map.getTileAtWorldXY(x, y).index;
-                            if (!game_config.wall_id.includes(index) && !game_config.green_id.includes(index) && !game_config.orange_id.includes(index)) {
-                                if (this.mode === "multiplayer") {
-                                    if (this.your_color !== team) {
-                                        continue;
-                                    }
-                                }
-                                let tile = this.map.getTileAtWorldXY(x, y)
-                                this.make_wall([tile.x, tile.y], team);
-                            }
+                    if (this.mode === "multiplayer") {
+                        if (this.your_color !== team) {
+                            continue;
                         }
                     }
+                    let tile = this.map.getTileAtWorldXY(x, y)
+                    this.make_wall([tile.x, tile.y], team);
                 }
             }
         }
