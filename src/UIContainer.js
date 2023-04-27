@@ -11,9 +11,6 @@ class UIContainer extends Phaser.GameObjects.Container{
         this.previous_emphasis = null;
         this.add(this.text);
         this.create();
-
-        //this.update_visuals();
-
     }
     
     create(){
@@ -22,12 +19,7 @@ class UIContainer extends Phaser.GameObjects.Container{
 
     
     updateText(score){
-        //let cList  = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#00ffff", "#ff00ff", "#ffffff", "#000000"];
-        //this.text.setColor(cList[Math.floor(Math.random() * cList.length)]);
-
         this.text.setText(score);
-
-
     }
 
     /**
