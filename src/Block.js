@@ -50,12 +50,22 @@ class Block{
 
     create() {
         this.rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, this.size, this.size, this.color);
-        this.container.add(this.rect);
         this.container.depth = 10;
         let style = { font: "bold 1px Arial", fill: "#fffff", boundsAlignH: "center", boundsAlignV: "middle" };
 
+        // create an image from 'paul' that is the same size as the rectangle
+        this.image = new Phaser.GameObjects.Image(this.scene, 0, 0, 'paul');
+        this.image.displayWidth = this.size;
+        this.image.displayHeight = this.size;
+        this.image.setOrigin(0.5);
+        this.container.add(this.image);
+
+        this.rect.setAlpha(0.2);
+        this.container.add(this.rect);
+
         this.text = new Phaser.GameObjects.Text(this.scene, 0, 0, this.value, style);
         this.container.add(this.text);
+
     }
     
     update() {
