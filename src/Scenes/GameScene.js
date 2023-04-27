@@ -157,6 +157,7 @@ class GameScene extends Phaser.Scene {
         this.load.text('block-particle', 'src/assets/block-particle.json');
 
         this.load.image('paul', 'src/assets/paul.png');
+        this.load.image('susan', 'src/assets/susan.png');
     }
 
     convert_hex_to_hex_string(num) {
