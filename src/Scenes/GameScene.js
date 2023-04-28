@@ -174,12 +174,12 @@ class GameScene extends Phaser.Scene {
             this.map = this.make.tilemap({ key: 'tutorial' });
             let tileset_name = this.map.tilesets[0].name;
             this.tileset = this.map.addTilesetImage(tileset_name, tileset_name);
-            this.is_tutorial = true
+            this.is_tutorial = true;
             this.tutorial_step = 0;
             this.tutorial_text = new UIContainer(this, this.game.config.width*0.1,
                 this.game.config.height*0.05,
                 "WASD or arrow keys\n(or swipe on mobile) to move.", "#ffffff");
-            this.has_bounced = false
+            this.has_bounced = false;
         } else {
             this.map = this.make.tilemap({ key: game_config.maps[game_config.selected_map] });
             let tileset_name = this.map.tilesets[0].name;
@@ -206,15 +206,15 @@ class GameScene extends Phaser.Scene {
             for (let x = 0; x < game_config.num_cols; x++) {
                 for (let y = 0; y < game_config.num_rows; y++) {
                     if (this.map.getTileAt(x, y).index === 57) {
-                        this.map.getTileAt(x, y).index = 29
+                        this.map.getTileAt(x, y).index = 29;
                     }
                 }
             }
-            game_config.green_color = 0x0d6cff
-            game_config.green_wall = 34
+            game_config.green_color = 0x0d6cff;
+            game_config.green_wall = 34;
         } else {
-            game_config.green_color = 0x00ff00
-            game_config.green_wall = 62
+            game_config.green_color = 0x00ff00;
+            game_config.green_wall = 62;
         }
 
         this.pointer = this.input.activePointer;
@@ -245,8 +245,8 @@ class GameScene extends Phaser.Scene {
         this.orange_score = new UIContainer(this, 0, this.game.config.height*0.02, "Score:   " + this.orange_total_value, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
         this.orange_score.x = this.game.config.width - this.orange_score.text.width - this.game.config.width*0.04;
         if (this.is_tutorial) {
-            this.green_score.x = 1000000
-            this.orange_score.x = 1000000
+            this.green_score.x = 1000000;
+            this.orange_score.x = 1000000;
         }
 
         
@@ -254,24 +254,24 @@ class GameScene extends Phaser.Scene {
         this.orange_walls_container = new UIContainer(this, 0, this.game.config.height*0.93, "Walls: 00" + this.orange_walls_count, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
         this.orange_walls_container.x = this.game.config.width - this.orange_walls_container.text.width - this.game.config.width*0.01;
         if (this.is_tutorial) {
-            this.orange_walls_container.x = 1000000
-            this.green_walls_container.x = 1000000
+            this.orange_walls_container.x = 1000000;
+            this.green_walls_container.x = 1000000;
         }
 
         this.green_player_move = new UIContainer(this, this.game.config.width*0.04, this.game.config.height*0.6, null, "#" + this.convert_hex_to_hex_string(game_config.green_color));
         this.orange_player_move = new UIContainer(this, this.orange_timer.x + 30, this.game.config.height*0.6, null, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
         if (this.is_tutorial) {
-            this.green_player_move.x = 1000000
-            this.orange_player_move.x = 1000000
+            this.green_player_move.x = 1000000;
+            this.orange_player_move.x = 1000000;
         }
         if (this.mode !== "single") {
             this.waiting_for_move_green = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.35,
-            "Waiting\nfor move", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+            "Waiting\nfor move", "#" + this.convert_hex_to_hex_string(game_config.green_color));
             this.waiting_for_move_orange = new UIContainer(this, this.game.config.width*0.81, this.game.config.height*0.35,
-            "Waiting\nfor move", "#" + this.convert_hex_to_hex_string(game_config.orange_color))
-            this.waiting_for_move_green.updateTextSize(0.8)
-            this.waiting_for_move_orange.updateTextSize(0.8)
-            this.waiting_for_move_animation_step = 50
+            "Waiting\nfor move", "#" + this.convert_hex_to_hex_string(game_config.orange_color));
+            this.waiting_for_move_green.updateTextSize(0.8);
+            this.waiting_for_move_orange.updateTextSize(0.8);
+            this.waiting_for_move_animation_step = 50;
         }
         
 
@@ -279,19 +279,19 @@ class GameScene extends Phaser.Scene {
             this.create_green_wall_button();
             this.create_orange_wall_button();     
             this.green_control_info = new UIContainer(this, this.game.config.width*0.015, this.game.config.height*0.7, "    [W]\n[A][S][D]",
-            "#" + this.convert_hex_to_hex_string(game_config.green_color))
-            this.green_control_info.updateTextSize(0.9)
+            "#" + this.convert_hex_to_hex_string(game_config.green_color));
+            this.green_control_info.updateTextSize(0.9);
             this.orange_control_info = new UIContainer(this, this.game.config.width*0.81, this.game.config.height*0.7, "      [↑]\n[←][↓][→]",
-            "#" + this.convert_hex_to_hex_string(game_config.orange_color))
-            this.orange_control_info.updateTextSize(0.9)
+            "#" + this.convert_hex_to_hex_string(game_config.orange_color));
+            this.orange_control_info.updateTextSize(0.9);
         } else if (this.mode === "single") {
             this.create_green_wall_button();
             if (game_config.colorblind_mode) {
                 this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
-                "You are playing\nas blue.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+                "You are playing\nas blue.", "#" + this.convert_hex_to_hex_string(game_config.green_color));
             } else {
                 this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
-                "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+                "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color));
             }
             this.team_indicator.updateTextSize(0.7)
         } else if (this.mode === "multiplayer") {
@@ -299,17 +299,17 @@ class GameScene extends Phaser.Scene {
                 this.create_green_wall_button();
                 if (game_config.colorblind_mode) {
                     this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
-                    "You are playing\nas blue.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+                    "You are playing\nas blue.", "#" + this.convert_hex_to_hex_string(game_config.green_color));
                 } else {
                     this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
-                    "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color))
+                    "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color));
                 }
             } else {
                 this.create_orange_wall_button();
                 this.team_indicator = new UIContainer(this, this.game.config.width*0.25, this.game.config.height*0.9, 
-                "You are playing\nas orange.", "#" + this.convert_hex_to_hex_string(game_config.orange_color))
+                "You are playing\nas orange.", "#" + this.convert_hex_to_hex_string(game_config.orange_color));
             }
-            this.team_indicator.updateTextSize(0.7)
+            this.team_indicator.updateTextSize(0.7);
         }
 
 
@@ -347,7 +347,7 @@ class GameScene extends Phaser.Scene {
         this.green_wall_button = new Button(this, this.game.config.width*0.35, this.game.config.height*0.96, "button_background_dark", "button_background_hover_dark", "            ", {fontSize: this.game.config.width/30, fill: "#000"}, this.toggle_place_green_wall.bind(this));
         this.green_wall_button_text = new UIContainer(this, 0, 0, "Place Walls", "#" + this.convert_hex_to_hex_string(game_config.green_color));
         if (this.is_tutorial) {
-            this.green_wall_button.x = 1000000
+            this.green_wall_button.x = 1000000;
         }
     }
 
@@ -365,15 +365,15 @@ class GameScene extends Phaser.Scene {
         this.green_wall_bool = !this.green_wall_bool;
         if (this.green_wall_bool) {
             this.green_wall_button_text.updateText("Stop Placing");
-            this.green_wall_button_text.updateTextSize(0.9)
+            this.green_wall_button_text.updateTextSize(0.9);
             if (this.is_tutorial && this.tutorial_step === 12) {
-                this.tutorial_text.updateText("...and clicking on spaces.")
+                this.tutorial_text.updateText("...and clicking on spaces.");
             }
         } else {
             this.green_wall_button_text.updateText("Place Walls");
-            this.green_wall_button_text.updateTextSize(1)
+            this.green_wall_button_text.updateTextSize(1);
             if (this.is_tutorial && this.tutorial_step === 12) {
-                this.tutorial_text.updateText("Place temporary walls by clicking on the \"place walls\"\nbutton below...")
+                this.tutorial_text.updateText("Place temporary walls by clicking on the \"place walls\"\nbutton below...");
             }
         }
     }
@@ -385,10 +385,10 @@ class GameScene extends Phaser.Scene {
         this.orange_wall_bool = !this.orange_wall_bool;
         if (this.orange_wall_bool) {
             this.orange_wall_button_text.updateText("Stop Placing");
-            this.orange_wall_button_text.updateTextSize(0.9)
+            this.orange_wall_button_text.updateTextSize(0.9);
         } else {
             this.orange_wall_button_text.updateText("Place Walls");
-            this.green_wall_button_text.updateTextSize(1)
+            this.green_wall_button_text.updateTextSize(1);
         }
     }
 
@@ -428,9 +428,9 @@ class GameScene extends Phaser.Scene {
         if (this.is_tutorial && this.green_walls_count === 99 
             && this.tutorial_step > 14 && this.tutorial_step < 20 && this.max_wall_tutorial == undefined) {
             this.max_wall_tutorial = new UIContainer(this, this.game.config.width*0.02, this.game.config.height*0.85, 
-            "You can't have more\nthan 99 walls!", "#ffffff")
-            this.max_wall_tutorial.updateTextSize(0.5)
-            this.max_wall_tutorial.emphasize()
+            "You can't have more\nthan 99 walls!", "#ffffff");
+            this.max_wall_tutorial.updateTextSize(0.5);
+            this.max_wall_tutorial.emphasize();
         }
         this.orange_walls_container.updateText("Walls: " + this.orange_walls_count.toFixed(2));
 
@@ -442,26 +442,26 @@ class GameScene extends Phaser.Scene {
         this.scorebar.update(this.green_percent);
 
         if (this.mode !== "single") {
-            this.animate_waiting_for_move()
+            this.animate_waiting_for_move();
         }
 
     }
 
     animate_waiting_for_move() {
-        this.waiting_for_move_animation_step++
+        this.waiting_for_move_animation_step++;
         if (this.waiting_for_move_animation_step === 50) {
-            this.waiting_for_move_green.updateText("Waiting\nfor move")
-            this.waiting_for_move_orange.updateText("Waiting\nfor move")
+            this.waiting_for_move_green.updateText("Waiting\nfor move");
+            this.waiting_for_move_orange.updateText("Waiting\nfor move");
         } else if (this.waiting_for_move_animation_step === 100) {
-            this.waiting_for_move_green.updateText("Waiting\nfor move.")
-            this.waiting_for_move_orange.updateText("Waiting\nfor move.")
+            this.waiting_for_move_green.updateText("Waiting\nfor move.");
+            this.waiting_for_move_orange.updateText("Waiting\nfor move.");
         } else if (this.waiting_for_move_animation_step === 150) {
-            this.waiting_for_move_green.updateText("Waiting\nfor move..")
-            this.waiting_for_move_orange.updateText("Waiting\nfor move..")
+            this.waiting_for_move_green.updateText("Waiting\nfor move..");
+            this.waiting_for_move_orange.updateText("Waiting\nfor move..");
         } else if (this.waiting_for_move_animation_step === 200) {
-            this.waiting_for_move_green.updateText("Waiting\nfor move...")
-            this.waiting_for_move_orange.updateText("Waiting\nfor move...")
-            this.waiting_for_move_animation_step = 0
+            this.waiting_for_move_green.updateText("Waiting\nfor move...");
+            this.waiting_for_move_orange.updateText("Waiting\nfor move...");
+            this.waiting_for_move_animation_step = 0;
         }
     }
 
@@ -518,14 +518,14 @@ class GameScene extends Phaser.Scene {
     ending_animation_part_1(winner_blocks, loser_blocks, winner) {
         this.ending_animation_playing = true;
         if (this.mode !== "single") {
-            this.green_timer.pause()
-            this.orange_timer.pause()
+            this.green_timer.pause();
+            this.orange_timer.pause();
             if (winner === "green" && this.orange_timer.time <= 0) {
-                this.orange_timer.time = 0
-                this.orange_timer.update_visuals()
+                this.orange_timer.time = 0;
+                this.orange_timer.update_visuals();
             } else if (winner === "orange" && this.green_timer.time <= 0) {
-                this.green_timer.time = 0
-                this.green_timer.update_visuals()
+                this.green_timer.time = 0;
+                this.green_timer.update_visuals();
             }
             
             
@@ -542,7 +542,7 @@ class GameScene extends Phaser.Scene {
                 duration: duration,
                 angle: 1200,
                 ease : 'Linear',
-            })
+            });
         }
 
         this.ending_animation_breaking_blocks(winner_blocks, loser_blocks, winner, duration / loser_blocks.length);
@@ -576,7 +576,7 @@ class GameScene extends Phaser.Scene {
                 x: this.cameras.main.centerX,
                 y: this.cameras.main.centerY,
                 ease : 'Back.easeIn',
-            })
+            });
         }
         
         this.time.addEvent({
@@ -596,7 +596,7 @@ class GameScene extends Phaser.Scene {
             winner_blocks[i].container.destroy();
         }
 
-        let new_block = create_block(this, [], 0, 0, game_config[winner + "_color"], winner, game_config, total_value)
+        let new_block = create_block(this, [], 0, 0, game_config[winner + "_color"], winner, game_config, total_value);
         new_block.container.x = this.cameras.main.centerX;
         new_block.container.y = this.cameras.main.centerY;
         new_block.update();
@@ -610,7 +610,7 @@ class GameScene extends Phaser.Scene {
             angle: 360,
             ease : 'Linear',
             onComplete: this.start_win_loss_scene.bind(this, winner)
-        })
+        });
     }
 
 
@@ -645,25 +645,25 @@ class GameScene extends Phaser.Scene {
         this.orange_percent = this.orange_percent * 100;
 
         if (this.is_tutorial && this.tutorial_step < 25) {
-            return
+            return;
         }
 
         if(this.green_percent >= game_config.win_percentage && this.orange_percent >= game_config.win_percentage){
             this.tie();
             return true;
         } else if(this.green_percent >= game_config.win_percentage){
-            this.update_ui_elements()
+            this.update_ui_elements();
             this.green_win();
             if (this.is_tutorial) {
-                game_config.selected_map = 0
-                game_config.top_map_offset = 0.1
-                game_config.bottom_map_offset = 0.1
-                game_config.left_map_offset = 0.1
-                game_config.right_map_offset = 0.1
+                game_config.selected_map = 0;
+                game_config.top_map_offset = 0.1;
+                game_config.bottom_map_offset = 0.1;
+                game_config.left_map_offset = 0.1;
+                game_config.right_map_offset = 0.1;
             }
             return true;
         } else if(this.orange_percent >= game_config.win_percentage){
-            this.update_ui_elements()
+            this.update_ui_elements();
             this.orange_win();
             return true;
         }
@@ -678,7 +678,7 @@ class GameScene extends Phaser.Scene {
         }
 
         if (this.is_tutorial && this.tutorial_step < 22) {
-            return
+            return;
         }
 
         if (this.check_timer_wins()) {
@@ -729,7 +729,7 @@ class GameScene extends Phaser.Scene {
         }
         this.update_all_blocks_list();
         for (let i = 0; i < this.all_block_lists.length; i++) {
-            console.log(this.all_block_lists[i].tile_x, x, this.all_block_lists[i].tile_y, y)
+            console.log(this.all_block_lists[i].tile_x, x, this.all_block_lists[i].tile_y, y);
             if (this.all_block_lists[i].tile_x === x && this.all_block_lists[i].tile_y === y) {
                 return false;
             }
@@ -750,10 +750,10 @@ class GameScene extends Phaser.Scene {
         }
         if (this.is_tutorial) {
             if (this.tutorial_step === 12) {
-                this.tutorial_step++
-                this.tutorial_text.updateText("You can place multiple walls in one turn.") 
+                this.tutorial_step++;
+                this.tutorial_text.updateText("You can place multiple walls in one turn.");
             } else if (this.tutorial_step === 19) {
-                this.tutorial_step++
+                this.tutorial_step++;
             }
         }
 
@@ -870,7 +870,7 @@ class GameScene extends Phaser.Scene {
                             continue;
                         }
                     }
-                    let tile = this.map.getTileAtWorldXY(x, y)
+                    let tile = this.map.getTileAtWorldXY(x, y);
                     this.make_wall([tile.x, tile.y], team);
                 }
             }
@@ -914,7 +914,7 @@ class GameScene extends Phaser.Scene {
         
         if (this.movement_started === false) {
             this.movement_started = true;
-            this.error_log = this.log_block_positions(this.all_block_lists, this.green_move, this.orange_move)
+            this.error_log = this.log_block_positions(this.all_block_lists, this.green_move, this.orange_move);
             for (let i = 0; i < this.all_block_lists.length; i++) {
                 this.all_block_lists[i].movement_status = 1;
             }
@@ -953,7 +953,7 @@ class GameScene extends Phaser.Scene {
                 this.animations_started = false;
                 for (let i = 0; i < this.all_block_lists.length; i++) {
                     if (this.all_block_lists[i].will_be_removed) {
-                        remove_block(this.all_block_lists[i], this.blocks, this.green_blocks, this.orange_blocks)
+                        remove_block(this.all_block_lists[i], this.blocks, this.green_blocks, this.orange_blocks);
                     }
                     else {
                         this.all_block_lists[i].update_visuals();
@@ -966,7 +966,7 @@ class GameScene extends Phaser.Scene {
                 this.update_block_totals();
 
                 if (this.is_tutorial) {
-                    this.tutorial()
+                    this.tutorial();
                 }
             }
         }
@@ -995,20 +995,20 @@ class GameScene extends Phaser.Scene {
     }
 
     remove_all_blocks() {
-        let removed_block_list = []
+        let removed_block_list = [];
         for (let block of this.all_block_lists) {
-            removed_block_list.push(block)
+            removed_block_list.push(block);
         }
         for (let block of removed_block_list) {
-            remove_block(block, this.all_block_lists, this.green_blocks, this.orange_blocks)
-            block.container.destroy()
+            remove_block(block, this.all_block_lists, this.green_blocks, this.orange_blocks);
+            block.container.destroy();
         }
     }
 
     log_block_positions(blocks, green_move, orange_move) {
-        let block_positions = []
+        let block_positions = [];
         for (let block of blocks) {
-            block_positions.push([block.value, block.tile_x, block.tile_y, block.color, block])
+            block_positions.push([block.value, block.tile_x, block.tile_y, block.color, block]);
         }
         return (green_move, orange_move, block_positions);
     }
@@ -1038,7 +1038,7 @@ class GameScene extends Phaser.Scene {
         this.check_pointer_press();
         
         if (this.is_tutorial && this.tutorial_step === 0) {
-            this.tutorial()
+            this.tutorial();
         }
         
         if (!this.any_block_is_moving) {
@@ -1046,47 +1046,47 @@ class GameScene extends Phaser.Scene {
             if (this.green_move !== null && this.orange_move !== null) {
                 if (this.is_tutorial) {
                     if (this.tutorial_step === 12) {
-                        this.orange_move = "right"
+                        this.orange_move = "right";
                     } else if (this.tutorial_step === 21) {
-                        let seen_moves = (this.tutorial_move !== null)
+                        let seen_moves = (this.tutorial_move !== null);
                         if (seen_moves) {
-                            this.green_move = this.tutorial_move
+                            this.green_move = this.tutorial_move;
                         }
                         if (this.green_move === 'up') {
-                            this.orange_move = "left"
+                            this.orange_move = "left";
                         }
                         else if (this.green_move === 'down') {
-                            this.orange_move = "right"
+                            this.orange_move = "right";
                         }
                         else if (this.green_move === 'left') {
-                            this.orange_move = "up"
+                            this.orange_move = "up";
                         }
                         else if (this.green_move === 'right') {
-                            this.orange_move = "down"
+                            this.orange_move = "down";
                         }
                         if (!seen_moves) {
                             this.move_info = new UIContainer(this, this.game.config.width*0.3, this.game.config.height*0.82, 
                             ("Your move: " + this.green_move + "\nOrange's move: " + this.orange_move), "#ffffff");
-                            this.move_info.updateTextSize(0.9)
-                            this.tutorial_move = this.green_move
-                            this.green_move = null
-                            return
+                            this.move_info.updateTextSize(0.9);
+                            this.tutorial_move = this.green_move;
+                            this.green_move = null;
+                            return;
                         } else {
-                            this.tutorial()
-                            this.move_info.destroy()
+                            this.tutorial();
+                            this.move_info.destroy();
                         }
                     } else if (this.tutorial_step === 24) {
                         if (this.green_move === 'up') {
-                            this.orange_move = "right"
+                            this.orange_move = "right";
                         }
                         else if (this.green_move === 'down') {
-                            this.orange_move = "up"
+                            this.orange_move = "up";
                         }
                         else if (this.green_move === 'left') {
-                            this.orange_move = "down"
+                            this.orange_move = "down";
                         }
                         else if (this.green_move === 'right') {
-                            this.orange_move = "left"
+                            this.orange_move = "left";
                         }
                     }
                 }
@@ -1120,17 +1120,17 @@ class GameScene extends Phaser.Scene {
 
         if (this.green_move === null && this.green_has_moved) {
             this.green_timer.unpause();
-            this.green_timer.add_time(game_config.time_increment)
+            this.green_timer.add_time(game_config.time_increment);
             if (this.mode !== "single") {
-                this.waiting_for_move_green.x = this.game.config.width*0.01
+                this.waiting_for_move_green.x = this.game.config.width*0.01;
             }
         }
         
         if (this.orange_move === null && this.orange_has_moved)  {
             this.orange_timer.unpause();
-            this.orange_timer.add_time(game_config.time_increment)
+            this.orange_timer.add_time(game_config.time_increment);
             if (this.mode !== "single") {
-                this.waiting_for_move_orange.x = this.game.config.width*0.81
+                this.waiting_for_move_orange.x = this.game.config.width*0.81;
             }
         }
     }
@@ -1139,12 +1139,12 @@ class GameScene extends Phaser.Scene {
         this.green_move = move;
         this.green_timer.pause();
         if (this.mode !== "single") {
-            this.waiting_for_move_green.x = 1000000
+            this.waiting_for_move_green.x = 1000000;
         }
         this.green_has_moved = true;
         if (this.green_control_info !== undefined && this.green_control_info !== null) {
-            this.green_control_info.destroy()
-            this.green_control_info = null
+            this.green_control_info.destroy();
+            this.green_control_info = null;
         }
     }
 
@@ -1152,118 +1152,118 @@ class GameScene extends Phaser.Scene {
         this.orange_move = move;
         this.orange_timer.pause();
         if (this.mode !== "single") {
-            this.waiting_for_move_orange.x = 1000000
+            this.waiting_for_move_orange.x = 1000000;
         }
         this.orange_has_moved = true;
         if (this.orange_control_info !== undefined && this.orange_control_info !== null) {
-            this.orange_control_info.destroy()
-            this.orange_control_info = null
+            this.orange_control_info.destroy();
+            this.orange_control_info = null;
         }
     }
 
     tutorial() {
         if (this.tutorial_step === 0) {
-            this.scorebar.x = 1000000
-            create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 2)
-            this.tutorial_step++
+            this.scorebar.x = 1000000;
+            create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 2);
+            this.tutorial_step++;
         } else if (this.tutorial_step < 5) {
-            this.tutorial_step++
+            this.tutorial_step++;
             if (this.tutorial_step === 5) {
-                this.tutorial_text.updateText("All your blocks move in the\nsame direction.")
-                this.remove_all_blocks()
-                create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 2)
-                create_block(this, this.green_blocks, 2, 2, game_config.green_color, 'green', game_config, 2)
+                this.tutorial_text.updateText("All your blocks move in the\nsame direction.");
+                this.remove_all_blocks();
+                create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 2);
+                create_block(this, this.green_blocks, 2, 2, game_config.green_color, 'green', game_config, 2);
             }
         } else if (this.tutorial_step === 5) {
             for (let block of this.all_block_lists) {
                 if (block.value === 4) {
-                    this.tutorial_text.updateText("When two of your blocks of the same\nvalue collide, they combine!")
+                    this.tutorial_text.updateText("When two of your blocks of the same\nvalue collide, they combine!");
                     if (block.tile_x === 1 && block.tile_y === 1) {
-                        create_block(this, this.green_blocks, 2, 2, game_config.green_color, 'green', game_config, 4)
+                        create_block(this, this.green_blocks, 2, 2, game_config.green_color, 'green', game_config, 4);
                     } else {
-                        create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 4)
+                        create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 4);
                     }
-                    this.tutorial_step++
+                    this.tutorial_step++;
                 }
             }
         } else if (this.tutorial_step === 6) {
             for (let block of this.all_block_lists) {
                 if (block.value === 8) {
-                    this.tutorial_text.updateTextSize(0.8)
-                    this.tutorial_text.updateText("When two of your blocks with different\nvalues collide, they stop each other from moving.")
+                    this.tutorial_text.updateTextSize(0.8);
+                    this.tutorial_text.updateText("When two of your blocks with different\nvalues collide, they stop each other from moving.");
                     if (block.tile_x === 1 && block.tile_y === 1) {
-                        create_block(this, this.green_blocks, 2, 2, game_config.green_color, 'green', game_config, 4)
+                        create_block(this, this.green_blocks, 2, 2, game_config.green_color, 'green', game_config, 4);
                     } else {
-                        create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 4)
+                        create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 4);
                     }
-                    this.tutorial_step++
+                    this.tutorial_step++;
                 }
             }
         } else if (this.tutorial_step < 12) {
-            this.tutorial_step++
+            this.tutorial_step++;
             if (this.tutorial_step === 12) {
                 this.tutorial_text.updateText("When two blocks from different teams collide,\nthe block with the lower number is destroyed.\n",
-                "(same value blocks from different teams also stop each other from moving.)")
-                this.remove_all_blocks()
-                create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 4)
-                create_block(this, this.orange_blocks, 3, 3, game_config.orange_color, 'orange', game_config, 2)
+                "(same value blocks from different teams also stop each other from moving.)");
+                this.remove_all_blocks();
+                create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 4);
+                create_block(this, this.orange_blocks, 3, 3, game_config.orange_color, 'orange', game_config, 2);
             }
         } else if (this.tutorial_step === 12) {
             if (this.all_block_lists.length === 1) {
-                this.green_walls_count = 99
-                this.tutorial_text.updateText("Place temporary walls by clicking\non the \"place walls\" button below...")
-                this.green_wall_button.x = this.game.config.width*0.35
+                this.green_walls_count = 99;
+                this.tutorial_text.updateText("Place temporary walls by clicking\non the \"place walls\" button below...");
+                this.green_wall_button.x = this.game.config.width*0.35;
             }
         } else if (this.tutorial_step < 14) {
-            this.tutorial_text.updateText("Temporary walls are removed after each turn.") 
-            this.tutorial_step++
+            this.tutorial_text.updateText("Temporary walls are removed after each turn.");
+            this.tutorial_step++;
         } else if (this.tutorial_step < 20) {
             if (this.tutorial_step < 20) {
-                this.tutorial_step++
+                this.tutorial_step++;
             }
             if (this.tutorial_step === 15) {
-                this.tutorial_text.updateText("You have a limited number of walls to place.\nYou gain one wall every turn.")
-                this.green_walls_count = 0
-                this.update_ui_elements()
-                this.green_walls_container.x = this.game.config.width*0.01
+                this.tutorial_text.updateText("You have a limited number of walls to place.\nYou gain one wall every turn.");
+                this.green_walls_count = 0;
+                this.update_ui_elements();
+                this.green_walls_container.x = this.game.config.width*0.01;
             }
-            this.green_walls_container.emphasize()
+            this.green_walls_container.emphasize();
         } else if (this.tutorial_step === 20) {
-            this.tutorial_text.updateText("Each turn, both players choose\na direction to move...")
-            this.green_walls_container.x = 1000000
-            this.green_wall_button.x = 1000000
-            this.green_wall_bool = false
-            this.remove_all_blocks()
+            this.tutorial_text.updateText("Each turn, both players choose\na direction to move...");
+            this.green_walls_container.x = 1000000;
+            this.green_wall_button.x = 1000000;
+            this.green_wall_bool = false;
+            this.remove_all_blocks();
             if (this.max_wall_tutorial !== undefined) {
-                this.max_wall_tutorial.destroy()
+                this.max_wall_tutorial.destroy();
             }
-            create_block(this, this.green_blocks, 2, 2, game_config.green_color, 'green', game_config, 4)
-            create_block(this, this.orange_blocks, 2, 1, game_config.orange_color, 'orange', game_config, 2)
-            create_block(this, this.orange_blocks, 1, 2, game_config.orange_color, 'orange', game_config, 2)
-            create_block(this, this.orange_blocks, 3, 2, game_config.orange_color, 'orange', game_config, 2)
-            create_block(this, this.orange_blocks, 2, 3, game_config.orange_color, 'orange', game_config, 2)
-            this.tutorial_step++
+            create_block(this, this.green_blocks, 2, 2, game_config.green_color, 'green', game_config, 4);
+            create_block(this, this.orange_blocks, 2, 1, game_config.orange_color, 'orange', game_config, 2);
+            create_block(this, this.orange_blocks, 1, 2, game_config.orange_color, 'orange', game_config, 2);
+            create_block(this, this.orange_blocks, 3, 2, game_config.orange_color, 'orange', game_config, 2);
+            create_block(this, this.orange_blocks, 2, 3, game_config.orange_color, 'orange', game_config, 2);
+            this.tutorial_step++;
         } else if (this.tutorial_step === 21) {
-            this.tutorial_text.updateText("...and then all blocks move at the same time.")
-            this.tutorial_step++
+            this.tutorial_text.updateText("...and then all blocks move at the same time.");
+            this.tutorial_step++;
         } else if (this.tutorial_step === 22) {
-            this.tutorial_step++
+            this.tutorial_step++;
         } else if (this.tutorial_step === 23) {
-            this.scorebar.x = this.game.config.width*0.27
-            this.tutorial_text.updateText("Each player's score is based on the combined value\nof their blocks compared to their opponent.")
-            this.tutorial_text.y = this.game.config.height * 0.8
-            this.tutorial_text.x = this.game.config.width * 0.05
-            this.orange_score.x = this.game.config.width - this.orange_score.text.width - this.game.config.width*0.02
-            this.green_score.x = this.game.config.width*0.005
-            this.remove_all_blocks()
-            create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 64)
-            create_block(this, this.orange_blocks, 3, 2, game_config.orange_color, 'orange', game_config, 32)
-            create_block(this, this.orange_blocks, 2, 3, game_config.orange_color, 'orange', game_config, 4)
-            this.update_block_totals()
-            this.tutorial_step++
+            this.scorebar.x = this.game.config.width*0.27;
+            this.tutorial_text.updateText("Each player's score is based on the combined value\nof their blocks compared to their opponent.");
+            this.tutorial_text.y = this.game.config.height * 0.8;
+            this.tutorial_text.x = this.game.config.width * 0.05;
+            this.orange_score.x = this.game.config.width - this.orange_score.text.width - this.game.config.width*0.02;
+            this.green_score.x = this.game.config.width*0.005;
+            this.remove_all_blocks();
+            create_block(this, this.green_blocks, 1, 1, game_config.green_color, 'green', game_config, 64);
+            create_block(this, this.orange_blocks, 3, 2, game_config.orange_color, 'orange', game_config, 32);
+            create_block(this, this.orange_blocks, 2, 3, game_config.orange_color, 'orange', game_config, 4);
+            this.update_block_totals();
+            this.tutorial_step++;
         } else if (this.tutorial_step === 24) {
-            this.tutorial_text.updateText("Reach " + game_config.win_percentage + "% to win!")
-            this.tutorial_step++
+            this.tutorial_text.updateText("Reach " + game_config.win_percentage + "% to win!");
+            this.tutorial_step++;
         }
     }
 }
