@@ -1,3 +1,7 @@
+# -----------------------
+# Visual grid for creating tests of a the format used in test/test.js
+# -----------------------
+
 import sys
 import pygame
 
