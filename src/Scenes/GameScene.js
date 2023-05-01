@@ -729,7 +729,6 @@ class GameScene extends Phaser.Scene {
         }
         this.update_all_blocks_list();
         for (let i = 0; i < this.all_block_lists.length; i++) {
-            console.log(this.all_block_lists[i].tile_x, x, this.all_block_lists[i].tile_y, y);
             if (this.all_block_lists[i].tile_x === x && this.all_block_lists[i].tile_y === y) {
                 return false;
             }
@@ -871,6 +870,9 @@ class GameScene extends Phaser.Scene {
                         }
                     }
                     let tile = this.map.getTileAtWorldXY(x, y);
+                    if (tile === null) {
+                        return;
+                    }
                     this.make_wall([tile.x, tile.y], team);
                 }
             }
