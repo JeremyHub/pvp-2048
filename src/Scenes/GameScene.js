@@ -79,8 +79,15 @@ class GameScene extends Phaser.Scene {
         this.orange_blocks = [];        // orange blocks            
         this.green_blocks = [];         // green blocks
 
-        this.orange_walls = [];         // orange walls
-        this.green_walls = [];          // green walls
+        this.placed_orange_walls = [];         // orange walls placed in the map
+        this.placed_green_walls = [];          // green walls placed in the map
+
+        this.green_walls_count = 0;         // number of green walls (not placed)
+        this.orange_walls_count = 0;        // number of orange walls (not placed)
+
+        this.green_wall_bool = false;
+        this.orange_wall_bool = false;
+
 
         this.orange_move = null;
         this.green_move = null;
@@ -112,11 +119,6 @@ class GameScene extends Phaser.Scene {
 
         // Define a list of the keys
         this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M', 'L', 'K', 'N'];
-
-        this.green_walls_count = 0;
-        this.orange_walls_count = 0;
-        this.green_wall_bool = false;
-        this.orange_wall_bool = false;
 
         this.green_lock = "false";      
         this.orange_lock = "false";
@@ -740,7 +742,7 @@ class GameScene extends Phaser.Scene {
             this.map.putTileAt(game_config.orange_wall, x, y);
         }
         
-        this[team + "_walls"].push(this.map.getTileAt(x, y));
+        this["placed_" + team + "_walls"].push(this.map.getTileAt(x, y));
         this[team + "_walls_count"] --;
         if (this.mode === "multiplayer") {
             if (this.your_color === team) {
@@ -890,14 +892,14 @@ class GameScene extends Phaser.Scene {
                 this.orange_walls_count += game_config.wall_increment;
             }
 
-            for( let i = 0; i < this.green_walls.length; i++){
-                if(this.green_walls[i].index === game_config.green_wall){
-                    this.green_walls[i].index = game_config.empty_space_id[0];
+            for( let i = 0; i < this.placed_green_walls.length; i++){
+                if(this.placed_green_walls[i].index === game_config.green_wall){
+                    this.placed_green_walls[i].index = game_config.empty_space_id[0];
                 }
             }
-            for( let i = 0; i < this.orange_walls.length; i++){
-                if(this.orange_walls[i].index === game_config.orange_wall){
-                    this.orange_walls[i].index = game_config.empty_space_id[0];
+            for( let i = 0; i < this.placed_orange_walls.length; i++){
+                if(this.placed_orange_walls[i].index === game_config.orange_wall){
+                    this.placed_orange_walls[i].index = game_config.empty_space_id[0];
                 }
             }
         }
