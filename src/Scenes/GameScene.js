@@ -811,10 +811,10 @@ class GameScene extends Phaser.Scene {
 
             
             let values = {
-                orange_bool: game_config.orange_id[0],
-                green_bool: game_config.green_id[0],
-                barrier_bool: game_config.wall_id[0],
-                background_bool: game_config.empty_space_id[0]
+                is_placing_orange_blocks: game_config.orange_id[0],
+                is_placing_green_blocks: game_config.green_id[0],
+                is_placing_barriers: game_config.wall_id[0],
+                is_placing_background_blocks: game_config.empty_space_id[0]
             };
             
             if (this.manual_block_spawn_value === null) {
@@ -864,7 +864,7 @@ class GameScene extends Phaser.Scene {
             }
 
             for (let team of ['orange', 'green']) {
-                if (this[team + '_wall_bool']) {
+                if (this["is_placing_" + team + '_walls']) {
                     if (this.mode === "multiplayer") {
                         if (this.your_color !== team) {
                             continue;
