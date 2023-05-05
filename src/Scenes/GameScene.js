@@ -289,11 +289,11 @@ class GameScene extends Phaser.Scene {
         } else if (this.mode === "single") {
             this.create_green_wall_button();
             if (game_config.colorblind_mode) {
-                this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
-                "You are playing\nas blue.", "#" + this.convert_hex_to_hex_string(game_config.green_color));
+                this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.7, 
+                    "You're\nBLUE", "#" + this.convert_hex_to_hex_string(game_config.green_color));
             } else {
-                this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
-                "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color));
+                this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.7, 
+                    " You're\nGREEN", "#" + this.convert_hex_to_hex_string(game_config.green_color));
             }
             this.team_indicator.updateTextSize(0.7)
         } else if (this.mode === "multiplayer") {
