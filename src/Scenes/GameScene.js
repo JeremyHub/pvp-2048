@@ -85,8 +85,8 @@ class GameScene extends Phaser.Scene {
         this.green_walls_count = 0;         // number of green walls (not placed)
         this.orange_walls_count = 0;        // number of orange walls (not placed)
 
-        this.green_wall_bool = false;
-        this.orange_wall_bool = false;
+        this.is_placing_green_walls = false;
+        this.is_placing_orange_walls = false;
 
 
         this.orange_move = null;
@@ -97,10 +97,10 @@ class GameScene extends Phaser.Scene {
 
         this.blocks_moved = false;
 
-        this.orange_bool = false;
-        this.green_bool = false;
-        this.barrier_bool = false;
-        this.background_bool = false;
+        this.is_placing_orange_blocks = false;
+        this.is_placing_green_blocks = false;
+        this.is_placing_barriers = false;
+        this.is_placing_background_blocks = false;
 
         this.is_drawing = false;
 
@@ -148,8 +148,6 @@ class GameScene extends Phaser.Scene {
 
         this.load.image('combinedmaps', 'src/assets/combinedmaps.png');
         this.load.image('tiles', 'src/assets/tiles.png');
-
-        this.load.audio("wall_place_sound", "src/assets/wall_place_sound.mp3");
 
         this.load.atlas('shapes', 'src/assets/shapes.png', 'src/assets/shapes.json');
         this.load.text('block-particle', 'src/assets/block-particle.json');
@@ -324,12 +322,6 @@ class GameScene extends Phaser.Scene {
     }
 
 
-    wall_place_sound_play() {
-        let wall_place_sound = this.sound.add("wall_place_sound", {volume: 0.2});
-        wall_place_sound.play();
-    }
-
-
     create_green_wall_button() {
         this.green_wall_button = new Button(this, this.game.config.width*0.5, this.game.config.height*0.96, "button_background_dark", "button_background_hover_dark", "            ", {fontSize: this.game.config.width/30, fill: "#000"}, this.toggle_place_green_wall.bind(this));
         this.green_wall_button_text = new UIContainer(this, 0, 0, "Place Walls", "#" + this.convert_hex_to_hex_string(game_config.green_color));
@@ -361,11 +353,11 @@ class GameScene extends Phaser.Scene {
     }
 
     toggle_place_green_wall() {
-        if (this.orange_wall_bool) {
+        if (this.is_placing_orange_walls) {
             this.toggle_place_orange_wall();
         }
-        this.green_wall_bool = !this.green_wall_bool;
-        if (this.green_wall_bool) {
+        this.is_placing_green_walls = !this.is_placing_green_walls;
+        if (this.is_placing_green_walls) {
             this.green_wall_button_text.updateText("Stop Placing");
             this.green_wall_button_text.updateTextSize(0.9);
             if (this.is_tutorial && this.tutorial_step === 12) {
@@ -381,11 +373,11 @@ class GameScene extends Phaser.Scene {
     }
 
     toggle_place_orange_wall() {
-        if (this.green_wall_bool) {
+        if (this.is_placing_green_walls) {
             this.toggle_place_green_wall();
         }
-        this.orange_wall_bool = !this.orange_wall_bool;
-        if (this.orange_wall_bool) {
+        this.is_placing_orange_walls = !this.is_placing_orange_walls;
+        if (this.is_placing_orange_walls) {
             this.orange_wall_button_text.updateText("Stop Placing");
             this.orange_wall_button_text.updateTextSize(0.9);
         } else {
@@ -771,25 +763,25 @@ class GameScene extends Phaser.Scene {
 
     check_key_presses() {
         if(this.o_key.isDown){
-            this.orange_bool = true;
-            this.green_bool = false;
-            this.barrier_bool = false;
-            this.background_bool = false;
+            this.is_placing_orange_blocks = true;
+            this.is_placing_green_blocks = false;
+            this.is_placing_barriers = false;
+            this.is_placing_background_blocks = false;
         } if(this.g_key.isDown){
-            this.orange_bool = false;
-            this.green_bool = true;
-            this.barrier_bool = false;
-            this.background_bool = false;
+            this.is_placing_orange_blocks = false;
+            this.is_placing_green_blocks = true;
+            this.is_placing_barriers = false;
+            this.is_placing_background_blocks = false;
         } if(this.b_key.isDown){
-            this.orange_bool = false;
-            this.green_bool = false;
-            this.barrier_bool = true;
-            this.background_bool = false;
+            this.is_placing_orange_blocks = false;
+            this.is_placing_green_blocks = false;
+            this.is_placing_barriers = true;
+            this.is_placing_background_blocks = false;
         } if(this.t_key.isDown){
-            this.orange_bool = false;
-            this.green_bool = false;
-            this.barrier_bool = false;
-            this.background_bool = true;
+            this.is_placing_orange_blocks = false;
+            this.is_placing_green_blocks = false;
+            this.is_placing_barriers = false;
+            this.is_placing_background_blocks = true;
         } if(this.z_key.isDown){
             this.manual_block_spawn_value = 2;
         } if(this.x_key.isDown){
@@ -803,10 +795,10 @@ class GameScene extends Phaser.Scene {
         } if(this.m_key.isDown){
             box_in(this, game_config.wall_id[0], game_config);
         } if(this.n_key.isDown){                                    // for now some type of set all bools to false
-            this.orange_bool = false;
-            this.green_bool = false;
-            this.barrier_bool = false;
-            this.background_bool = false;
+            this.is_placing_orange_blocks = false;
+            this.is_placing_green_blocks = false;
+            this.is_placing_barriers = false;
+            this.is_placing_background_blocks = false;
         }
     }
 
@@ -841,18 +833,18 @@ class GameScene extends Phaser.Scene {
                 let block_list;
                 let team;
                 let color;
-                if(this.orange_bool === true){
+                if(this.is_placing_orange_blocks === true){
                     block_list = this.orange_blocks;
                     team = 'orange';
                     color = game_config.orange_color;
                 }
-                else if(this.green_bool === true){
+                else if(this.is_placing_green_blocks === true){
                     block_list = this.green_blocks;
                     team = 'green';
                     color = game_config.green_color;
                 }
 
-                if (this.green_bool === true || this.orange_bool === true) {
+                if (this.is_placing_green_blocks === true || this.is_placing_orange_blocks === true) {
                     let tile = this.map.getTileAtWorldXY(x, y);
                     if (tile === null) {
                         return;
@@ -1250,7 +1242,7 @@ class GameScene extends Phaser.Scene {
             this.tutorial_text.updateText("Each turn, both players choose\na direction to move...");
             this.green_walls_container.x = 1000000;
             this.green_wall_button.x = 1000000;
-            this.green_wall_bool = false;
+            this.is_placing_green_walls = false;
             this.remove_all_blocks();
             if (this.max_wall_tutorial !== undefined) {
                 this.max_wall_tutorial.destroy();
