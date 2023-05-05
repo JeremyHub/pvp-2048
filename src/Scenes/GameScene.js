@@ -146,7 +146,6 @@ class GameScene extends Phaser.Scene {
         }
         this.load.tilemapTiledJSON('tutorial', `src/assets/tutorial.json`);
 
-        this.load.image('combinedmaps', 'src/assets/combinedmaps.png');
         this.load.image('tiles', 'src/assets/tiles.png');
 
         this.load.atlas('shapes', 'src/assets/shapes.png', 'src/assets/shapes.json');
