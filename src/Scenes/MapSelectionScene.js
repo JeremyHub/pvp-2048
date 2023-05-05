@@ -104,8 +104,8 @@ export class MapSelectionScene extends StartScene {
                 this.current_image.y = this.game.config.height - this.current_image.height/2;
             }
 
-            this.current_map_text = new UIContainer(this, this.game.config.width*0.27, this.game.config.height*0.55, 
-            ("Currently Selected Map:\n" + game_config.maps.at(game_config.selected_map).toLowerCase()), "#ffffff")
+            this.current_map_text = new UIContainer(this, this.game.config.width*0.02, this.game.config.height*0.25, 
+            ("Currently \nSelected \nMap:\n\n" + game_config.maps.at(game_config.selected_map).toLowerCase()), "#ffffff")
             this.current_map_text.updateTextSize(0.9)
         }
         
