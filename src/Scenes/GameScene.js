@@ -237,9 +237,9 @@ class GameScene extends Phaser.Scene {
             this.green_timer = dummy;
             this.orange_timer = dummy;
         } else {
-            this.green_timer = new Timer(this, this.game.config.width*0.01, this.game.config.height*0.5, game_config.starting_time, "#" + this.convert_hex_to_hex_string(game_config.green_color));
+            this.green_timer = new Timer(this, this.game.config.width*0.015, this.game.config.height*0.5, game_config.starting_time, "#" + this.convert_hex_to_hex_string(game_config.green_color));
             this.orange_timer = new Timer(this, 0, this.game.config.height*0.5, game_config.starting_time, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
-            this.orange_timer.x = this.game.config.width - this.orange_timer.text.width - 5;
+            this.orange_timer.x = this.game.config.width - this.orange_timer.text.width - this.game.config.width*.015;
         }
         
         // I did something a little strange with orange_score.x
@@ -292,10 +292,10 @@ class GameScene extends Phaser.Scene {
         } else if (this.mode === "single") {
             this.create_green_wall_button();
             if (game_config.colorblind_mode) {
-                this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.7, 
+                this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.15, 
                     "You're\nBLUE", "#" + this.convert_hex_to_hex_string(game_config.green_color));
             } else {
-                this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.7, 
+                this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.15, 
                     " You're\nGREEN", "#" + this.convert_hex_to_hex_string(game_config.green_color));
             }
             this.team_indicator.updateTextSize(0.7)
@@ -303,15 +303,15 @@ class GameScene extends Phaser.Scene {
             if (this.your_color === "green") {
                 this.create_green_wall_button();
                 if (game_config.colorblind_mode) {
-                    this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.7, 
+                    this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.15, 
                     "You're\nBLUE", "#" + this.convert_hex_to_hex_string(game_config.green_color));
                 } else {
-                    this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.7, 
+                    this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.15, 
                     " You're\nGREEN", "#" + this.convert_hex_to_hex_string(game_config.green_color));
                 }
             } else {
                 this.create_orange_wall_button();
-                this.team_indicator = new UIContainer(this, this.game.config.width*0.83, this.game.config.height*0.7, 
+                this.team_indicator = new UIContainer(this, this.game.config.width*0.83, this.game.config.height*0.15, 
                 "  You're\nORANGE", "#" + this.convert_hex_to_hex_string(game_config.orange_color));
             }
             this.team_indicator.updateTextSize(0.7);
