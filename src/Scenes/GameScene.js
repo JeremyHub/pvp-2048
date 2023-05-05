@@ -251,10 +251,13 @@ class GameScene extends Phaser.Scene {
             this.orange_score.x = 1000000;
         }
 
-        
-        this.green_walls_container = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.93, "Walls: " + this.green_walls_count, "#" + this.convert_hex_to_hex_string(game_config.green_color));
+        this.green_walls_container = new UIContainer(this, this.game.config.width*0.02, this.game.config.height*0.93, "Walls: " + this.green_walls_count, "#" + this.convert_hex_to_hex_string(game_config.green_color));
         this.orange_walls_container = new UIContainer(this, 0, this.game.config.height*0.93, "Walls: 00" + this.orange_walls_count, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
-        this.orange_walls_container.x = this.game.config.width - this.orange_walls_container.text.width - this.game.config.width*0.02;
+        if (game_config.wall_increment % 1 === 0) {
+            this.orange_walls_container.x = this.game.config.width*.79;
+        } else {
+            this.orange_walls_container.x = this.game.config.width - this.orange_walls_container.text.width - this.game.config.width*0.02;
+        }
         if (this.is_tutorial) {
             this.orange_walls_container.x = 1000000;
             this.green_walls_container.x = 1000000;
@@ -441,7 +444,16 @@ class GameScene extends Phaser.Scene {
             this.orange_score.updateText("Score: " + orange_score_rounded + "%");
         }
 
-        this.green_walls_container.updateText("Walls: " + this.green_walls_count.toFixed(2));
+
+        if (game_config.wall_increment % 1 === 0) {
+            this.green_walls_container.updateText("Walls: " + this.green_walls_count.toFixed());
+            this.orange_walls_container.updateText("Walls: " + this.orange_walls_count.toFixed());
+
+        } else {
+            this.green_walls_container.updateText("Walls: " + this.green_walls_count.toFixed(2));
+            this.orange_walls_container.updateText("Walls: " + this.orange_walls_count.toFixed(2));
+        }
+
         if (this.is_tutorial && this.green_walls_count === 99 
             && this.tutorial_step > 14 && this.tutorial_step < 20 && this.max_wall_tutorial == undefined) {
             this.max_wall_tutorial = new UIContainer(this, this.game.config.width*0.02, this.game.config.height*0.85, 
@@ -449,7 +461,6 @@ class GameScene extends Phaser.Scene {
             this.max_wall_tutorial.updateTextSize(0.5);
             this.max_wall_tutorial.emphasize();
         }
-        this.orange_walls_container.updateText("Walls: " + this.orange_walls_count.toFixed(2));
 
         if ((this.green_move !== null && this.orange_move !== null) || (this.green_move === null && this.orange_move === null)) {
             this.green_player_move.updateText(this.green_move);
