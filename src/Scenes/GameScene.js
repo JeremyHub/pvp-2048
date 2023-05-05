@@ -295,8 +295,14 @@ class GameScene extends Phaser.Scene {
                 this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.15, 
                     "You're\nBLUE", "#" + this.convert_hex_to_hex_string(game_config.green_color));
             } else {
-                this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.15, 
+                if (this.is_tutorial) {
+                    this.team_indicator = new UIContainer(this, this.game.config.width*0.02, this.game.config.height*0.47, 
+                    " You're GREEN", "#" + this.convert_hex_to_hex_string(game_config.green_color));
+                } else {
+                    this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.15, 
                     " You're\nGREEN", "#" + this.convert_hex_to_hex_string(game_config.green_color));
+                }
+
             }
             this.team_indicator.updateTextSize(0.7)
         } else if (this.mode === "multiplayer") {
