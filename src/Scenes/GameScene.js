@@ -254,7 +254,7 @@ class GameScene extends Phaser.Scene {
         
         this.green_walls_container = new UIContainer(this, this.game.config.width*0.01, this.game.config.height*0.93, "Walls: " + this.green_walls_count, "#" + this.convert_hex_to_hex_string(game_config.green_color));
         this.orange_walls_container = new UIContainer(this, 0, this.game.config.height*0.93, "Walls: 00" + this.orange_walls_count, "#" + this.convert_hex_to_hex_string(game_config.orange_color));
-        this.orange_walls_container.x = this.game.config.width - this.orange_walls_container.text.width - this.game.config.width*0.01;
+        this.orange_walls_container.x = this.game.config.width - this.orange_walls_container.text.width - this.game.config.width*0.02;
         if (this.is_tutorial) {
             this.orange_walls_container.x = 1000000;
             this.green_walls_container.x = 1000000;
@@ -278,8 +278,8 @@ class GameScene extends Phaser.Scene {
         
 
         if (this.mode === "local_multiplayer") {
-            this.create_green_wall_button();
-            this.create_orange_wall_button();     
+            this.create_green_wall_button_local_multiplayer();
+            this.create_orange_wall_button_local_multiplayer();     
             this.green_control_info = new UIContainer(this, this.game.config.width*0.015, this.game.config.height*0.7, "    [W]\n[A][S][D]",
             "#" + this.convert_hex_to_hex_string(game_config.green_color));
             this.green_control_info.updateTextSize(0.9);
@@ -300,16 +300,16 @@ class GameScene extends Phaser.Scene {
             if (this.your_color === "green") {
                 this.create_green_wall_button();
                 if (game_config.colorblind_mode) {
-                    this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
-                    "You are playing\nas blue.", "#" + this.convert_hex_to_hex_string(game_config.green_color));
+                    this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.7, 
+                    "You're\nBLUE", "#" + this.convert_hex_to_hex_string(game_config.green_color));
                 } else {
-                    this.team_indicator = new UIContainer(this, this.game.config.width*0.5, this.game.config.height*0.9, 
-                    "You are playing\nas green.", "#" + this.convert_hex_to_hex_string(game_config.green_color));
+                    this.team_indicator = new UIContainer(this, this.game.config.width*0.045, this.game.config.height*0.7, 
+                    " You're\nGREEN", "#" + this.convert_hex_to_hex_string(game_config.green_color));
                 }
             } else {
                 this.create_orange_wall_button();
-                this.team_indicator = new UIContainer(this, this.game.config.width*0.25, this.game.config.height*0.9, 
-                "You are playing\nas orange.", "#" + this.convert_hex_to_hex_string(game_config.orange_color));
+                this.team_indicator = new UIContainer(this, this.game.config.width*0.83, this.game.config.height*0.7, 
+                "  You're\nORANGE", "#" + this.convert_hex_to_hex_string(game_config.orange_color));
             }
             this.team_indicator.updateTextSize(0.7);
         }
@@ -346,6 +346,14 @@ class GameScene extends Phaser.Scene {
     }
 
     create_green_wall_button() {
+        this.green_wall_button = new Button(this, this.game.config.width*0.5, this.game.config.height*0.96, "button_background_dark", "button_background_hover_dark", "            ", {fontSize: this.game.config.width/30, fill: "#000"}, this.toggle_place_green_wall.bind(this));
+        this.green_wall_button_text = new UIContainer(this, 0, 0, "Place Walls", "#" + this.convert_hex_to_hex_string(game_config.green_color));
+        if (this.is_tutorial) {
+            this.green_wall_button.x = 1000000;
+        }
+    }
+
+    create_green_wall_button_local_multiplayer() {
         this.green_wall_button = new Button(this, this.game.config.width*0.35, this.game.config.height*0.96, "button_background_dark", "button_background_hover_dark", "            ", {fontSize: this.game.config.width/30, fill: "#000"}, this.toggle_place_green_wall.bind(this));
         this.green_wall_button_text = new UIContainer(this, 0, 0, "Place Walls", "#" + this.convert_hex_to_hex_string(game_config.green_color));
         if (this.is_tutorial) {
@@ -354,6 +362,13 @@ class GameScene extends Phaser.Scene {
     }
 
     create_orange_wall_button() {
+        this.orange_wall_button = new Button(this, 0, this.game.config.height*0.96, "button_background_dark", "button_background_hover_dark", "            ", {fontSize: this.game.config.width/30}, this.toggle_place_orange_wall.bind(this));
+        this.orange_wall_button.x = this.game.config.width*.5;
+        
+        this.orange_wall_button_text = new UIContainer(this, 0, 0, "Place Walls", "#" + this.convert_hex_to_hex_string(game_config.orange_color));
+    }
+
+    create_orange_wall_button_local_multiplayer() {
         this.orange_wall_button = new Button(this, 0, this.game.config.height*0.96, "button_background_dark", "button_background_hover_dark", "            ", {fontSize: this.game.config.width/30}, this.toggle_place_orange_wall.bind(this));
         this.orange_wall_button.x = this.game.config.width - this.orange_wall_button.text.width - this.game.config.width*0.14;
         

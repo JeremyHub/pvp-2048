@@ -43,7 +43,7 @@ class ScoreBar extends Phaser.GameObjects.Container{
         this.orange_win_percent_line = new Phaser.GameObjects.Rectangle(this.scene, this.maxScoreHeight - this.near_win_rect.width, 0, 
             this.scene.game.config.width * 0.003, this.scene.game.config.width * 0.04, 0xffd180)
         this.win_percentage_text = new UIContainer(this.scene, this.maxScoreHeight * 0.2, this.scene.game.config.width * -0.02, 
-            "Reach " + this.win_percentage + "% to win!", "#000000")
+            "REACH " + this.win_percentage + "% TO WIN", "#000000")
         this.win_percentage_text.updateTextSize(0.7)
         
         this.add(this.orange_rect);
