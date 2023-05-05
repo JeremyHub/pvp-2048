@@ -30,9 +30,9 @@ const game_config = {
     orange_color: 0xf27507,
     green_color: 0x00ff00,
     colorblind_mode: false,
-    wall_id: [6,262,268, 62, 132, 34],
-    green_id: [57, 1, 2, 3, 17, 18, 19, 33, 34, 35, 321, 29],   // spawning area
-    orange_id: [127, 7, 8, 9, 23, 24,25, 39, 40, 41], // spawning area
+    wall_id: [6,262, 268, 62, 132, 34],
+    green_id: [57, 321, 29],   // spawning area
+    orange_id: [127], // spawning area
     green_wall: 62,
     orange_wall: 132,
     empty_space_id: [15,178],
@@ -150,16 +150,10 @@ class GameScene extends Phaser.Scene {
         this.load.image('tiles', 'src/assets/tiles.png');
 
         this.load.audio("wall_place_sound", "src/assets/wall_place_sound.mp3");
-        this.load.audio("ohhaimark", "src/assets/ohhaimark.mp3");
-        this.load.audio("andimdying", "src/assets/andimdying.mp3");
-        this.load.audio("letsgoeathuu", "src/assets/letsgoeathuu.mp3");
-        this.load.audio("ididnothither", "src/assets/ididnothither.mp3");
 
         this.load.atlas('shapes', 'src/assets/shapes.png', 'src/assets/shapes.json');
         this.load.text('block-particle', 'src/assets/block-particle.json');
 
-        this.load.image('paul', 'src/assets/paul.png');
-        this.load.image('susan', 'src/assets/susan.png');
     }
 
     convert_hex_to_hex_string(num) {
@@ -329,30 +323,12 @@ class GameScene extends Phaser.Scene {
         this.is_drawing = true;
     }
 
-    ididnothither_play() {
-        let ididnothither = this.sound.add('ididnothither', {volume: 0.02});
-        ididnothither.play();
-    }
-
-    letsgoeathuu_play() {
-        let letsgoeathuuplay = this.sound.add('letsgoeathuu', {volume: 0.2});
-        letsgoeathuuplay.play();
-    }
-
-    andimdying_play() {
-        let imdying = this.sound.add('andimdying', {volume: 0.7});
-        imdying.play();
-    }
 
     wall_place_sound_play() {
         let wall_place_sound = this.sound.add("wall_place_sound", {volume: 0.2});
         wall_place_sound.play();
     }
 
-    ohhaimark_play() {
-        let ohhaimark = this.sound.add('ohhaimark', {volume: 0.6});
-        ohhaimark.play();
-    }
 
     create_green_wall_button() {
         this.green_wall_button = new Button(this, this.game.config.width*0.5, this.game.config.height*0.96, "button_background_dark", "button_background_hover_dark", "            ", {fontSize: this.game.config.width/30, fill: "#000"}, this.toggle_place_green_wall.bind(this));
@@ -919,9 +895,15 @@ class GameScene extends Phaser.Scene {
             // cap wall count at 99
             if (this.green_walls_count < 99) {
                 this.green_walls_count += game_config.wall_increment;
+                if (this.green_walls_count > 99) {
+                    this.green_walls_count = 99;
+                }
             }
             if (this.orange_walls_count < 99) {
                 this.orange_walls_count += game_config.wall_increment;
+                if (this.orange_walls_count > 99) {
+                    this.orange_walls_count = 99;
+                }
             }
 
             for( let i = 0; i < this.placed_green_walls.length; i++){
