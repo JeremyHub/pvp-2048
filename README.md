@@ -4,7 +4,7 @@ This is an adversarial web-based game of 2048. It has local and online multiplay
 
 Currently hosted at jeremyhub.ninja/pvp-2048
 
-It is built using Phaser and Firebase.
+It is built using Phaser and Firebase. It uses Mocha for testing.
 
 # Development
 
