@@ -37,6 +37,10 @@ var {GameScene, game_config, block_config, create_block} = require('../src/Scene
 
 function make_scene() { // make a mock scene object
     let scene = new GameScene();
+
+    scene.waiting_for_move_green = {};
+    scene.waiting_for_move_orange = {};
+
     scene.green_timer = {
         pause: function() {},
     }
