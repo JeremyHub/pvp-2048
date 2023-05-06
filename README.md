@@ -15,6 +15,10 @@ To run the code:
 - run `npm start`
 - it should open a browser window to `localhost:8080` with the game running
 
+If you want to run the tests:
+
+- run `npm test` from the root of the project
+
 # Deployment
 
 It is deployed using github pages through the `gh-pages` branch. To deploy:
