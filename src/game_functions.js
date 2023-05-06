@@ -137,7 +137,6 @@ function evaluate_collision(colliding_blocks, is_direct, seed, block_list) {
     }
 
     
-    // TODO dont hardcode the names of the teams
     // sort the blocks into two lists by team
     let green_colliding_blocks = [];
     let orange_colliding_blocks = [];
@@ -339,25 +338,6 @@ function spawnblocks(game, spawnarea, team, list_of_blocks, game_config, seed) {
 
 }
 
-
-function box_in(game, value, game_config) {
-    const width = game_config.num_cols;
-    const height = game_config.num_rows
-    
-    // Set left and right boundaries
-    for (let i = 0; i < height; i++) {
-      game.map.putTileAt(value, game.box_in_counter, i );
-      game.map.putTileAt(value, (width - 1 - game.box_in_counter), i);
-    }
-  
-    // Set top and bottom boundaries
-    for (let i = 0; i < width; i++) {
-      game.map.putTileAt(value, i, game.box_in_counter);
-      game.map.putTileAt(value, i, (height - 1 - game.box_in_counter));
-    }
-    game.box_in_counter++;
-}
-
 function getTotalValueOfBlocks(blockList) {             
     let totalValue = 0;                                 
     for (let i = 0; i < blockList.length; i++) {
@@ -367,15 +347,9 @@ function getTotalValueOfBlocks(blockList) {
     return totalValue;
 }
 
-function removePlayerWalls() {
-    
-}
-
 
 module.exports = {
-    removePlayerWalls,
     getTotalValueOfBlocks,
-    box_in,
     spawnblocks,
     block_in_tile,
     create_block,

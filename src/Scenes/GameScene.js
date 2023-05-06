@@ -6,7 +6,6 @@ var {ScoreBar} = require('../ScoreBar');
 var {block_config} = require('../Block');
 var {
     getTotalValueOfBlocks,
-    box_in,
     spawnblocks,
     create_block,
     remove_block,
@@ -42,7 +41,7 @@ const game_config = {
         'basic',
         'claust',
         'clover'
-        
+
     ],
     selected_map: 0, // default map
     starting_time: 120000, // starting time in ms
@@ -106,8 +105,6 @@ class GameScene extends Phaser.Scene {
 
         this.manual_block_spawn_value = null;
 
-        this.box_in_counter = 0;
-
         this.orange_total_value = 0;
         this.green_total_value = 0;
         this.win_value = 100;
@@ -115,10 +112,8 @@ class GameScene extends Phaser.Scene {
         this.orange_percent = 0;
         this.green_percent = 0;
 
-
-
         // Define a list of the keys
-        this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'M', 'L', 'K', 'N'];
+        this.keyList = ['W', 'A', 'S', 'D', 'UP', 'LEFT', 'DOWN', 'RIGHT', 'O', 'G', 'B', 'T', 'R', 'Z', 'X', 'C', 'P', 'L', 'K', 'N'];
 
         this.green_lock = "false";      
         this.orange_lock = "false";
@@ -791,8 +786,6 @@ class GameScene extends Phaser.Scene {
             this.scene.restart();
         } if(this.p_key.isDown){
             this.manual_block_spawn_value = null;
-        } if(this.m_key.isDown){
-            box_in(this, game_config.wall_id[0], game_config);
         } if(this.n_key.isDown){                                    // for now some type of set all bools to false
             this.is_placing_orange_blocks = false;
             this.is_placing_green_blocks = false;
